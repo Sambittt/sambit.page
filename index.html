@@ -187,6 +187,7 @@
     opacity: 0;
     animation: riseIn 1s 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
     margin-top: 8px;
+    margin-bottom: 28px;
   }
 
   .tag {
@@ -253,6 +254,100 @@
   @keyframes dotPulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
+  }
+
+  .skills-section {
+    width: min(980px, 100%);
+    margin: 0 auto;
+    text-align: left;
+    border: 1px solid rgba(0,245,255,0.14);
+    background: rgba(0,245,255,0.03);
+    border-radius: 8px;
+    padding: 26px 22px;
+    box-shadow: 0 0 28px rgba(0,245,255,0.06);
+    opacity: 0;
+    animation: riseIn 1s 0.95s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .skills-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .skills-section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 4px;
+    color: #00f5ff;
+    text-transform: uppercase;
+  }
+
+  .skills-section-subtitle {
+    color: #4a8a9f;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .skill-card {
+    border: 1px solid rgba(0,245,255,0.12);
+    background: rgba(2,4,8,0.65);
+    border-radius: 6px;
+    padding: 14px 14px 12px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  }
+
+  .skill-card:hover {
+    border-color: rgba(0,245,255,0.3);
+    box-shadow: 0 0 20px rgba(0,245,255,0.07);
+    transform: translateY(-2px);
+  }
+
+  .skill-card h3 {
+    color: #c8e6f0;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .skill-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  .skill-list li {
+    color: #79a8b7;
+    font-size: 0.7rem;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .skill-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.64em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00f5ff;
+    box-shadow: 0 0 8px rgba(0,245,255,0.7);
+    transform: translateY(-50%);
   }
 
   /* Blink cursor */
@@ -527,6 +622,12 @@
       font-size: 0.85rem;
       text-align: left;
     }
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+    .skills-section {
+      padding: 18px 16px;
+    }
     .corner { display: none; }
     .domain { margin-bottom: 30px; }
     .cursor-dot, .cursor-ring, .cursor-trail { display: none !important; }
@@ -599,11 +700,11 @@
   <div class="main-text">
     <div><span class="hi">Hey</span> — I'm <span class="name-span" id="nameSpan">Sambit</span>.</div>
     <div><span style="color:#39ff14; text-shadow:0 0 12px #39ff14;">SOC</span> Analyst.</div>
-    <div>I defend stuff. Or I'm learning to.<span class="blink-cursor"></span></div>
+    <div>Focused on threat detection, investigation, and incident response.<span class="blink-cursor"></span></div>
   </div>
   <div class="bio-detail">
-    <p>Aspiring <span>SOC Analyst</span> and defensive security enthusiast. I spend my time analyzing network traffic, hunting through <span>SIEM logs</span>, and tearing apart real-world attack patterns in my homelab.</p>
-    <p>My focus is on continuous learning—mastering <span>Linux</span>, strengthening network defenses, and building the hands-on skills needed to effectively detect and respond to modern cyber threats.</p>
+    <p><span>SOC-focused cybersecurity learner</span> with hands-on practice in monitoring, triage, and incident handling workflows across lab environments.</p>
+    <p>I am actively strengthening fundamentals in <span>network defense</span>, <span>SIEM-driven detection</span>, and <span>security operations documentation</span> to support real-world blue team outcomes.</p>
   </div>
 
   <!-- Skill tags -->
@@ -613,6 +714,57 @@
     <span class="tag tag-purple"><span class="tag-dot"></span>Python</span>
     <span class="tag tag-blue"><span class="tag-dot"></span>Blue Team</span>
   </div>
+
+  <section class="skills-section" aria-label="Skills">
+    <div class="skills-section-header">
+      <div class="skills-section-title">Skills</div>
+      <div class="skills-section-subtitle">Professional Profile</div>
+    </div>
+    <div class="skills-grid">
+      <article class="skill-card">
+        <h3>SOC & Incident Response</h3>
+        <ul class="skill-list">
+          <li>Security Operations Center (SOC) fundamentals</li>
+          <li>Threat detection and monitoring</li>
+          <li>Incident identification, analysis, containment, and reporting</li>
+          <li>Log analysis and security event monitoring</li>
+          <li>Basic threat intelligence knowledge</li>
+          <li>MITRE ATT&amp;CK framework understanding</li>
+        </ul>
+      </article>
+      <article class="skill-card">
+        <h3>Cybersecurity & Networking</h3>
+        <ul class="skill-list">
+          <li>Cybersecurity fundamentals: CIA triad, attack vectors, malware, phishing</li>
+          <li>Networking fundamentals: TCP/IP, DNS, HTTP, HTTPS</li>
+          <li>Ports and protocols: 80, 443, 22, and others</li>
+          <li>Firewall and network security basics</li>
+          <li>Network traffic analysis</li>
+        </ul>
+      </article>
+      <article class="skill-card">
+        <h3>Tools & Platforms</h3>
+        <ul class="skill-list">
+          <li>SIEM tools: Splunk (basic), Microsoft Sentinel (basic)</li>
+          <li>Wireshark packet analysis</li>
+          <li>Nmap network scanning</li>
+          <li>Windows Event Viewer log analysis</li>
+        </ul>
+      </article>
+      <article class="skill-card">
+        <h3>Systems, Scripting & Professional Skills</h3>
+        <ul class="skill-list">
+          <li>Linux command-line fundamentals</li>
+          <li>Python basics for automation and log analysis</li>
+          <li>Bash scripting for Linux automation</li>
+          <li>Analytical thinking and problem solving</li>
+          <li>Attention to detail</li>
+          <li>Incident reporting and technical documentation</li>
+          <li>Ability to work under pressure, communication, and teamwork</li>
+        </ul>
+      </article>
+    </div>
+  </section>
 
 
 </div>
