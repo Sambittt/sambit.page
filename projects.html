@@ -4,90 +4,207 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Projects | Sambit Kumar Satapathy</title>
-  <meta name="description" content="Projects and practical cybersecurity work by Sambit Kumar Satapathy.">
+  <meta name="description" content="Cybersecurity projects and practical lab work by Sambit Kumar Satapathy.">
   <style>
+    :root {
+      --bg: #050914;
+      --bg-soft: #0b1427;
+      --card: #0d1b31;
+      --text: #dce7f7;
+      --muted: #97aac9;
+      --primary: #37b5ff;
+      --primary-soft: rgba(55, 181, 255, 0.16);
+      --border: rgba(151, 170, 201, 0.25);
+      --radius: 14px;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #050a12;
-      color: #d9edf6;
-      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(55, 181, 255, 0.20), transparent 40%),
+        var(--bg);
+      color: var(--text);
       line-height: 1.6;
     }
-    .wrap {
-      width: min(980px, 92%);
-      margin: 0 auto;
-      padding: 34px 0 70px;
+    .container { width: min(1120px, 92%); margin: 0 auto; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(5, 9, 20, 0.82);
+      border-bottom: 1px solid var(--border);
     }
-    .top-links {
+    .nav-wrap {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 26px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 0;
     }
-    .top-links a {
-      color: #00f5ff;
+    .brand {
+      color: var(--text);
       text-decoration: none;
-      border: 1px solid rgba(0,245,255,0.4);
+      font-weight: 700;
+    }
+    .brand span { color: var(--primary); }
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid transparent;
       padding: 8px 12px;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
     }
-    .top-links a:hover { background: rgba(0,245,255,0.1); }
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      border-color: var(--border);
+      background: var(--primary-soft);
+      outline: none;
+    }
+
+    main { padding: 48px 0 28px; }
     h1 {
-      font-size: clamp(1.3rem, 4vw, 2rem);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
       margin-bottom: 10px;
     }
     .lead {
-      color: #87b3c5;
-      margin-bottom: 28px;
-      max-width: 720px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      max-width: 70ch;
     }
     .grid {
       display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
     }
     .card {
-      border: 1px solid rgba(0,245,255,0.2);
-      border-radius: 8px;
-      background: rgba(0,245,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
       padding: 18px;
     }
     .card h2 {
-      font-size: 1rem;
-      color: #00f5ff;
+      font-size: 1.08rem;
       margin-bottom: 8px;
     }
-    .card p { color: #9bc2d1; font-size: 0.92rem; }
+    .card p {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-bottom: 10px;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      border-radius: 999px;
+      border: 1px solid rgba(55, 181, 255, 0.4);
+      background: rgba(55, 181, 255, 0.12);
+      color: #cae8ff;
+      padding: 4px 10px;
+      font-size: 0.76rem;
+    }
+
+    .footer-cta {
+      margin: 10px 0 30px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .footer-cta p { color: var(--muted); margin-bottom: 10px; }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(55, 181, 255, 0.45);
+      color: var(--text);
+      background: rgba(55, 181, 255, 0.12);
+      font-weight: 600;
+    }
+    .btn:hover,
+    .btn:focus-visible {
+      background: rgba(55, 181, 255, 0.22);
+      outline: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+      padding: 20px 0 36px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+      main { padding-top: 38px; }
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <nav class="top-links" aria-label="Page links">
-      <a href="index.html">← Back to Home</a>
-      <a href="contact.html">Contact</a>
-    </nav>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">Sambit<span>.page</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
     <h1>Projects</h1>
-    <p class="lead">A dedicated page for practical cybersecurity work, learning labs, and documentation efforts.</p>
+    <p class="lead">Practical cybersecurity work focused on blue-team capability building, incident response readiness, and security operations fundamentals.</p>
+
     <section class="grid" aria-label="Project list">
       <article class="card">
         <h2>Home SOC Lab</h2>
-        <p>Building and tuning a small SOC-style setup with log forwarding, alert triage, and incident notes.</p>
+        <p>Building a SOC-style setup with log onboarding, triage workflows, and documented alert investigation paths.</p>
+        <div class="chip-row"><span class="chip">SIEM</span><span class="chip">Triage</span><span class="chip">Incident Workflow</span></div>
       </article>
+
       <article class="card">
-        <h2>Network Traffic Analysis</h2>
-        <p>Capturing and reviewing traffic patterns with Wireshark to identify risky behavior and strengthen detection logic.</p>
+        <h2>Network Traffic Analysis Practice</h2>
+        <p>Studying packet captures and host-network communication patterns to separate normal background activity from suspicious events.</p>
+        <div class="chip-row"><span class="chip">Wireshark</span><span class="chip">Protocols</span><span class="chip">Detection</span></div>
       </article>
+
       <article class="card">
         <h2>Linux Hardening Notes</h2>
-        <p>Maintaining a reproducible checklist for system hardening, baseline checks, and operational validation.</p>
+        <p>Maintaining a repeatable hardening checklist and baseline verification process for secure host configuration.</p>
+        <div class="chip-row"><span class="chip">Linux</span><span class="chip">Hardening</span><span class="chip">Baseline</span></div>
       </article>
+
       <article class="card">
         <h2>Detection Playbook Drafts</h2>
-        <p>Writing practical detection and response playbooks for common incidents like brute force, phishing, and malware execution.</p>
+        <p>Developing practical response playbooks for brute-force, phishing, and malware activity in small SOC environments.</p>
+        <div class="chip-row"><span class="chip">Playbooks</span><span class="chip">Blue Team</span><span class="chip">Response</span></div>
       </article>
     </section>
+
+    <section class="footer-cta">
+      <p>Want details, collaboration, or role-specific discussion around this work?</p>
+      <a class="btn" href="contact.html">Go to Contact</a>
+    </section>
   </main>
+
+  <footer>
+    © 2026 Sambit Kumar Satapathy · Portfolio projects in progress.
+  </footer>
 </body>
 </html>
