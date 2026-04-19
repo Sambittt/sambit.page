@@ -6,91 +6,207 @@
   <title>Contact | Sambit Kumar Satapathy</title>
   <meta name="description" content="Contact information for Sambit Kumar Satapathy.">
   <style>
+    :root {
+      --bg: #050914;
+      --bg-soft: #0b1427;
+      --card: #0d1b31;
+      --text: #dce7f7;
+      --muted: #97aac9;
+      --primary: #37b5ff;
+      --primary-soft: rgba(55, 181, 255, 0.16);
+      --accent: #79f6d8;
+      --border: rgba(151, 170, 201, 0.25);
+      --radius: 14px;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #040910;
-      color: #e2f1f7;
-      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 10% -10%, rgba(55, 181, 255, 0.20), transparent 40%),
+        var(--bg);
+      color: var(--text);
       line-height: 1.6;
     }
-    .wrap {
-      width: min(760px, 92%);
-      margin: 0 auto;
-      padding: 34px 0 70px;
+    .container { width: min(980px, 92%); margin: 0 auto; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(5, 9, 20, 0.82);
+      border-bottom: 1px solid var(--border);
     }
-    .top-links {
+    .nav-wrap {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 0;
     }
-    .top-links a {
-      color: #00f5ff;
+    .brand {
+      color: var(--text);
       text-decoration: none;
-      border: 1px solid rgba(0,245,255,0.4);
+      font-weight: 700;
+    }
+    .brand span { color: var(--primary); }
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid transparent;
       padding: 8px 12px;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
     }
-    .top-links a:hover { background: rgba(0,245,255,0.1); }
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      border-color: var(--border);
+      background: var(--primary-soft);
+      outline: none;
+    }
+
+    main { padding: 48px 0 28px; }
     h1 {
-      font-size: clamp(1.3rem, 4vw, 2rem);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       margin-bottom: 10px;
     }
     .lead {
-      color: #87b3c5;
+      color: var(--muted);
       margin-bottom: 24px;
+      max-width: 70ch;
     }
-    .contact-list {
+
+    .contact-grid {
       display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
       gap: 14px;
     }
-    .contact-card {
-      border: 1px solid rgba(0,245,255,0.2);
-      background: rgba(0,245,255,0.04);
-      border-radius: 8px;
-      padding: 16px;
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      padding: 18px;
     }
-    .contact-card h2 {
-      color: #00f5ff;
-      font-size: 1rem;
+    .card h2 {
+      font-size: 1.05rem;
       margin-bottom: 8px;
     }
-    .contact-card a {
-      color: #39ff14;
-      text-decoration: none;
-      word-break: break-all;
+    .card p {
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-size: 0.94rem;
     }
-    .contact-card a:hover { text-decoration: underline; }
+
+    .social-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .social-buttons a {
+      text-decoration: none;
+      color: #d9ebff;
+      border: 1px solid rgba(55, 181, 255, 0.35);
+      background: rgba(55, 181, 255, 0.10);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
+    }
+    .social-buttons a:hover,
+    .social-buttons a:focus-visible {
+      background: rgba(55, 181, 255, 0.20);
+      border-color: rgba(121, 246, 216, 0.7);
+      outline: none;
+    }
+
+    .availability {
+      margin-top: 10px;
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .email-link {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(55, 181, 255, 0.14);
+      border: 1px solid rgba(55, 181, 255, 0.45);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+    .email-link:hover,
+    .email-link:focus-visible {
+      background: rgba(55, 181, 255, 0.24);
+      outline: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+      padding: 20px 0 36px;
+      font-size: 0.9rem;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 820px) {
+      .contact-grid { grid-template-columns: 1fr; }
+      main { padding-top: 38px; }
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <nav class="top-links" aria-label="Page links">
-      <a href="index.html">← Back to Home</a>
-      <a href="projects.html">Projects</a>
-    </nav>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">Sambit<span>.page</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
     <h1>Contact</h1>
-    <p class="lead">A dedicated page to connect for cybersecurity opportunities, collaboration, and technical discussions.</p>
-    <section class="contact-list" aria-label="Contact methods">
-      <article class="contact-card">
+    <p class="lead">Open to SOC analyst opportunities, internships, and cybersecurity collaboration focused on blue-team growth and practical security operations.</p>
+
+    <section class="contact-grid" aria-label="Contact methods">
+      <article class="card">
         <h2>Email</h2>
-        <p><a href="mailto:contact@sambit.page">contact@sambit.page</a></p>
+        <p>For opportunities or collaboration, email me directly:</p>
+        <p><a class="email-link" href="mailto:contact@sambit.page">contact@sambit.page</a></p>
+        <div class="availability">
+          Available for junior SOC analyst roles, internships, and project-based technical discussions.
+        </div>
       </article>
-      <article class="contact-card">
-        <h2>LinkedIn</h2>
-        <p><a href="https://www.linkedin.com/in/sambit-satapathy" target="_blank" rel="noopener">linkedin.com/in/sambit-satapathy</a></p>
-      </article>
-      <article class="contact-card">
-        <h2>GitHub</h2>
-        <p><a href="https://github.com/sambittt" target="_blank" rel="noopener">github.com/sambittt</a></p>
-      </article>
-      <article class="contact-card">
-        <h2>Availability</h2>
-        <p>Open to SOC analyst roles, internships, and blue-team learning collaborations.</p>
+
+      <article class="card">
+        <h2>Social Links</h2>
+        <p>Connect on social platforms:</p>
+        <div class="social-buttons">
+          <a href="https://www.linkedin.com/in/sambit-satapathy" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/sambittt" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://instagram.com/sambit.satapathy_" target="_blank" rel="noopener">Instagram</a>
+        </div>
       </article>
     </section>
   </main>
+
+  <footer>
+    © 2026 Sambit Kumar Satapathy · Let’s build secure systems together.
+  </footer>
 </body>
 </html>
