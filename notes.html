@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes | Sambit Kumar Satapathy</title>
+  <meta name="description" content="Daily learning notes by Sambit Kumar Satapathy.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">Sambit<span>.page</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="skills.html#skills-section">Skills</a>
+        <a class="active" href="notes.html#notes-section">Notes</a>
+        <a href="projects.html#projects-section">Projects</a>
+        <a href="certificates.html#certificates-section">Certificates</a>
+        <a href="contact.html#contact-section">Contact Me</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="notes-section">
+    <section class="hero">
+      <span class="eyebrow">Notes</span>
+      <h1>What I Learned Today</h1>
+      <p class="lead">These notes are updated from a private admin page.</p>
+    </section>
+
+    <section>
+      <div id="notes-list" class="list" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Sambit Kumar Satapathy
+  </footer>
+
+  <script src="notes.js"></script>
+  <script>
+    window.sambitNotes.initPublicNotes();
+  </script>
+</body>
+</html>

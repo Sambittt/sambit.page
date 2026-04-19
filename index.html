@@ -3,426 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sambit Kumar Satapathy | SOC Analyst Portfolio</title>
-  <meta name="description" content="Portfolio of Sambit Kumar Satapathy, SOC analyst focused on threat detection, investigation, and incident response.">
-  <meta name="keywords" content="Sambit, SOC Analyst, Cybersecurity, Threat Detection, Incident Response, SIEM, Blue Team, Linux, Networking">
-  <meta property="og:title" content="Sambit Kumar Satapathy | SOC Analyst Portfolio">
-  <meta property="og:description" content="Professional cybersecurity portfolio highlighting skills, projects, and field notes.">
-  <meta property="og:type" content="website">
-  <style>
-    :root {
-      --bg: #050914;
-      --bg-soft: #0b1427;
-      --card: #0d1b31;
-      --text: #dce7f7;
-      --muted: #97aac9;
-      --primary: #37b5ff;
-      --primary-soft: rgba(55, 181, 255, 0.16);
-      --accent: #79f6d8;
-      --border: rgba(151, 170, 201, 0.25);
-      --shadow: 0 14px 40px rgba(3, 8, 18, 0.45);
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(circle at 15% -10%, rgba(55, 181, 255, 0.20), transparent 40%),
-        radial-gradient(circle at 90% 0%, rgba(121, 246, 216, 0.12), transparent 35%),
-        var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    .container { width: min(1120px, 92%); margin: 0 auto; }
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(10px);
-      background: rgba(5, 9, 20, 0.82);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      padding: 14px 0;
-    }
-    .brand {
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-    .brand span { color: var(--primary); }
-    .nav-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      border: 1px solid transparent;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      transition: 0.2s ease;
-    }
-    .nav-links a:hover,
-    .nav-links a:focus-visible {
-      color: var(--text);
-      border-color: var(--border);
-      background: var(--primary-soft);
-      outline: none;
-    }
-
-    .hero {
-      padding: 78px 0 56px;
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 24px;
-      align-items: stretch;
-    }
-    .hero-card,
-    .side-card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 28px;
-    }
-    .eyebrow {
-      display: inline-block;
-      color: var(--accent);
-      font-size: 0.78rem;
-      letter-spacing: 1.7px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-    h1 {
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      line-height: 1.18;
-      margin-bottom: 14px;
-    }
-    .hero p {
-      color: var(--muted);
-      max-width: 62ch;
-      margin-bottom: 18px;
-    }
-    .cta-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-      margin-bottom: 18px;
-    }
-    .btn {
-      text-decoration: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      border: 1px solid transparent;
-      font-weight: 600;
-      font-size: 0.92rem;
-      transition: 0.2s ease;
-    }
-    .btn.primary {
-      background: linear-gradient(120deg, #2383ff, #37b5ff);
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(35, 131, 255, 0.34);
-    }
-    .btn.primary:hover,
-    .btn.primary:focus-visible { transform: translateY(-1px); }
-    .btn.ghost {
-      color: var(--text);
-      border-color: var(--border);
-      background: rgba(255, 255, 255, 0.04);
-    }
-    .btn.ghost:hover,
-    .btn.ghost:focus-visible {
-      background: var(--primary-soft);
-      border-color: rgba(55, 181, 255, 0.45);
-      outline: none;
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .tags span {
-      background: rgba(55, 181, 255, 0.12);
-      border: 1px solid rgba(55, 181, 255, 0.35);
-      color: #bfe4ff;
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 0.78rem;
-      letter-spacing: 0.4px;
-    }
-
-    .stat-list {
-      list-style: none;
-      display: grid;
-      gap: 16px;
-      margin-top: 8px;
-    }
-    .stat-list li h2 {
-      font-size: 1rem;
-      margin-bottom: 4px;
-      color: #c9dcff;
-    }
-    .stat-list li p {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    section { padding: 18px 0 12px; }
-    .section-title {
-      font-size: 1.45rem;
-      margin-bottom: 6px;
-    }
-    .section-subtitle {
-      color: var(--muted);
-      margin-bottom: 18px;
-      max-width: 66ch;
-    }
-
-    .grid-3 {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card);
-      padding: 18px;
-    }
-    .card h3 {
-      margin-bottom: 8px;
-      font-size: 1rem;
-    }
-    .card p {
-      color: var(--muted);
-      font-size: 0.93rem;
-    }
-    .card a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .card a:hover { text-decoration: underline; }
-
-    .notes {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 30px;
-    }
-    .note {
-      border: 1px solid var(--border);
-      background: #0b162b;
-      border-radius: 12px;
-      padding: 16px;
-    }
-    .note .meta {
-      color: var(--accent);
-      font-size: 0.78rem;
-      letter-spacing: 0.8px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-    }
-    .note h3 {
-      margin-bottom: 6px;
-      font-size: 1rem;
-    }
-    .note p {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .social-panel {
-      margin: 20px 0 30px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      background: var(--bg-soft);
-    }
-    .social-panel h3 { margin-bottom: 10px; }
-    .social-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .social-buttons a {
-      text-decoration: none;
-      color: #d9ebff;
-      border: 1px solid rgba(55, 181, 255, 0.35);
-      background: rgba(55, 181, 255, 0.10);
-      border-radius: 999px;
-      padding: 9px 13px;
-      font-size: 0.9rem;
-      transition: 0.2s ease;
-    }
-    .social-buttons a:hover,
-    .social-buttons a:focus-visible {
-      background: rgba(55, 181, 255, 0.20);
-      border-color: rgba(121, 246, 216, 0.7);
-      outline: none;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      text-align: center;
-      padding: 20px 0 36px;
-      font-size: 0.9rem;
-    }
-
-    @media (max-width: 900px) {
-      .hero {
-        grid-template-columns: 1fr;
-        padding-top: 52px;
-      }
-      .grid-3 { grid-template-columns: 1fr; }
-    }
-  </style>
+  <title>Sambit Kumar Satapathy | Home</title>
+  <meta name="description" content="Personal website of Sambit Kumar Satapathy with links to skills, notes, projects, certificates, and contact.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
       <a class="brand" href="index.html">Sambit<span>.page</span></a>
       <nav class="nav-links" aria-label="Primary navigation">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="projects.html">Projects</a>
-        <a href="#notes">Field Notes</a>
-        <a href="contact.html">Contact</a>
+        <a class="active" href="index.html">Home</a>
+        <a href="skills.html#skills-section">Skills</a>
+        <a href="notes.html#notes-section">Notes</a>
+        <a href="projects.html#projects-section">Projects</a>
+        <a href="certificates.html#certificates-section">Certificates</a>
+        <a href="contact.html#contact-section">Contact Me</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <section class="hero" id="about">
-      <article class="hero-card">
-        <span class="eyebrow">SOC Analyst Portfolio</span>
-        <h1>Sambit Kumar Satapathy</h1>
-        <p>
-          I focus on threat detection, security monitoring, and incident response workflows. This site highlights my practical
-          blue-team work, core technical capabilities, and ongoing field learning.
-        </p>
-        <div class="cta-row">
-          <a class="btn primary" href="projects.html">View Projects</a>
-          <a class="btn ghost" href="contact.html">Work With Me</a>
-        </div>
-        <div class="tags" aria-label="Core tags">
-          <span>Linux</span>
-          <span>Networking</span>
-          <span>SIEM</span>
-          <span>Incident Response</span>
-          <span>Threat Analysis</span>
-          <span>Python</span>
-        </div>
-      </article>
-
-      <aside class="side-card" aria-label="Professional snapshot">
-        <ul class="stat-list">
-          <li>
-            <h2>Blue-Team Mindset</h2>
-            <p>Hands-on monitoring, triage, and investigation practice through lab-based scenarios.</p>
-          </li>
-          <li>
-            <h2>Detection Focus</h2>
-            <p>Comfortable reading logs, validating suspicious activity, and documenting actionable findings.</p>
-          </li>
-          <li>
-            <h2>Continuous Learning</h2>
-            <p>Actively improving through practical projects in SOC operations, network defense, and threat intelligence.</p>
-          </li>
-        </ul>
-      </aside>
-    </section>
-
-    <section id="skills">
-      <h2 class="section-title">Core Capabilities</h2>
-      <p class="section-subtitle">Focused areas where I can contribute in entry-level SOC and cybersecurity analyst roles.</p>
-      <div class="grid-3">
-        <article class="card">
-          <h3>SOC Operations</h3>
-          <p>Event monitoring, alert triage, basic incident handling flow, and concise reporting for follow-up actions.</p>
-        </article>
-        <article class="card">
-          <h3>Networking & Security</h3>
-          <p>TCP/IP, DNS, protocol awareness, suspicious traffic review, and practical understanding of network defense basics.</p>
-        </article>
-        <article class="card">
-          <h3>Tools & Scripting</h3>
-          <p>Working familiarity with Splunk, Sentinel fundamentals, Wireshark, Nmap, Python, and Bash for security tasks.</p>
-        </article>
+    <section class="hero">
+      <span class="eyebrow">Personal Website</span>
+      <h1>Sambit Kumar Satapathy</h1>
+      <p class="lead">I moved everything into clear pages so the site stays clean and simple, while keeping the same dark portfolio vibe.</p>
+      <div class="actions">
+        <a class="btn primary" href="projects.html#projects-section">View Projects</a>
+        <a class="btn ghost" href="contact.html#contact-section">Contact Me</a>
       </div>
     </section>
 
-    <section>
-      <h2 class="section-title">Project Highlights</h2>
-      <p class="section-subtitle">Selected practical work; full details are available on the projects page.</p>
-      <div class="grid-3">
+    <section id="home-sections">
+      <h2 class="section-title">Sections</h2>
+      <p class="section-subtitle">Use these cards from home. Each one opens its own page and jumps to the exact section.</p>
+      <div class="grid">
         <article class="card">
-          <h3>Home SOC Lab</h3>
-          <p>Building and iterating on a SOC-style environment to practice detection logic and response flow.</p>
-          <p><a href="projects.html">See details</a></p>
-        </article>
-        <article class="card">
-          <h3>Network Traffic Analysis</h3>
-          <p>Packet capture and review exercises to identify unusual behavior and tune investigative habits.</p>
-          <p><a href="projects.html">See details</a></p>
+          <h3>Skills</h3>
+          <p>Technical strengths and practical focus areas.</p>
+          <a class="card-link" href="skills.html#skills-section">Open Skills</a>
         </article>
         <article class="card">
-          <h3>Detection Playbook Drafts</h3>
-          <p>Simple, practical playbooks for phishing, brute-force, and malware-related response paths.</p>
-          <p><a href="projects.html">See details</a></p>
+          <h3>Notes</h3>
+          <p>Daily learning notes that can be updated from your private login page.</p>
+          <a class="card-link" href="notes.html#notes-section">Open Notes</a>
         </article>
-      </div>
-    </section>
-
-    <section id="notes">
-      <h2 class="section-title">Field Notes</h2>
-      <p class="section-subtitle">Short reflections from practical learning and security labs.</p>
-      <div class="notes">
-        <article class="note">
-          <p class="meta">Apr 2026 · Linux</p>
-          <h3>Why I Switched to Arch (And Why I'd Do It Again)</h3>
-          <p>Troubleshooting broken boots taught me more about Linux internals than passive study ever did.</p>
+        <article class="card">
+          <h3>Projects</h3>
+          <p>Hands-on portfolio work and practical cybersecurity tasks.</p>
+          <a class="card-link" href="projects.html#projects-section">Open Projects</a>
         </article>
-        <article class="note">
-          <p class="meta">Mar 2026 · Networking</p>
-          <h3>Running Wireshark on Your Own Traffic Is Humbling</h3>
-          <p>Capturing home traffic revealed frequent outbound noise and pushed me to tighten DNS and egress hygiene.</p>
+        <article class="card">
+          <h3>Certificates</h3>
+          <p>Course and certification highlights.</p>
+          <a class="card-link" href="certificates.html#certificates-section">Open Certificates</a>
         </article>
-        <article class="note">
-          <p class="meta">Feb 2026 · Blue Team</p>
-          <h3>SIEM Logs Become Useful Once Patterns Click</h3>
-          <p>Learning to separate expected background alerts from suspicious behavior is the core skill I keep sharpening.</p>
+        <article class="card">
+          <h3>Contact Me</h3>
+          <p>Email and social links for opportunities or collaboration.</p>
+          <a class="card-link" href="contact.html#contact-section">Open Contact</a>
         </article>
-      </div>
-    </section>
-
-    <section class="social-panel" aria-label="Social links">
-      <h3>Connect with me</h3>
-      <div class="social-buttons">
-        <a href="mailto:contact@sambit.page">Email</a>
-        <a href="https://www.linkedin.com/in/sambit-satapathy" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/sambittt" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://instagram.com/sambit.satapathy_" target="_blank" rel="noopener">Instagram</a>
       </div>
     </section>
   </main>
 
   <footer>
-    © 2026 Sambit Kumar Satapathy · Learning, building, and defending.
+    © 2026 Sambit Kumar Satapathy
   </footer>
 </body>
 </html>
