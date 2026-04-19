@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Notes Login | Sambit</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="../index.html">Sambit<span>.page</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="../index.html">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="login-gate" class="hero">
+      <span class="eyebrow">Private</span>
+      <h1>Notes Admin Login</h1>
+      <p class="lead">Enter password to manage daily notes.</p>
+      <form id="login-form" class="form-grid">
+        <label>
+          Password
+          <input id="password" type="password" required autocomplete="current-password">
+        </label>
+        <button class="btn primary" type="submit">Login</button>
+        <p id="login-error" class="error" aria-live="polite"></p>
+      </form>
+      <p class="small">This is a front-end password gate for a static site.</p>
+    </section>
+
+    <section id="admin-panel" class="hidden">
+      <div class="hero">
+        <span class="eyebrow">Admin</span>
+        <h1>Manage Notes</h1>
+        <p class="lead">Add a new note or delete an existing note. Changes are saved in this browser.</p>
+      </div>
+
+      <article class="card">
+        <h2>Add Note</h2>
+        <form id="add-note-form" class="form-grid">
+          <label>
+            Date
+            <input id="note-date" type="date" required>
+          </label>
+          <label>
+            Title
+            <input id="note-title" type="text" required maxlength="120">
+          </label>
+          <label>
+            What I learned today
+            <textarea id="note-content" required maxlength="600"></textarea>
+          </label>
+          <button class="btn primary" type="submit">Add note</button>
+        </form>
+      </article>
+
+      <article class="card" style="margin-top: 14px;">
+        <h2>Current Notes</h2>
+        <div id="admin-notes-list" class="list" aria-live="polite"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Sambit Kumar Satapathy
+  </footer>
+
+  <script src="../notes.js"></script>
+  <script>
+    window.sambitNotes.initAdminNotes();
+  </script>
+</body>
+</html>
