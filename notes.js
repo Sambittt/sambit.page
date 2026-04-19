@@ -1,7 +1,9 @@
 (function () {
   const KEY = 'sambitNotesDataV1';
+  const ADMIN_PASSWORD = 'TAMLOML';
   const defaults = [
     {
+      id: 'seed-1',
       date: '2026-04-19',
       title: 'Learning Consistency',
       content: 'Short daily notes make progress visible and easier to review later.'
@@ -25,6 +27,21 @@
 
   function saveNotes(notes) {
     localStorage.setItem(KEY, JSON.stringify(notes));
+  }
+
+  function normalizeNotes(notes) {
+    return notes.map((note, index) => ({
+      id: note.id || `legacy-${index}`,
+      date: note.date || '',
+      title: note.title || '',
+      content: note.content || ''
+    }));
+  }
+
+  function getLocalISODate() {
+    const now = new Date();
+    const offsetMs = now.getTimezoneOffset() * 60000;
+    return new Date(now.getTime() - offsetMs).toISOString().slice(0, 10);
   }
 
   function formatDate(dateValue) {
@@ -68,7 +85,7 @@
   function renderPublic() {
     const list = document.getElementById('notes-list');
     if (!list) return;
-    const notes = readNotes();
+    const notes = normalizeNotes(readNotes());
     list.innerHTML = '';
     notes.forEach((note) => {
       list.appendChild(buildNoteNode(note, false));
@@ -80,13 +97,13 @@
     if (!list) return;
 
     const refresh = () => {
-      const notes = readNotes();
+      const notes = normalizeNotes(readNotes());
       list.innerHTML = '';
-      notes.forEach((note, index) => {
+      notes.forEach((note) => {
         list.appendChild(buildNoteNode(note, true, function () {
-          const latest = readNotes();
-          latest.splice(index, 1);
-          saveNotes(latest);
+          const latest = normalizeNotes(readNotes());
+          const filtered = latest.filter((item) => item.id !== note.id);
+          saveNotes(filtered);
           refresh();
           renderPublic();
         }));
@@ -105,17 +122,23 @@
       const content = document.getElementById('note-content').value.trim();
       if (!date || !title || !content) return;
 
-      const notes = readNotes();
-      notes.unshift({ date: date, title: title, content: content });
+      const notes = normalizeNotes(readNotes());
+      notes.unshift({
+        id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+        date: date,
+        title: title,
+        content: content
+      });
       saveNotes(notes);
       form.reset();
-      document.getElementById('note-date').valueAsDate = new Date();
+      const dateInputAfter = document.getElementById('note-date');
+      if (dateInputAfter) dateInputAfter.value = getLocalISODate();
       refresh();
       renderPublic();
     });
 
     const dateInput = document.getElementById('note-date');
-    if (dateInput && !dateInput.value) dateInput.valueAsDate = new Date();
+    if (dateInput && !dateInput.value) dateInput.value = getLocalISODate();
   }
 
   function initLoginGate() {
@@ -140,7 +163,7 @@
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       const password = document.getElementById('password').value;
-      if (password === 'TAMLOML') {
+      if (password === ADMIN_PASSWORD) {
         sessionStorage.setItem('sambitAdminAuth', 'ok');
         error.textContent = '';
         unlock();
