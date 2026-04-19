@@ -1,6 +1,7 @@
 (function () {
   const KEY = 'sambitNotesDataV1';
   const ADMIN_PASSWORD = 'TAMLOML';
+  const RANDOM_ID_LENGTH = 6;
   const defaults = [
     {
       id: 'seed-1',
@@ -124,7 +125,7 @@
 
       const notes = normalizeNotes(readNotes());
       notes.unshift({
-        id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+        id: `${Date.now()}-${Math.random().toString(16).slice(2, 2 + RANDOM_ID_LENGTH)}`,
         date: date,
         title: title,
         content: content
