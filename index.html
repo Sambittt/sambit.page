@@ -1,74 +1,1109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sambit Kumar Satapathy | Home</title>
-  <meta name="description" content="Personal website of Sambit Kumar Satapathy with links to skills, notes, projects, certificates, and contact.">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sambit Kumar Satapathy | Threat Hunter & Security Analyst</title>
+<meta name="description" content="Portfolio of Sambit Kumar Satapathy, a cybersecurity analyst and threat hunter specializing in Linux, networking, Python, and security automation.">
+<meta name="keywords" content="Sambit, Sambit Satapathy, Sambit Kumar Satapathy, cybersecurity, infosec, threat hunting, Linux, networking, Python, scripting, security analyst, SOC, ethical hacking, SIEM, incident response">
+<meta property="og:title" content="Sambit Kumar Satapathy | Cybersecurity Portfolio">
+<meta property="og:description" content="Portfolio of Sambit Kumar Satapathy, cybersecurity analyst and threat hunter.">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #020408;
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor-dot {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: #00f5ff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #00f5ff, 0 0 30px #00f5ff, 0 0 60px rgba(0,245,255,0.4);
+    transition: transform 0.05s;
+    mix-blend-mode: screen;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid rgba(0,245,255,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, border-color 0.3s;
+  }
+
+  .cursor-trail {
+    position: fixed;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9997;
+    transform: translate(-50%, -50%);
+    background: #00f5ff;
+    mix-blend-mode: screen;
+  }
+
+  /* Canvas for everything */
+  #bgCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  /* Scanlines */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 5;
+    animation: scanMove 8s linear infinite;
+  }
+
+  @keyframes scanMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+
+  /* Vignette */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(2,4,8,0.8) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* Main content */
+  .container {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+  }
+
+  .domain {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+    color: #00f5ff;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: riseIn 1s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
+    position: relative;
+  }
+
+  .domain::before, .domain::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, #00f5ff);
+    box-shadow: 0 0 8px #00f5ff;
+  }
+  .domain::before { right: calc(100% + 16px); }
+  .domain::after { left: calc(100% + 16px); transform: rotate(180deg); }
+
+  /* Main text block */
+  .main-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(1.05rem, 3.2vw, 1.45rem);
+    color: #c8e6f0;
+    line-height: 2.5;
+    opacity: 0;
+    animation: riseIn 1s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .main-text .hi { color: #fff; font-size: 1.2em; }
+
+  .name-span {
+    color: #00f5ff;
+    text-shadow: 0 0 20px #00f5ff, 0 0 40px rgba(0,245,255,0.4);
+    display: inline-block;
+    animation: nameGlitch 6s 2s infinite;
+    font-size: 1.3em;
+  }
+
+  @keyframes nameGlitch {
+    0%, 90%, 100% {
+      text-shadow: 0 0 20px #00f5ff, 0 0 40px rgba(0,245,255,0.4);
+      transform: translate(0);
+      filter: none;
+    }
+    91% {
+      text-shadow: -3px 0 #ff006e, 3px 0 #00f5ff;
+      transform: translate(-2px, 1px);
+      filter: blur(0.5px);
+    }
+    92% {
+      text-shadow: 3px 0 #ff006e, -3px 0 #00f5ff;
+      transform: translate(2px, -1px);
+    }
+    93% {
+      text-shadow: 0 0 20px #00f5ff, 0 0 40px rgba(0,245,255,0.4);
+      transform: translate(0);
+      filter: none;
+    }
+    95% {
+      text-shadow: -2px 0 #bf5fff, 2px 0 #00f5ff;
+      transform: translate(1px, 0);
+    }
+    96% {
+      text-shadow: 0 0 20px #00f5ff;
+      transform: translate(0);
+    }
+  }
+
+  /* Skills tags */
+  .skills-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: riseIn 1s 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+    margin-top: 8px;
+    margin-bottom: 28px;
+  }
+
+  .tag {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border: 1px solid;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: box-shadow 0.3s, transform 0.2s;
+    cursor: default;
+  }
+
+  .tag:hover {
+    transform: translateY(-2px);
+  }
+
+  .tag-cyber {
+    color: #00f5ff;
+    border-color: rgba(0,245,255,0.4);
+    background: rgba(0,245,255,0.05);
+  }
+  .tag-cyber:hover { box-shadow: 0 0 16px rgba(0,245,255,0.3); }
+
+  .tag-green {
+    color: #39ff14;
+    border-color: rgba(57,255,20,0.4);
+    background: rgba(57,255,20,0.05);
+  }
+  .tag-green:hover { box-shadow: 0 0 16px rgba(57,255,20,0.3); }
+
+  .tag-pink {
+    color: #ff006e;
+    border-color: rgba(255,0,110,0.4);
+    background: rgba(255,0,110,0.05);
+  }
+  .tag-pink:hover { box-shadow: 0 0 16px rgba(255,0,110,0.3); }
+
+  .tag-blue {
+    color: #0077ff;
+    border-color: rgba(0,119,255,0.4);
+    background: rgba(0,119,255,0.05);
+  }
+  .tag-blue:hover { box-shadow: 0 0 16px rgba(0,119,255,0.3); }
+
+  .tag-purple {
+    color: #bf5fff;
+    border-color: rgba(191,95,255,0.4);
+    background: rgba(191,95,255,0.05);
+  }
+  .tag-purple:hover { box-shadow: 0 0 16px rgba(191,95,255,0.3); }
+
+  .tag-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+    animation: dotPulse 2s infinite;
+  }
+
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .skills-section {
+    width: min(980px, 100%);
+    margin: 0 auto;
+    text-align: left;
+    border: 1px solid rgba(0,245,255,0.14);
+    background: rgba(0,245,255,0.03);
+    border-radius: 8px;
+    padding: 26px 22px;
+    box-shadow: 0 0 28px rgba(0,245,255,0.06);
+    opacity: 0;
+    animation: riseIn 1s 0.95s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .skills-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .skills-section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 4px;
+    color: #00f5ff;
+    text-transform: uppercase;
+  }
+
+  .skills-section-subtitle {
+    color: #4a8a9f;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .skill-card {
+    border: 1px solid rgba(0,245,255,0.12);
+    background: rgba(2,4,8,0.65);
+    border-radius: 6px;
+    padding: 14px 14px 12px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  }
+
+  .skill-card:hover {
+    border-color: rgba(0,245,255,0.3);
+    box-shadow: 0 0 20px rgba(0,245,255,0.07);
+    transform: translateY(-2px);
+  }
+
+  .skill-card h3 {
+    color: #c8e6f0;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .skill-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  .skill-list li {
+    color: #79a8b7;
+    font-size: 0.7rem;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .skill-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.64em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00f5ff;
+    box-shadow: 0 0 8px rgba(0,245,255,0.7);
+    transform: translateY(-50%);
+  }
+
+  /* Blink cursor */
+  .blink-cursor {
+    display: inline-block;
+    width: 3px; height: 1.1em;
+    background: #00f5ff;
+    vertical-align: middle;
+    margin-left: 6px;
+    box-shadow: 0 0 8px #00f5ff;
+    animation: blink 0.75s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 49%{opacity:1} 50%{opacity:0} }
+
+  /* Top Right Socials */
+  .top-right-socials {
+    position: fixed;
+    top: 24px;
+    right: 32px;
+    display: flex;
+    gap: 16px;
+    z-index: 1000;
+    opacity: 0;
+    animation: riseIn 1s 1.0s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .top-right-socials a {
+    color: #4a8a9f;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 245, 255, 0.03);
+    border: 1px solid rgba(0, 245, 255, 0.15);
+  }
+  .top-right-socials a:hover {
+    color: #00f5ff;
+    background: rgba(0, 245, 255, 0.1);
+    border-color: #00f5ff;
+    box-shadow: 0 0 12px rgba(0, 245, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  .top-right-socials svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  .social-link:hover::after { transform: scaleX(1); }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    opacity: 0;
+    animation: riseIn 1s 1.3s ease forwards;
+  }
+
+  .bar-line {
+    width: 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,245,255,0.4));
+  }
+  .bar-line:last-child { transform: rotate(180deg); }
+
+  .status-text {
+    font-size: 0.6rem;
+    letter-spacing: 4px;
+    color: #2a6070;
+    text-transform: uppercase;
+  }
+
+  /* Corner decorations */
+  .corner {
+    position: fixed;
+    z-index: 10;
+    width: 30px; height: 30px;
+    opacity: 0;
+    animation: riseIn 1s 1s ease forwards;
+  }
+  .corner svg { width: 100%; height: 100%; }
+  .corner-tl { top: 24px; left: 24px; }
+  .corner-tr { top: 24px; right: 24px; transform: rotate(90deg); }
+  .corner-bl { bottom: 24px; left: 24px; transform: rotate(-90deg); }
+  .corner-br { bottom: 24px; right: 24px; transform: rotate(180deg); }
+
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mouse ripple */
+  .ripple {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 6;
+    border: 1px solid rgba(0,245,255,0.6);
+    transform: translate(-50%, -50%) scale(0);
+    animation: rippleOut 0.8s ease-out forwards;
+  }
+
+  @keyframes rippleOut {
+    to { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+  }
+
+  /* Click burst */
+  .burst {
+    position: fixed;
+    pointer-events: none;
+    z-index: 7;
+    transform: translate(-50%, -50%);
+  }
+
+  .burst-particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: #00f5ff;
+    animation: burstFly 0.6s ease-out forwards;
+  }
+
+  @keyframes burstFly {
+    to { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+  }
+
+  /* ── AVATAR ── */
+  .avatar-wrap {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 2px solid #00f5ff;
+    box-shadow: 0 0 20px rgba(0,245,255,0.5), 0 0 60px rgba(0,245,255,0.15);
+    overflow: hidden;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: riseIn 1s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+    flex-shrink: 0;
+  }
+  .avatar-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top;
+    filter: grayscale(20%) contrast(1.1);
+    transition: filter 0.4s;
+  }
+  .avatar-wrap:hover img { filter: grayscale(0%) contrast(1.15); }
+
+  /* ── BIO DETAIL ── */
+  .bio-detail {
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: #4a8a9f;
+    line-height: 1.8;
+    margin: 20px auto 0;
+    max-width: 650px;
+    opacity: 0;
+    animation: riseIn 1s 0.75s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .bio-detail p { margin-bottom: 12px; }
+  .bio-detail span { color: #00f5ff; }
+
+  /* ── BLOG SECTION ── */
+  .blog-section {
+    position: relative;
+    z-index: 10;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+  .blog-header {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 6px;
+    color: #00f5ff;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .blog-header::before {
+    content: '// ';
+    color: #39ff14;
+  }
+  .blog-grid {
+    display: grid;
+    gap: 20px;
+  }
+  .blog-card {
+    background: rgba(0,245,255,0.03);
+    border: 1px solid rgba(0,245,255,0.12);
+    border-radius: 4px;
+    padding: 24px 28px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+    cursor: default;
+  }
+  .blog-card:hover {
+    border-color: rgba(0,245,255,0.35);
+    box-shadow: 0 0 24px rgba(0,245,255,0.07);
+    transform: translateY(-2px);
+  }
+  .blog-meta {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: #2a6070;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .blog-meta .blog-tag {
+    color: #39ff14;
+    margin-left: 10px;
+  }
+  .blog-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    font-weight: 900;
+    color: #c8e6f0;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .blog-body {
+    font-size: 0.75rem;
+    color: #4a8a9f;
+    line-height: 2;
+  }
+  .blog-body strong { color: #00f5ff; }
+  .blog-read-more {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: #bf5fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+  .blog-read-more:hover {
+    color: #00f5ff;
+    text-shadow: 0 0 10px #00f5ff;
+  }
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,245,255,0.4), transparent);
+    margin: 40px auto;
+  }
+
+  /* Mobile Optimization */
+  @media (max-width: 768px) {
+    .container {
+      padding-top: 120px;
+    }
+    .top-right-socials {
+      top: 15px;
+      right: 15px;
+      background: rgba(2, 4, 8, 0.8);
+      padding: 8px 16px;
+      border-radius: 30px;
+      backdrop-filter: blur(5px);
+    }
+    .bio-detail {
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+    .skills-section {
+      padding: 18px 16px;
+    }
+    .corner { display: none; }
+    .domain { margin-bottom: 30px; }
+    .cursor-dot, .cursor-ring, .cursor-trail { display: none !important; }
+    body { cursor: auto; }
+  }
+</style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container nav-wrap">
-      <a class="brand" href="index.html">Sambit<span>.page</span></a>
-      <nav class="nav-links" aria-label="Primary navigation">
-        <a class="active" href="index.html">Home</a>
-        <a href="skills.html#skills-section">Skills</a>
-        <a href="notes.html#notes-section">Notes</a>
-        <a href="projects.html#projects-section">Projects</a>
-        <a href="certificates.html#certificates-section">Certificates</a>
-        <a href="contact.html#contact-section">Contact Me</a>
-      </nav>
+
+<!-- Cursor elements -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Background canvas -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Overlays -->
+<div class="vignette"></div>
+<div class="scanlines"></div>
+
+<!-- Corner decorations -->
+<div class="corner corner-tl">
+  <svg viewBox="0 0 30 30" fill="none">
+    <path d="M0 30 L0 0 L30 0" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+    <path d="M0 20 L0 0 L20 0" stroke="#00f5ff" stroke-width="0.5" opacity="0.3"/>
+  </svg>
+</div>
+<div class="corner corner-tr">
+  <svg viewBox="0 0 30 30" fill="none">
+    <path d="M30 30 L30 0 L0 0" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+    <path d="M30 20 L30 0 L10 0" stroke="#00f5ff" stroke-width="0.5" opacity="0.3"/>
+  </svg>
+</div>
+<div class="corner corner-bl">
+  <svg viewBox="0 0 30 30" fill="none">
+    <path d="M0 0 L0 30 L30 30" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+    <path d="M0 10 L0 30 L20 30" stroke="#00f5ff" stroke-width="0.5" opacity="0.3"/>
+  </svg>
+</div>
+<div class="corner corner-br">
+  <svg viewBox="0 0 30 30" fill="none">
+    <path d="M30 0 L30 30 L0 30" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+    <path d="M30 10 L30 30 L10 30" stroke="#00f5ff" stroke-width="0.5" opacity="0.3"/>
+  </svg>
+</div>
+
+<!-- Top Right Socials -->
+<div class="top-right-socials">
+  <a href="https://github.com/sambittt" id="githubLink" target="_blank" rel="noopener" title="GitHub">
+    <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+  </a>
+  <a href="https://www.linkedin.com/in/sambit-satapathy?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_android" id="linkedinLink" target="_blank" rel="noopener" title="LinkedIn">
+    <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+  </a>
+  <a href="https://instagram.com/sambit.satapathy_" id="instaLink" target="_blank" rel="noopener" title="Instagram">
+    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+  </a>
+  <a href="mailto:contact@sambit.page" id="mailLink" aria-label="Send email to contact@sambit.page">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+  </a>
+</div>
+
+<!-- Main -->
+<div class="container">
+  <div class="avatar-wrap">
+    <img src="https://i.ibb.co/DDt74Vbs/IMG-20250422-090106-227.webp" alt="Sambit" onerror="this.parentElement.style.background='radial-gradient(circle,#0a2a33,#020408)';this.style.display='none'">
+  </div>
+  <div class="domain">PORTFOLIO</div>
+
+  <div class="main-text">
+    <div><span class="hi">Hey</span> — I'm <span class="name-span" id="nameSpan">Sambit</span>.</div>
+    <div><span style="color:#39ff14; text-shadow:0 0 12px #39ff14;">SOC</span> Analyst.</div>
+    <div>I'm focused on threat detection, investigation, and incident response.<span class="blink-cursor"></span></div>
+  </div>
+  <div class="bio-detail">
+    <p><span>SOC-focused cybersecurity practitioner</span> with practical experience in monitoring, triage, and incident handling workflows across lab environments.</p>
+    <p>I am actively strengthening fundamentals in <span>network defense</span>, <span>SIEM-driven detection</span>, and <span>security operations documentation</span> to support real-world security operations outcomes.</p>
+  </div>
+
+  <!-- Skill tags -->
+  <div class="skills-row">
+    <span class="tag tag-green"><span class="tag-dot"></span>Linux</span>
+    <span class="tag tag-cyber"><span class="tag-dot"></span>Networking</span>
+    <span class="tag tag-purple"><span class="tag-dot"></span>Python</span>
+    <span class="tag tag-blue"><span class="tag-dot"></span>Scripting</span>
+    <span class="tag tag-cyber"><span class="tag-dot"></span>SIEM</span>
+    <span class="tag tag-green"><span class="tag-dot"></span>Incident Response</span>
+  </div>
+
+  <section class="skills-section" aria-label="Skills">
+    <div class="skills-section-header">
+      <div class="skills-section-title">Skills</div>
+      <div class="skills-section-subtitle">Core Capabilities</div>
     </div>
-  </header>
+    <div class="skills-grid">
+      <article class="skill-card">
+        <h3>SOC & Incident Response</h3>
+        <ul class="skill-list">
+          <li>SOC fundamentals</li>
+          <li>Threat detection and monitoring</li>
+          <li>Incident identification, analysis, containment, and reporting</li>
+          <li>Log analysis and security event monitoring</li>
+          <li>Basic threat intelligence knowledge</li>
+          <li>MITRE ATT&amp;CK framework understanding</li>
+        </ul>
+      </article>
+      <article class="skill-card">
+        <h3>Cybersecurity & Networking</h3>
+        <ul class="skill-list">
+          <li>Cybersecurity fundamentals (CIA triad, attack vectors, malware, phishing)</li>
+          <li>Networking fundamentals (TCP/IP, DNS, HTTP, HTTPS)</li>
+          <li>Ports and protocols (80, 443, 22, and others)</li>
+          <li>Firewall and network security basics</li>
+          <li>Network traffic analysis</li>
+        </ul>
+      </article>
+      <article class="skill-card">
+        <h3>Tools & Platforms</h3>
+        <ul class="skill-list">
+          <li>SIEM tools (Splunk basic usage, Microsoft Sentinel basic knowledge)</li>
+          <li>Wireshark packet analysis</li>
+          <li>Nmap network scanning</li>
+          <li>Windows Event Viewer log analysis</li>
+        </ul>
+      </article>
+      <article class="skill-card">
+        <h3>Technical & Professional Skills</h3>
+        <ul class="skill-list">
+          <li>Linux command-line fundamentals</li>
+          <li>Python basics for automation and log analysis</li>
+          <li>Bash scripting for Linux automation</li>
+          <li>Regex and log parsing fundamentals</li>
+          <li>Basic SQL for security investigations</li>
+          <li>Git and version control basics</li>
+          <li>Vulnerability assessment basics (Nessus/OpenVAS)</li>
+          <li>Endpoint and process analysis basics</li>
+          <li>Incident reporting and technical documentation</li>
+          <li>Analytical troubleshooting and root-cause investigation</li>
+        </ul>
+      </article>
+    </div>
+  </section>
 
-  <main class="container">
-    <section class="hero">
-      <span class="eyebrow">Personal Website</span>
-      <h1>Sambit Kumar Satapathy</h1>
-      <p class="lead">Cybersecurity portfolio with dedicated pages for skills, notes, projects, certificates, and contact.</p>
-      <div class="actions">
-        <a class="btn primary" href="projects.html#projects-section">View Projects</a>
-        <a class="btn ghost" href="contact.html#contact-section">Contact Me</a>
+
+</div>
+
+<!-- Blog -->
+<div class="blog-section">
+  <div class="divider"></div>
+  <div class="blog-header">FIELD NOTES</div>
+  <div class="blog-grid">
+
+    <div class="blog-card">
+      <div class="blog-meta">Apr 2026 <span class="blog-tag">#linux</span></div>
+      <div class="blog-title">Why I Switched to Arch (And Why I'd Do It Again)</div>
+      <div class="blog-body">
+        Everyone says Arch breaks constantly. They're not wrong. But that's exactly why it's the best learning tool I've found.
+        When your system won't boot after a bad <strong>pacman -Syu</strong>, you have two choices: panic, or figure out what
+        actually happened. I've learned more about how Linux works from those broken boots than from any course.
+        <strong>chroot</strong>, <strong>mkinitcpio</strong>, and the wiki are now muscle memory.
       </div>
-    </section>
+      <span class="blog-read-more">// more coming soon →</span>
+    </div>
 
-    <section id="home-sections">
-      <h2 class="section-title">Sections</h2>
-      <p class="section-subtitle">Use these quick links to open each section page directly.</p>
-      <div class="grid">
-        <article class="card">
-          <h3>Skills</h3>
-          <p>Technical strengths and practical focus areas.</p>
-          <a class="card-link" href="skills.html#skills-section">Open Skills</a>
-        </article>
-        <article class="card">
-          <h3>Notes</h3>
-          <p>Daily learning notes that can be updated from your private login page.</p>
-          <a class="card-link" href="notes.html#notes-section">Open Notes</a>
-        </article>
-        <article class="card">
-          <h3>Projects</h3>
-          <p>Hands-on portfolio work and practical cybersecurity tasks.</p>
-          <a class="card-link" href="projects.html#projects-section">Open Projects</a>
-        </article>
-        <article class="card">
-          <h3>Certificates</h3>
-          <p>Course and certification highlights.</p>
-          <a class="card-link" href="certificates.html#certificates-section">Open Certificates</a>
-        </article>
-        <article class="card">
-          <h3>Contact Me</h3>
-          <p>Email and social links for opportunities or collaboration.</p>
-          <a class="card-link" href="contact.html#contact-section">Open Contact</a>
-        </article>
+    <div class="blog-card">
+      <div class="blog-meta">Mar 2026 <span class="blog-tag">#networking</span></div>
+      <div class="blog-title">Running Wireshark on Your Own Traffic Is Humbling</div>
+      <div class="blog-body">
+        I set up a packet capture on my home network expecting to see clean, boring traffic. What I found instead:
+        three devices phoning home every 90 seconds, a smart TV sending unencrypted metadata, and my own browser
+        leaking more than I'd like. <strong>TCP handshakes</strong> look a lot different when it's your own data.
+        Now I run <strong>Pi-hole + Unbound</strong> and actually audit what leaves my LAN.
       </div>
-    </section>
-  </main>
+      <span class="blog-read-more">// more coming soon →</span>
+    </div>
 
-  <footer>
-    © 2026 Sambit Kumar Satapathy
-  </footer>
-  <script src="ui.js"></script>
+    <div class="blog-card">
+      <div class="blog-meta">Feb 2026 <span class="blog-tag">#blueteam</span></div>
+      <div class="blog-title">Learning Blue Team: SIEM Logs Are Not Boring Once You Know What to Look For</div>
+      <div class="blog-body">
+        I spun up a <strong>Wazuh</strong> instance on my homelab and pointed it at a deliberately vulnerable VM.
+        Within an hour I had 400+ alerts. Most were noise. Learning to tell the difference — a <strong>failed SSH login
+        at 3am from an unusual IP</strong> vs. my own typos — is the actual skill. Blue teaming is about pattern recognition
+        more than anything else. I'm building that eye slowly, log by log.
+      </div>
+      <span class="blog-read-more">// more coming soon →</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom -->
+<div class="bottom-bar">
+  <div class="bar-line"></div>
+  <div class="status-text" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+    <span>// learning. breaking. defending.</span>
+    <span style="opacity: 0.5; font-size: 0.8em;">&copy; 2026 Sambit Kumar Satapathy. All rights reserved.</span>
+  </div>
+  <div class="bar-line"></div>
+</div>
+
+<script>
+// ─── CANVAS SETUP ───────────────────────────────────────
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, mouse = { x: -1000, y: -1000 };
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ─── PARTICLES ──────────────────────────────────────────
+const PARTICLE_COUNT = 120;
+const particles = [];
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.5;
+    this.vy = (Math.random() - 0.5) * 0.5;
+    this.size = Math.random() > 0.8 ? 2 : 1;
+    this.color = Math.random() > 0.75 ? '#ff006e' : '#00f5ff';
+    this.baseAlpha = 0.3 + Math.random() * 0.5;
+  }
+  update() {
+    // Mouse repulsion (Reactive)
+    const dx = this.x - mouse.x;
+    const dy = this.y - mouse.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 150) {
+      const force = (150 - dist) / 150 * 2.0;
+      this.vx += (dx / dist) * force * 0.2;
+      this.vy += (dy / dist) * force * 0.2;
+    }
+
+    // Add slight random drift to keep them organic
+    this.vx += (Math.random() - 0.5) * 0.05;
+    this.vy += (Math.random() - 0.5) * 0.05;
+
+    // Friction to prevent them from flying too fast
+    this.vx *= 0.98;
+    this.vy *= 0.98;
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // Infinite screen wrap (so they never disappear)
+    if (this.x < -10) this.x = W + 10;
+    if (this.x > W + 10) this.x = -10;
+    if (this.y < -10) this.y = H + 10;
+    if (this.y > H + 10) this.y = -10;
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.baseAlpha;
+    ctx.fillStyle = this.color;
+    ctx.shadowColor = this.color;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+// ─── GRID ───────────────────────────────────────────────
+function drawGrid() {
+  const spacing = 50;
+  ctx.strokeStyle = 'rgba(0,245,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += spacing) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += spacing) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+}
+
+// ─── MOUSE GLOW ─────────────────────────────────────────
+function drawMouseGlow() {
+  const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 200);
+  grad.addColorStop(0, 'rgba(0,245,255,0.06)');
+  grad.addColorStop(0.5, 'rgba(0,245,255,0.02)');
+  grad.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(mouse.x, mouse.y, 200, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// ─── CONSTELLATION LINES ────────────────────────────────
+function drawLines() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 80) {
+        ctx.save();
+        ctx.globalAlpha = (1 - dist / 80) * 0.08;
+        ctx.strokeStyle = '#00f5ff';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+}
+
+// ─── SCAN LINE ──────────────────────────────────────────
+let scanY = 0;
+function drawScanBeam() {
+  scanY = (scanY + 1.5) % H;
+  const grad = ctx.createLinearGradient(0, scanY - 60, 0, scanY + 4);
+  grad.addColorStop(0, 'transparent');
+  grad.addColorStop(0.8, 'rgba(0,245,255,0.025)');
+  grad.addColorStop(1, 'rgba(0,245,255,0.06)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, scanY - 60, W, 64);
+}
+
+// ─── MAIN LOOP ──────────────────────────────────────────
+function loop() {
+  ctx.clearRect(0, 0, W, H);
+  drawGrid();
+  drawMouseGlow();
+  drawScanBeam();
+  drawLines();
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(loop);
+}
+loop();
+
+// ─── CURSOR ─────────────────────────────────────────────
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let rx = 0, ry = 0;
+const trails = [];
+
+for (let i = 0; i < 8; i++) {
+  const t = document.createElement('div');
+  t.className = 'cursor-trail';
+  t.style.opacity = (1 - i / 8) * 0.4;
+  t.style.width = t.style.height = (4 - i * 0.3) + 'px';
+  document.body.appendChild(t);
+  trails.push({ el: t, x: 0, y: 0 });
+}
+
+document.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  dot.style.left = mouse.x + 'px';
+  dot.style.top = mouse.y + 'px';
+});
+
+function animateCursor() {
+  rx += (mouse.x - rx) * 0.12;
+  ry += (mouse.y - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+
+  trails[0].x += (mouse.x - trails[0].x) * 0.35;
+  trails[0].y += (mouse.y - trails[0].y) * 0.35;
+  for (let i = 1; i < trails.length; i++) {
+    trails[i].x += (trails[i-1].x - trails[i].x) * 0.45;
+    trails[i].y += (trails[i-1].y - trails[i].y) * 0.45;
+  }
+  trails.forEach(t => {
+    t.el.style.left = t.x + 'px';
+    t.el.style.top = t.y + 'px';
+  });
+
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// ─── CLICK BURST ────────────────────────────────────────
+document.addEventListener('click', e => {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.left = e.clientX + 'px';
+  r.style.top = e.clientY + 'px';
+  r.style.width = r.style.height = '40px';
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 800);
+
+  const burst = document.createElement('div');
+  burst.className = 'burst';
+  burst.style.left = e.clientX + 'px';
+  burst.style.top = e.clientY + 'px';
+  document.body.appendChild(burst);
+
+  const colors = ['#00f5ff', '#ff006e', '#bf5fff', '#39ff14'];
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('div');
+    p.className = 'burst-particle';
+    const angle = (i / 16) * Math.PI * 2;
+    const dist = 30 + Math.random() * 40;
+    p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.boxShadow = `0 0 6px ${p.style.background}`;
+    burst.appendChild(p);
+  }
+  setTimeout(() => burst.remove(), 700);
+});
+
+// ─── HOVER REACTIONS ────────────────────────────────────
+document.getElementById('nameSpan').addEventListener('mouseenter', () => {
+  ring.style.width = '80px';
+  ring.style.height = '80px';
+  ring.style.borderColor = '#00f5ff';
+});
+document.getElementById('nameSpan').addEventListener('mouseleave', () => {
+  ring.style.width = '40px';
+  ring.style.height = '40px';
+  ring.style.borderColor = 'rgba(0,245,255,0.5)';
+});
+
+['githubLink','linkedinLink','mailLink','instaLink'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('mouseenter', () => {
+    ring.style.width = '60px';
+    ring.style.height = '60px';
+    ring.style.borderColor = '#bf5fff';
+  });
+  el.addEventListener('mouseleave', () => {
+    ring.style.width = '40px';
+    ring.style.height = '40px';
+    ring.style.borderColor = 'rgba(0,245,255,0.5)';
+  });
+});
+
+// ─── KEYBOARD EASTER EGG ────────────────────────────────
+let typed = '';
+document.addEventListener('keydown', e => {
+  typed += e.key.toLowerCase();
+  if (typed.includes('sambit')) {
+    typed = '';
+    document.body.style.filter = 'hue-rotate(180deg) brightness(1.5)';
+    setTimeout(() => document.body.style.filter = '', 150);
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        const p = new Particle();
+        p.x = W / 2 + (Math.random() - 0.5) * 100;
+        p.y = H / 2 + (Math.random() - 0.5) * 100;
+        p.vy = -(1 + Math.random() * 2);
+        p.vx = (Math.random() - 0.5) * 2;
+        particles.push(p);
+        if (particles.length > PARTICLE_COUNT + 60) particles.shift();
+      }, i * 20);
+    }
+  }
+  if (typed.length > 20) typed = typed.slice(-20);
+});
+
+// ─── IDLE GLITCH ────────────────────────────────────────
+setInterval(() => {
+  const nameEl = document.getElementById('nameSpan');
+  nameEl.style.filter = 'blur(1px) brightness(2)';
+  nameEl.style.transform = `translate(${(Math.random()-0.5)*4}px, ${(Math.random()-0.5)*2}px)`;
+  setTimeout(() => {
+    nameEl.style.filter = '';
+    nameEl.style.transform = '';
+  }, 80);
+}, 4000 + Math.random() * 3000);
+</script>
 </body>
 </html>
