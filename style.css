@@ -95,6 +95,30 @@ main { padding: 44px 0 30px; }
 
 .hero { padding: 28px; margin-bottom: 20px; }
 
+.hero-rich {
+  display: grid;
+  grid-template-columns: 1.2fr minmax(200px, 0.8fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.hero-copy { min-width: 0; }
+
+.hero-photo-block {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-photo {
+  width: min(260px, 100%);
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 245, 255, 0.14);
+  background: rgba(0, 245, 255, 0.06);
+}
+
 .eyebrow {
   display: inline-block;
   color: var(--accent);
@@ -177,6 +201,23 @@ h1 {
 }
 
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+
+.hero-tags {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-size: 0.74rem;
+  letter-spacing: 0.8px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--primary);
+  background: rgba(0, 245, 255, 0.06);
+}
 
 .btn {
   text-decoration: none;
@@ -263,6 +304,9 @@ footer {
   .nav-links { width: 100%; justify-content: flex-start; }
   main { padding-top: 34px; }
   .hero { padding: 24px; }
+  .hero-rich { grid-template-columns: 1fr; }
+  .hero-photo-block { justify-content: flex-start; }
+  .profile-photo { width: min(220px, 100%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
