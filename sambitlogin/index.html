@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Private Notes Login | Sambit</title>
+  <title>Admin Login | Sambit</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="../style.css">
 </head>
@@ -20,8 +20,8 @@
   <main class="container">
     <section id="login-gate" class="hero">
       <span class="eyebrow">Private</span>
-      <h1>Notes Admin Login</h1>
-      <p class="lead">Enter password to manage daily notes.</p>
+      <h1>Website Admin Login</h1>
+      <p class="lead">Enter password to manage notes and update website page content.</p>
       <form id="login-form" class="form-grid">
         <label>
           Password
@@ -63,6 +63,29 @@
         <h2>Current Notes</h2>
         <div id="admin-notes-list" class="list" aria-live="polite"></div>
       </article>
+
+      <article class="card" style="margin-top: 14px;">
+        <h2>Website Content Manager</h2>
+        <p class="small">Edit the <code>&lt;main&gt;</code> section of any page and save from this admin panel.</p>
+        <div class="form-grid">
+          <label>
+            Select page
+            <select id="site-page-select"></select>
+          </label>
+          <label>
+            Main content HTML
+            <textarea id="site-page-editor" style="min-height: 300px;"></textarea>
+          </label>
+          <div class="actions">
+            <button id="site-load-btn" class="btn ghost" type="button">Reload content</button>
+            <button id="site-save-btn" class="btn primary" type="button">Save changes</button>
+            <button id="site-reset-btn" class="btn ghost" type="button">Reset saved changes</button>
+            <button id="site-open-btn" class="btn ghost" type="button">Open page</button>
+            <button id="site-logout-btn" class="btn ghost" type="button">Logout</button>
+          </div>
+          <p id="site-editor-status" class="small" aria-live="polite"></p>
+        </div>
+      </article>
     </section>
   </main>
 
@@ -72,6 +95,7 @@
 
   <script src="../ui.js"></script>
   <script src="../notes.js"></script>
+  <script src="../site-admin.js"></script>
   <script>
     window.sambitNotes.initAdminNotes();
   </script>

@@ -270,6 +270,7 @@ h1 {
 label { display: grid; gap: 6px; font-size: 0.9rem; color: var(--muted); }
 
 input,
+select,
 textarea {
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -280,6 +281,7 @@ textarea {
 }
 
 input:focus-visible,
+select:focus-visible,
 textarea:focus-visible {
   outline: none;
   border-color: rgba(0, 245, 255, 0.6);
