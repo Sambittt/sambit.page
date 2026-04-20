@@ -154,6 +154,7 @@
       gate.classList.add('hidden');
       panel.classList.remove('hidden');
       renderAdmin();
+      window.dispatchEvent(new CustomEvent('sambit-admin-unlocked'));
     }
 
     if (sessionStorage.getItem('sambitAdminAuth') === 'ok') {
