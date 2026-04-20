@@ -64,13 +64,13 @@
         <div id="admin-notes-list" class="list" aria-live="polite"></div>
       </article>
 
-      <article class="card" style="margin-top: 14px;">
-        <h2>Website Content Manager</h2>
-        <p class="small">Edit the <code>&lt;main&gt;</code> section of any page and save from this admin panel.</p>
-        <div class="form-grid">
-          <label>
-            Select page
-            <select id="site-page-select"></select>
+        <article class="card" style="margin-top: 14px;">
+          <h2>Website Content Manager</h2>
+          <p class="small">Edit the <code>&lt;main&gt;</code> section of any page and save from this admin panel.</p>
+          <div class="form-grid">
+            <label>
+              Select page
+              <select id="site-page-select"></select>
           </label>
           <label>
             Main content HTML
@@ -83,11 +83,25 @@
             <button id="site-open-btn" class="btn ghost" type="button">Open page</button>
             <button id="site-logout-btn" class="btn ghost" type="button">Logout</button>
           </div>
-          <p id="site-editor-status" class="small" aria-live="polite"></p>
-        </div>
-      </article>
-    </section>
-  </main>
+            <p id="site-editor-status" class="small" aria-live="polite"></p>
+          </div>
+        </article>
+
+        <article class="card" style="margin-top: 14px;">
+          <h2>No-Code Text Editor</h2>
+          <p class="small">Update page text without writing HTML or code. Load fields, edit text, and save.</p>
+          <div class="form-grid">
+            <div id="text-content-list" class="form-grid"></div>
+            <div class="actions">
+              <button id="text-load-btn" class="btn ghost" type="button">Load text fields</button>
+              <button id="text-save-btn" class="btn primary" type="button">Save text changes</button>
+              <button id="text-reset-btn" class="btn ghost" type="button">Reset text changes</button>
+            </div>
+            <p id="text-editor-status" class="small" aria-live="polite"></p>
+          </div>
+        </article>
+      </section>
+    </main>
 
   <footer>
     © 2026 Sambit Kumar Satapathy
