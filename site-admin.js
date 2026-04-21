@@ -2,7 +2,7 @@
   const TEXT_CONTENT_KEY = 'sambitSiteTextContentOverridesV1';
   const IMAGE_CONTENT_KEY = 'sambitSiteImageContentOverridesV1';
   const AUTH_KEY = 'sambitAdminAuth';
-  const TEXT_EDITABLE_SELECTOR = 'h1, h2, h3, p, .eyebrow, .profile-caption';
+  const TEXT_EDITABLE_SELECTOR = 'h1, h2, h3, p';
   const MANAGED_PAGES = [
     { file: 'index.html', label: 'Home' },
     { file: 'skills.html', label: 'Skills' },
@@ -269,8 +269,13 @@
     if (textSaveBtn && !textSaveBtn.dataset.bound) {
       textSaveBtn.dataset.bound = 'true';
       textSaveBtn.addEventListener('click', function () {
+        const editableInputs = textList.querySelectorAll('[data-text-key]');
+        if (!editableInputs.length) {
+          textStatus.textContent = 'No fields loaded. Select a page and wait for fields to load.';
+          return;
+        }
         const payload = {};
-        textList.querySelectorAll('[data-text-key]').forEach((input) => {
+        editableInputs.forEach((input) => {
           payload[input.getAttribute('data-text-key')] = input.value.trim();
         });
         savePageTextContent(select.value, payload);
