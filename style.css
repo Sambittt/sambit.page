@@ -181,8 +181,8 @@ h1 {
 
 .card p { color: var(--muted); font-size: 0.85rem; }
 
-.project-visual {
-  font-size: 1.3rem !important;
+.card .project-visual {
+  font-size: 1.3rem;
   letter-spacing: 3px;
   margin-bottom: 8px;
 }
