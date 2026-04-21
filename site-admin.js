@@ -1,6 +1,8 @@
 (function () {
   const CONTENT_KEY = 'sambitSiteContentOverridesV1';
+  const TEXT_CONTENT_KEY = 'sambitSiteTextContentOverridesV1';
   const AUTH_KEY = 'sambitAdminAuth';
+  const TEXT_EDITABLE_SELECTOR = 'h1, h2, h3, p, li, .eyebrow, .tag, .profile-caption, .card-link, .btn';
   const MANAGED_PAGES = [
     { file: 'index.html', label: 'Home' },
     { file: 'skills.html', label: 'Skills' },
@@ -25,6 +27,14 @@
 
   function saveOverrides(next) {
     localStorage.setItem(CONTENT_KEY, JSON.stringify(next));
+  }
+
+  function readTextOverrides() {
+    return safeParse(localStorage.getItem(TEXT_CONTENT_KEY));
+  }
+
+  function saveTextOverrides(next) {
+    localStorage.setItem(TEXT_CONTENT_KEY, JSON.stringify(next));
   }
 
   function isAdminAuthenticated() {
@@ -52,6 +62,41 @@
     if (!main) return;
 
     main.innerHTML = html;
+  }
+
+  function collectEditableTextFields(main) {
+    if (!main) return [];
+    const items = Array.from(main.querySelectorAll(TEXT_EDITABLE_SELECTOR))
+      .map((element, index) => {
+        const text = element.textContent.trim();
+        if (!text) return null;
+        return {
+          key: `field-${index}`,
+          label: `${element.tagName.toLowerCase()} #${index + 1}`,
+          text: text,
+          element: element
+        };
+      })
+      .filter(Boolean);
+    return items;
+  }
+
+  function applyCurrentPageTextOverride() {
+    const file = getCurrentManagedPageFile();
+    if (!file) return;
+
+    const textOverrides = readTextOverrides();
+    const pageTextOverrides = textOverrides[file];
+    if (!pageTextOverrides || typeof pageTextOverrides !== 'object') return;
+
+    const main = document.querySelector('main');
+    if (!main) return;
+
+    collectEditableTextFields(main).forEach((field) => {
+      if (typeof pageTextOverrides[field.key] === 'string') {
+        field.element.textContent = pageTextOverrides[field.key];
+      }
+    });
   }
 
   async function loadPageMainContent(file) {
@@ -84,6 +129,18 @@
     saveOverrides(overrides);
   }
 
+  function savePageTextContent(file, data) {
+    const overrides = readTextOverrides();
+    overrides[file] = data;
+    saveTextOverrides(overrides);
+  }
+
+  function resetPageTextContent(file) {
+    const overrides = readTextOverrides();
+    delete overrides[file];
+    saveTextOverrides(overrides);
+  }
+
   function logoutAdmin() {
     sessionStorage.removeItem(AUTH_KEY);
   }
@@ -97,6 +154,11 @@
     const resetBtn = document.getElementById('site-reset-btn');
     const openBtn = document.getElementById('site-open-btn');
     const logoutBtn = document.getElementById('site-logout-btn');
+    const textStatus = document.getElementById('text-editor-status');
+    const textList = document.getElementById('text-content-list');
+    const textLoadBtn = document.getElementById('text-load-btn');
+    const textSaveBtn = document.getElementById('text-save-btn');
+    const textResetBtn = document.getElementById('text-reset-btn');
 
     if (!select || !editor || !status) return;
     if (!isAdminAuthenticated()) return;
@@ -123,14 +185,60 @@
       }
     }
 
+    async function loadSelectedTextFields() {
+      if (!textList || !textStatus) return;
+      try {
+        textStatus.textContent = 'Loading content fields...';
+        const result = await loadPageMainContent(select.value);
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(`<main>${result.html}</main>`, 'text/html');
+        const fields = collectEditableTextFields(doc.querySelector('main'));
+        const pageOverrides = readTextOverrides()[select.value] || {};
+        textList.innerHTML = '';
+
+        if (!fields.length) {
+          textStatus.textContent = 'No editable text fields found for this page.';
+          return;
+        }
+
+        fields.forEach((field) => {
+          const wrap = document.createElement('label');
+          const title = document.createElement('span');
+          title.textContent = field.label;
+          const input = field.text.length > 110
+            ? document.createElement('textarea')
+            : document.createElement('input');
+          if (input.tagName === 'INPUT') input.type = 'text';
+          input.value = typeof pageOverrides[field.key] === 'string'
+            ? pageOverrides[field.key]
+            : field.text;
+          input.setAttribute('data-text-key', field.key);
+          wrap.append(title, input);
+          textList.appendChild(wrap);
+        });
+
+        textStatus.textContent = 'Loaded text fields. Edit plain text and save.';
+      } catch (error) {
+        textStatus.textContent = error.message || 'Failed to load text fields.';
+      }
+    }
+
     if (!select.dataset.bound) {
       select.dataset.bound = 'true';
-      select.addEventListener('change', loadSelectedPage);
+      select.addEventListener('change', function () {
+        loadSelectedPage();
+        loadSelectedTextFields();
+      });
     }
 
     if (loadBtn && !loadBtn.dataset.bound) {
       loadBtn.dataset.bound = 'true';
       loadBtn.addEventListener('click', loadSelectedPage);
+    }
+
+    if (textLoadBtn && !textLoadBtn.dataset.bound) {
+      textLoadBtn.dataset.bound = 'true';
+      textLoadBtn.addEventListener('click', loadSelectedTextFields);
     }
 
     if (saveBtn && !saveBtn.dataset.bound) {
@@ -150,6 +258,28 @@
       });
     }
 
+    if (textSaveBtn && !textSaveBtn.dataset.bound) {
+      textSaveBtn.dataset.bound = 'true';
+      textSaveBtn.addEventListener('click', function () {
+        if (!textList || !textStatus) return;
+        const payload = {};
+        textList.querySelectorAll('[data-text-key]').forEach((input) => {
+          payload[input.getAttribute('data-text-key')] = input.value.trim();
+        });
+        savePageTextContent(select.value, payload);
+        textStatus.textContent = 'Saved text-only changes. Refresh/open page to see updates.';
+      });
+    }
+
+    if (textResetBtn && !textResetBtn.dataset.bound) {
+      textResetBtn.dataset.bound = 'true';
+      textResetBtn.addEventListener('click', function () {
+        resetPageTextContent(select.value);
+        textStatus.textContent = 'Text-only overrides removed for this page.';
+        loadSelectedTextFields();
+      });
+    }
+
     if (openBtn && !openBtn.dataset.bound) {
       openBtn.dataset.bound = 'true';
       openBtn.addEventListener('click', function () {
@@ -166,9 +296,11 @@
     }
 
     loadSelectedPage();
+    loadSelectedTextFields();
   }
 
   applyCurrentPageOverride();
+  applyCurrentPageTextOverride();
 
   window.addEventListener('sambit-admin-unlocked', initAdminPanel);
 
