@@ -6,6 +6,7 @@
   --muted: #6f98a8;
   --primary: #00f5ff;
   --accent: #39ff14;
+  --ink: #041019;
   --border: rgba(0, 245, 255, 0.26);
   --radius: 12px;
   --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
@@ -252,7 +253,7 @@ h1 {
 }
 
 .btn.primary {
-  color: #041019;
+  color: var(--ink);
   background: linear-gradient(120deg, #00dff5, #39ffcf);
   box-shadow: 0 8px 22px rgba(0, 245, 255, 0.3);
 }
@@ -334,7 +335,7 @@ textarea { min-height: 110px; resize: vertical; }
   font-weight: 700;
   letter-spacing: 0.8px;
   border: 1px solid var(--border);
-  color: #041019;
+  color: var(--ink);
   flex-shrink: 0;
 }
 
