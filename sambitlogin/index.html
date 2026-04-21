@@ -57,7 +57,39 @@
               <button id="site-logout-btn" class="btn ghost" type="button">Logout</button>
             </div>
             <p id="text-editor-status" class="small" aria-live="polite"></p>
+            <label>
+              Profile picture URL (Home page)
+              <input id="profile-image-url" type="url" placeholder="https://example.com/photo.jpg" autocomplete="url">
+            </label>
+            <div class="actions">
+              <button id="profile-image-save-btn" class="btn primary" type="button">Save profile picture</button>
+              <button id="profile-image-reset-btn" class="btn ghost" type="button">Reset profile picture</button>
+            </div>
+            <p id="profile-image-status" class="small" aria-live="polite"></p>
           </div>
+        </article>
+
+        <article class="card" style="margin-top: 14px;">
+          <h2>Notes Manager</h2>
+          <p class="small">Add or delete notes that appear on the public Notes page.</p>
+          <form id="add-note-form" class="form-grid">
+            <label>
+              Date
+              <input id="note-date" type="date" required>
+            </label>
+            <label>
+              Title
+              <input id="note-title" type="text" required maxlength="120" placeholder="Short note title">
+            </label>
+            <label>
+              Content
+              <textarea id="note-content" required maxlength="500" placeholder="Write your note"></textarea>
+            </label>
+            <div class="actions">
+              <button class="btn primary" type="submit">Add note</button>
+            </div>
+          </form>
+          <div id="admin-notes-list" class="list"></div>
         </article>
       </section>
     </main>

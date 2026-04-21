@@ -1,5 +1,6 @@
 (function () {
   const TEXT_CONTENT_KEY = 'sambitSiteTextContentOverridesV1';
+  const IMAGE_CONTENT_KEY = 'sambitSiteImageContentOverridesV1';
   const AUTH_KEY = 'sambitAdminAuth';
   const TEXT_EDITABLE_SELECTOR = 'h1, h2, h3, p, li, .eyebrow, .tag, .profile-caption, .card-link, .btn';
   const MANAGED_PAGES = [
@@ -10,6 +11,16 @@
     { file: 'certificates.html', label: 'Certificates' },
     { file: 'contact.html', label: 'Contact' }
   ];
+  const MANAGED_IMAGE_FIELDS = {
+    'index.html': [
+      {
+        key: 'profile-photo-src',
+        selector: '.profile-photo',
+        label: 'Profile photo source',
+        attribute: 'src'
+      }
+    ]
+  };
 
   function safeParse(value) {
     try {
@@ -24,8 +35,16 @@
     return safeParse(localStorage.getItem(TEXT_CONTENT_KEY));
   }
 
+  function readImageOverrides() {
+    return safeParse(localStorage.getItem(IMAGE_CONTENT_KEY));
+  }
+
   function saveTextOverrides(next) {
     localStorage.setItem(TEXT_CONTENT_KEY, JSON.stringify(next));
+  }
+
+  function saveImageOverrides(next) {
+    localStorage.setItem(IMAGE_CONTENT_KEY, JSON.stringify(next));
   }
 
   function isAdminAuthenticated() {
@@ -76,6 +95,26 @@
     });
   }
 
+  function applyCurrentPageImageOverride() {
+    const file = getCurrentManagedPageFile();
+    if (!file) return;
+
+    const imageFieldDefs = MANAGED_IMAGE_FIELDS[file];
+    if (!Array.isArray(imageFieldDefs) || !imageFieldDefs.length) return;
+
+    const imageOverrides = readImageOverrides();
+    const pageOverrides = imageOverrides[file];
+    if (!pageOverrides || typeof pageOverrides !== 'object') return;
+
+    imageFieldDefs.forEach((fieldDef) => {
+      const value = pageOverrides[fieldDef.key];
+      if (typeof value !== 'string' || !value.trim()) return;
+      const target = document.querySelector(fieldDef.selector);
+      if (!target) return;
+      target.setAttribute(fieldDef.attribute || 'src', value.trim());
+    });
+  }
+
   async function loadPageMainContent(file) {
     const response = await fetch('../' + file, { cache: 'no-store' });
     if (!response.ok) {
@@ -101,6 +140,25 @@
     saveTextOverrides(overrides);
   }
 
+  function savePageImageField(file, key, value) {
+    const overrides = readImageOverrides();
+    if (!overrides[file] || typeof overrides[file] !== 'object') {
+      overrides[file] = {};
+    }
+    overrides[file][key] = value;
+    saveImageOverrides(overrides);
+  }
+
+  function resetPageImageField(file, key) {
+    const overrides = readImageOverrides();
+    if (!overrides[file] || typeof overrides[file] !== 'object') return;
+    delete overrides[file][key];
+    if (!Object.keys(overrides[file]).length) {
+      delete overrides[file];
+    }
+    saveImageOverrides(overrides);
+  }
+
   function logoutAdmin() {
     sessionStorage.removeItem(AUTH_KEY);
   }
@@ -114,6 +172,10 @@
     const textLoadBtn = document.getElementById('text-load-btn');
     const textSaveBtn = document.getElementById('text-save-btn');
     const textResetBtn = document.getElementById('text-reset-btn');
+    const profileImageInput = document.getElementById('profile-image-url');
+    const profileImageSaveBtn = document.getElementById('profile-image-save-btn');
+    const profileImageResetBtn = document.getElementById('profile-image-reset-btn');
+    const profileImageStatus = document.getElementById('profile-image-status');
 
     if (!select || !textStatus || !textList) return;
     if (!isAdminAuthenticated()) return;
@@ -164,10 +226,38 @@
       }
     }
 
+    function getProfileFieldDef() {
+      const defs = MANAGED_IMAGE_FIELDS[select.value];
+      return Array.isArray(defs) ? defs[0] : null;
+    }
+
+    function syncProfileImageUI() {
+      if (!profileImageInput || !profileImageStatus) return;
+      const fieldDef = getProfileFieldDef();
+      if (!fieldDef) {
+        profileImageInput.value = '';
+        profileImageInput.disabled = true;
+        if (profileImageSaveBtn) profileImageSaveBtn.disabled = true;
+        if (profileImageResetBtn) profileImageResetBtn.disabled = true;
+        profileImageStatus.textContent = 'Profile picture editing is only available for Home page.';
+        return;
+      }
+
+      const pageOverrides = readImageOverrides()[select.value] || {};
+      profileImageInput.disabled = false;
+      if (profileImageSaveBtn) profileImageSaveBtn.disabled = false;
+      if (profileImageResetBtn) profileImageResetBtn.disabled = false;
+      profileImageInput.value = typeof pageOverrides[fieldDef.key] === 'string'
+        ? pageOverrides[fieldDef.key]
+        : '';
+      profileImageStatus.textContent = 'Set a new image URL, then save.';
+    }
+
     if (!select.dataset.bound) {
       select.dataset.bound = 'true';
       select.addEventListener('change', function () {
         loadSelectedTextFields();
+        syncProfileImageUI();
       });
     }
 
@@ -197,6 +287,38 @@
       });
     }
 
+    if (profileImageSaveBtn && profileImageInput && profileImageStatus && !profileImageSaveBtn.dataset.bound) {
+      profileImageSaveBtn.dataset.bound = 'true';
+      profileImageSaveBtn.addEventListener('click', function () {
+        const fieldDef = getProfileFieldDef();
+        if (!fieldDef) {
+          profileImageStatus.textContent = 'Profile picture editing is only available for Home page.';
+          return;
+        }
+        const value = profileImageInput.value.trim();
+        if (!value) {
+          profileImageStatus.textContent = 'Enter a valid image URL before saving.';
+          return;
+        }
+        savePageImageField(select.value, fieldDef.key, value);
+        profileImageStatus.textContent = 'Profile picture override saved.';
+      });
+    }
+
+    if (profileImageResetBtn && profileImageStatus && !profileImageResetBtn.dataset.bound) {
+      profileImageResetBtn.dataset.bound = 'true';
+      profileImageResetBtn.addEventListener('click', function () {
+        const fieldDef = getProfileFieldDef();
+        if (!fieldDef) {
+          profileImageStatus.textContent = 'Profile picture editing is only available for Home page.';
+          return;
+        }
+        resetPageImageField(select.value, fieldDef.key);
+        syncProfileImageUI();
+        profileImageStatus.textContent = 'Profile picture override removed.';
+      });
+    }
+
     if (openBtn && !openBtn.dataset.bound) {
       openBtn.dataset.bound = 'true';
       openBtn.addEventListener('click', function () {
@@ -213,9 +335,11 @@
     }
 
     loadSelectedTextFields();
+    syncProfileImageUI();
   }
 
   applyCurrentPageTextOverride();
+  applyCurrentPageImageOverride();
 
   window.addEventListener('sambit-admin-unlocked', initAdminPanel);
 
