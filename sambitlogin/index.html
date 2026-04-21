@@ -36,66 +36,25 @@
     <section id="admin-panel" class="hidden">
       <div class="hero">
         <span class="eyebrow">Admin</span>
-        <h1>Manage Notes</h1>
-        <p class="lead">Add a new note or delete an existing note. Changes are saved in this browser.</p>
+        <h1>Manage Website Content</h1>
+        <p class="lead">Select a page, edit text fields, and save updates without writing code.</p>
       </div>
 
-      <article class="card">
-        <h2>Add Note</h2>
-        <form id="add-note-form" class="form-grid">
-          <label>
-            Date
-            <input id="note-date" type="date" required>
-          </label>
-          <label>
-            Title
-            <input id="note-title" type="text" required maxlength="120">
-          </label>
-          <label>
-            What I learned today
-            <textarea id="note-content" required maxlength="600"></textarea>
-          </label>
-          <button class="btn primary" type="submit">Add note</button>
-        </form>
-      </article>
-
-      <article class="card" style="margin-top: 14px;">
-        <h2>Current Notes</h2>
-        <div id="admin-notes-list" class="list" aria-live="polite"></div>
-      </article>
-
         <article class="card" style="margin-top: 14px;">
-          <h2>Website Content Manager</h2>
-          <p class="small">Edit the <code>&lt;main&gt;</code> section of any page and save from this admin panel.</p>
+          <h2>All Pages Text Editor</h2>
+          <p class="small">Update text for Home, Skills, Notes, Projects, Certificates, and Contact from one place.</p>
           <div class="form-grid">
             <label>
               Select page
               <select id="site-page-select"></select>
-          </label>
-          <label>
-            Main content HTML
-            <textarea id="site-page-editor" style="min-height: 300px;"></textarea>
-          </label>
-          <div class="actions">
-            <button id="site-load-btn" class="btn ghost" type="button">Reload content</button>
-            <button id="site-save-btn" class="btn primary" type="button">Save changes</button>
-            <button id="site-reset-btn" class="btn ghost" type="button">Reset saved changes</button>
-            <button id="site-open-btn" class="btn ghost" type="button">Open page</button>
-            <button id="site-logout-btn" class="btn ghost" type="button">Logout</button>
-          </div>
-            <p id="site-editor-status" class="small" aria-live="polite"></p>
-          </div>
-        </article>
-
-        <article class="card" style="margin-top: 14px;">
-          <h2>No-Code Text Editor</h2>
-          <p class="small">Update page text without writing HTML or code. Load fields, edit text, and save.</p>
-          <div class="form-grid">
+            </label>
             <div id="text-content-list" class="form-grid"></div>
             <div class="actions">
               <button id="text-load-btn" class="btn ghost" type="button">Load text fields</button>
               <button id="text-save-btn" class="btn primary" type="button">Save text changes</button>
               <button id="text-reset-btn" class="btn ghost" type="button">Reset text changes</button>
+              <button id="site-open-btn" class="btn ghost" type="button">Open page</button>
+              <button id="site-logout-btn" class="btn ghost" type="button">Logout</button>
             </div>
             <p id="text-editor-status" class="small" aria-live="polite"></p>
           </div>

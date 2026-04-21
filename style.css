@@ -117,9 +117,9 @@ main { padding: 44px 0 30px; }
 }
 
 .profile-photo {
-  width: min(260px, 100%);
+  width: min(140px, 100%);
   aspect-ratio: 1 / 1;
-  border-radius: 16px;
+  border-radius: 999px;
   object-fit: cover;
   border: 1px solid var(--border);
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 245, 255, 0.14);
@@ -322,7 +322,7 @@ footer {
   .hero { padding: 24px; }
   .hero-rich { grid-template-columns: 1fr; }
   .hero-photo-block { justify-content: flex-start; }
-  .profile-photo { width: min(220px, 100%); }
+  .profile-photo { width: min(120px, 100%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
