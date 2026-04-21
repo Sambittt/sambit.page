@@ -6,6 +6,7 @@
   --muted: #6f98a8;
   --primary: #00f5ff;
   --accent: #39ff14;
+  --ink: #041019;
   --border: rgba(0, 245, 255, 0.26);
   --radius: 12px;
   --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
@@ -181,6 +182,12 @@ h1 {
 
 .card p { color: var(--muted); font-size: 0.85rem; }
 
+.card .project-visual {
+  font-size: 1.3rem;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+}
+
 .card ul {
   margin: 8px 0 0 0;
   padding-left: 16px;
@@ -246,7 +253,7 @@ h1 {
 }
 
 .btn.primary {
-  color: #041019;
+  color: var(--ink);
   background: linear-gradient(120deg, #00dff5, #39ffcf);
   box-shadow: 0 8px 22px rgba(0, 245, 255, 0.3);
 }
@@ -293,6 +300,75 @@ textarea { min-height: 110px; resize: vertical; }
 .error { color: #ff648f; font-size: 0.86rem; }
 .hidden { display: none; }
 
+.mini-visual-grid {
+  margin-bottom: 10px;
+}
+
+.mini-visual-card h3 {
+  font-size: 0.9rem;
+}
+
+.social-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.social-card {
+  padding: 0;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+  padding: 16px;
+}
+
+.social-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.linkedin-logo {
+  background: linear-gradient(130deg, #61d8ff, #00a0dc);
+}
+
+.github-logo {
+  background: linear-gradient(130deg, #cdd7e5, #7b8aa0);
+}
+
+.instagram-logo {
+  background: linear-gradient(130deg, #f9ce34, #ee2a7b 50%, #6228d7);
+}
+
+.social-meta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.social-name {
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.social-handle {
+  color: var(--muted);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
 footer {
   border-top: 1px solid var(--border);
   color: var(--muted);
@@ -316,6 +392,7 @@ footer {
 
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; }
+  .social-grid { grid-template-columns: 1fr; }
   .nav-wrap { align-items: flex-start; flex-direction: column; }
   .nav-links { width: 100%; justify-content: flex-start; }
   main { padding-top: 34px; }

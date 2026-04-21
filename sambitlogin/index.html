@@ -36,13 +36,13 @@
     <section id="admin-panel" class="hidden">
       <div class="hero">
         <span class="eyebrow">Admin</span>
-        <h1>Manage Website Content</h1>
-        <p class="lead">Select a page, edit text fields, and save updates without writing code.</p>
+        <h1>Simple Multi-Page Editor</h1>
+        <p class="lead">Pick any page, edit headings and paragraphs, then save.</p>
       </div>
 
         <article class="card" style="margin-top: 14px;">
-          <h2>All Pages Text Editor</h2>
-          <p class="small">Update text for Home, Skills, Notes, Projects, Certificates, and Contact from one place.</p>
+          <h2>All Pages Editor</h2>
+          <p class="small">Edit Home, Skills, Notes, Projects, Certificates, and Contact in one place.</p>
           <div class="form-grid">
             <label>
               Select page
@@ -50,7 +50,6 @@
             </label>
             <div id="text-content-list" class="form-grid"></div>
             <div class="actions">
-              <button id="text-load-btn" class="btn ghost" type="button">Load text fields</button>
               <button id="text-save-btn" class="btn primary" type="button">Save text changes</button>
               <button id="text-reset-btn" class="btn ghost" type="button">Reset text changes</button>
               <button id="site-open-btn" class="btn ghost" type="button">Open page</button>
@@ -78,12 +77,12 @@
               <input id="note-date" type="date" required>
             </label>
             <label>
-              Title
-              <input id="note-title" type="text" required maxlength="120" placeholder="Short note title">
+              Heading
+              <input id="note-title" type="text" required maxlength="120" placeholder="Note heading">
             </label>
             <label>
-              Content
-              <textarea id="note-content" required maxlength="500" placeholder="Write your note"></textarea>
+              Paragraph
+              <textarea id="note-content" required maxlength="500" placeholder="Write note paragraph"></textarea>
             </label>
             <div class="actions">
               <button class="btn primary" type="submit">Add note</button>
