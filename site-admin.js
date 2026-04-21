@@ -2,7 +2,7 @@
   const TEXT_CONTENT_KEY = 'sambitSiteTextContentOverridesV1';
   const IMAGE_CONTENT_KEY = 'sambitSiteImageContentOverridesV1';
   const AUTH_KEY = 'sambitAdminAuth';
-  const TEXT_EDITABLE_SELECTOR = 'h1, h2, h3, p, li, .eyebrow, .tag, .profile-caption, .card-link, .btn';
+  const TEXT_EDITABLE_SELECTOR = 'h1, h2, h3, p, .eyebrow, .profile-caption';
   const MANAGED_PAGES = [
     { file: 'index.html', label: 'Home' },
     { file: 'skills.html', label: 'Skills' },
@@ -220,7 +220,7 @@
           textList.appendChild(wrap);
         });
 
-        textStatus.textContent = 'Loaded text fields. Edit plain text and save.';
+        textStatus.textContent = 'Loaded heading and paragraph fields. Edit text and save.';
       } catch (error) {
         textStatus.textContent = error.message || 'Failed to load text fields.';
       }
