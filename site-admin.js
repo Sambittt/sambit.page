@@ -86,7 +86,7 @@
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlText, 'text/html');
     const main = doc.querySelector('main');
-    return { html: main ? main.innerHTML.trim() : '' };
+    return { content: main ? main.innerHTML.trim() : '' };
   }
 
   function savePageTextContent(file, data) {
@@ -132,7 +132,7 @@
         textStatus.textContent = 'Loading content fields...';
         const result = await loadPageMainContent(select.value);
         const parser = new DOMParser();
-        const doc = parser.parseFromString(`<main>${result.html}</main>`, 'text/html');
+        const doc = parser.parseFromString(`<main>${result.content}</main>`, 'text/html');
         const fields = collectEditableTextFields(doc.querySelector('main'));
         const pageOverrides = readTextOverrides()[select.value] || {};
         textList.innerHTML = '';
