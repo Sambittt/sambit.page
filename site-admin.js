@@ -15,7 +15,7 @@
     'index.html': [
       {
         key: 'profile-photo-src',
-        selector: '.profile-photo',
+        selector: '.title-avatar, .profile-photo',
         label: 'Profile photo source',
         attribute: 'src'
       }
