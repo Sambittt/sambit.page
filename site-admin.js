@@ -13,13 +13,13 @@
   ];
   const MANAGED_IMAGE_FIELDS = {
     'index.html': [
-        {
-          key: 'profile-photo-src',
-          selector: '.title-avatar, .profile-photo',
-          label: 'Profile photo source',
-          attribute: 'src'
-        }
-      ]
+      {
+        key: 'profile-photo-src',
+        selector: '.title-avatar, .profile-photo',
+        label: 'Profile photo source',
+        attribute: 'src'
+      }
+    ]
   };
 
   function safeParse(value) {

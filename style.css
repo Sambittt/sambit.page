@@ -36,6 +36,7 @@ body::before {
     linear-gradient(rgba(0, 245, 255, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
   background-size: 36px 36px;
+  -webkit-mask-image: radial-gradient(circle at center, black 36%, transparent 100%);
   mask-image: radial-gradient(circle at center, black 36%, transparent 100%);
   opacity: 0.28;
   z-index: -1;
