@@ -54,7 +54,7 @@
     const updateProgress = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const value = max > 0 ? (window.scrollY / max) * 100 : 0;
-      progress.style.setProperty('--progress', `${Math.max(0, Math.min(100, value)).toFixed(2)}%`);
+      progress.style.setProperty('--progress', `${Math.round(Math.max(0, Math.min(100, value)))}%`);
     };
 
     updateProgress();
@@ -102,7 +102,6 @@
       card.style.setProperty('--my', `${(ny * 100).toFixed(2)}%`);
       card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
       card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
-      card.style.transform = `perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y))`;
     });
 
     card.addEventListener('mouseleave', () => {
@@ -110,7 +109,6 @@
       card.style.removeProperty('--tilt-y');
       card.style.removeProperty('--mx');
       card.style.removeProperty('--my');
-      card.style.removeProperty('transform');
     });
   });
 })();

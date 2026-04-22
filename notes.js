@@ -1,6 +1,7 @@
 (function () {
   const KEY = 'sambitNotesDataV1';
   const AUTH_KEY = 'sambitAdminAuth';
+  // Static-site limitation: this client-side hash only deters casual access and is not equivalent to server-side auth.
   const ADMIN_PASSWORD_HASH = '83c3e2d9db907699dd8e3073ef92aca2f21338ed0d88b2f970b071516bbd4910';
   const MAX_LOGIN_ATTEMPTS = 5;
   const LOCKOUT_MS = 5 * 60 * 1000;
