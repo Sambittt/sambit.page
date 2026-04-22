@@ -52,10 +52,12 @@
     document.body.prepend(progress);
     let ticking = false;
 
+    const clampPercent = (number) => Math.round(Math.max(0, Math.min(100, number)));
+
     const updateProgress = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const value = max > 0 ? (window.scrollY / max) * 100 : 0;
-      progress.style.setProperty('--progress', `${Math.round(Math.max(0, Math.min(100, value)))}%`);
+      progress.style.setProperty('--progress', `${clampPercent(value)}%`);
       ticking = false;
     };
 

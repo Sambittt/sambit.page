@@ -5,7 +5,7 @@
   const ADMIN_PASSWORD_HASH = '83c3e2d9db907699dd8e3073ef92aca2f21338ed0d88b2f970b071516bbd4910';
   const MAX_LOGIN_ATTEMPTS = 5;
   const LOCKOUT_MS = 5 * 60 * 1000;
-  const IDLE_TIMEOUT_MS = 20 * 60 * 1000; // Auto-logout window for this client-side admin convenience panel.
+  const IDLE_TIMEOUT_MS = 20 * 60 * 1000; // 20-minute auto-logout window for this client-side admin convenience panel.
   const ATTEMPT_COUNT_KEY = 'sambitAdminAttemptCount';
   const LOCKED_UNTIL_KEY = 'sambitAdminLockedUntil';
   const RANDOM_ID_LENGTH = 6;
@@ -234,6 +234,7 @@
       ['click', 'touchstart'].forEach((eventName) => {
         document.addEventListener(eventName, scheduleIdleLogout, { passive: true });
       });
+      // keydown must stay non-passive so future handlers can safely call preventDefault if needed.
       document.addEventListener('keydown', scheduleIdleLogout);
       scheduleIdleLogout();
     }
