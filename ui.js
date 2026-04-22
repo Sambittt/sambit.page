@@ -50,15 +50,23 @@
     const progress = document.createElement('div');
     progress.className = 'scroll-progress';
     document.body.prepend(progress);
+    let ticking = false;
 
     const updateProgress = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const value = max > 0 ? (window.scrollY / max) * 100 : 0;
       progress.style.setProperty('--progress', `${Math.round(Math.max(0, Math.min(100, value)))}%`);
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(updateProgress);
     };
 
     updateProgress();
-    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', updateProgress);
   }
 

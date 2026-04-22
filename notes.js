@@ -182,7 +182,7 @@
 
     async function verifyPassword(password) {
       if (!window.crypto || !window.crypto.subtle) return false;
-      const hash = await sha256Hex(password.normalize('NFKC'));
+      const hash = await sha256Hex(password);
       return constantTimeEquals(hash, ADMIN_PASSWORD_HASH);
     }
 
@@ -231,7 +231,7 @@
         return;
       }
       idleBound = true;
-      ['click', 'mousemove', 'touchstart'].forEach((eventName) => {
+      ['click', 'touchstart'].forEach((eventName) => {
         document.addEventListener(eventName, scheduleIdleLogout, { passive: true });
       });
       document.addEventListener('keydown', scheduleIdleLogout);
