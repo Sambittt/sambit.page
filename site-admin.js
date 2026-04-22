@@ -51,6 +51,23 @@
     return sessionStorage.getItem(AUTH_KEY) === 'ok';
   }
 
+  function sanitizeImageUrl(rawValue) {
+    if (typeof rawValue !== 'string') return '';
+    const value = rawValue.trim();
+    if (!value) return '';
+    try {
+      const parsed = new URL(value, window.location.origin);
+      const isHttp = parsed.protocol === 'http:' || parsed.protocol === 'https:';
+      if (!isHttp) return '';
+      const isSameOrigin = parsed.origin === window.location.origin;
+      const isHttps = parsed.protocol === 'https:';
+      if (!isSameOrigin && !isHttps) return '';
+      return parsed.href;
+    } catch (e) {
+      return '';
+    }
+  }
+
   function getCurrentManagedPageFile() {
     const path = window.location.pathname.toLowerCase();
     if (path.includes('/sambitlogin/')) return null;
@@ -107,11 +124,11 @@
     if (!pageOverrides || typeof pageOverrides !== 'object') return;
 
     imageFieldDefs.forEach((fieldDef) => {
-      const value = pageOverrides[fieldDef.key];
-      if (typeof value !== 'string' || !value.trim()) return;
+      const value = sanitizeImageUrl(pageOverrides[fieldDef.key]);
+      if (!value) return;
       const target = document.querySelector(fieldDef.selector);
       if (!target) return;
-      target.setAttribute(fieldDef.attribute || 'src', value.trim());
+      target.setAttribute(fieldDef.attribute || 'src', value);
     });
   }
 
@@ -247,9 +264,7 @@
       profileImageInput.disabled = false;
       if (profileImageSaveBtn) profileImageSaveBtn.disabled = false;
       if (profileImageResetBtn) profileImageResetBtn.disabled = false;
-      profileImageInput.value = typeof pageOverrides[fieldDef.key] === 'string'
-        ? pageOverrides[fieldDef.key]
-        : '';
+      profileImageInput.value = sanitizeImageUrl(pageOverrides[fieldDef.key]);
       profileImageStatus.textContent = 'Set a new image URL, then save.';
     }
 
@@ -301,11 +316,12 @@
           return;
         }
         const value = profileImageInput.value.trim();
-        if (!value) {
-          profileImageStatus.textContent = 'Enter a valid image URL before saving.';
+        const safeValue = sanitizeImageUrl(value);
+        if (!safeValue) {
+          profileImageStatus.textContent = 'Use a valid HTTPS image URL or same-origin path.';
           return;
         }
-        savePageImageField(select.value, fieldDef.key, value);
+        savePageImageField(select.value, fieldDef.key, safeValue);
         profileImageStatus.textContent = 'Profile picture override saved.';
       });
     }
