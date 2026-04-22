@@ -5,7 +5,7 @@
 
   function updateActiveNavLink() {
     const path = window.location.pathname;
-    const currentFile = path.endsWith('/') ? 'index.html' : path.split('/').pop();
+    const currentFile = path.endsWith('/') ? 'index.html' : (path.split('/').pop() || 'index.html');
     document.querySelectorAll('.nav-links a').forEach((link) => {
       const href = link.getAttribute('href') || '';
       if (!href) return;

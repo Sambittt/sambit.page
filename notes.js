@@ -1,11 +1,11 @@
 (function () {
   const KEY = 'sambitNotesDataV1';
   const AUTH_KEY = 'sambitAdminAuth';
-  // Static-site limitation: this client-side hash only deters casual access and is not equivalent to server-side auth.
+  // Static-site limitation: this client-side hash only deters casual access and offers no real protection against determined attackers.
   const ADMIN_PASSWORD_HASH = '83c3e2d9db907699dd8e3073ef92aca2f21338ed0d88b2f970b071516bbd4910';
   const MAX_LOGIN_ATTEMPTS = 5;
   const LOCKOUT_MS = 5 * 60 * 1000;
-  const IDLE_TIMEOUT_MS = 20 * 60 * 1000;
+  const IDLE_TIMEOUT_MS = 20 * 60 * 1000; // Auto-logout window for this client-side admin convenience panel.
   const ATTEMPT_COUNT_KEY = 'sambitAdminAttemptCount';
   const LOCKED_UNTIL_KEY = 'sambitAdminLockedUntil';
   const RANDOM_ID_LENGTH = 6;
