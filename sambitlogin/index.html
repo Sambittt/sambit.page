@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login | Sambit</title>
   <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -30,7 +32,7 @@
         <button class="btn primary" type="submit">Login</button>
         <p id="login-error" class="error" aria-live="polite"></p>
       </form>
-      <p class="small">This password gate is client-side only (good for personal convenience, not true server-side security).</p>
+      <p class="small">Security hardening enabled: hashed password check, login lockout after repeated failures, and auto-logout on inactivity. For full security, move admin to a server-side authenticated backend.</p>
     </section>
 
     <section id="admin-panel" class="hidden">

@@ -1,6 +1,12 @@
 (function () {
   const KEY = 'sambitNotesDataV1';
-  const ADMIN_PASSWORD = 'TAMLOML';
+  const AUTH_KEY = 'sambitAdminAuth';
+  const ADMIN_PASSWORD_HASH = '83c3e2d9db907699dd8e3073ef92aca2f21338ed0d88b2f970b071516bbd4910';
+  const MAX_LOGIN_ATTEMPTS = 5;
+  const LOCKOUT_MS = 5 * 60 * 1000;
+  const IDLE_TIMEOUT_MS = 20 * 60 * 1000;
+  const ATTEMPT_COUNT_KEY = 'sambitAdminAttemptCount';
+  const LOCKED_UNTIL_KEY = 'sambitAdminLockedUntil';
   const RANDOM_ID_LENGTH = 6;
   const defaults = [
     {
@@ -149,29 +155,138 @@
     const gate = document.getElementById('login-gate');
     const panel = document.getElementById('admin-panel');
     const error = document.getElementById('login-error');
+    let idleTimer = null;
+    let idleBound = false;
+
+    function now() {
+      return Date.now();
+    }
+
+    function constantTimeEquals(a, b) {
+      if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+      let mismatch = 0;
+      for (let i = 0; i < a.length; i += 1) {
+        mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+      }
+      return mismatch === 0;
+    }
+
+    async function sha256Hex(value) {
+      const bytes = new TextEncoder().encode(value);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map((byte) => byte.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    async function verifyPassword(password) {
+      if (!window.crypto || !window.crypto.subtle) return false;
+      const hash = await sha256Hex(password.normalize('NFKC'));
+      return constantTimeEquals(hash, ADMIN_PASSWORD_HASH);
+    }
+
+    function getLockedUntil() {
+      const value = Number(sessionStorage.getItem(LOCKED_UNTIL_KEY) || '0');
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function clearAttemptState() {
+      sessionStorage.removeItem(ATTEMPT_COUNT_KEY);
+      sessionStorage.removeItem(LOCKED_UNTIL_KEY);
+    }
+
+    function registerFailedAttempt() {
+      const current = Number(sessionStorage.getItem(ATTEMPT_COUNT_KEY) || '0');
+      const next = Number.isFinite(current) ? current + 1 : 1;
+      if (next >= MAX_LOGIN_ATTEMPTS) {
+        sessionStorage.setItem(LOCKED_UNTIL_KEY, String(now() + LOCKOUT_MS));
+        sessionStorage.removeItem(ATTEMPT_COUNT_KEY);
+        return MAX_LOGIN_ATTEMPTS;
+      }
+      sessionStorage.setItem(ATTEMPT_COUNT_KEY, String(next));
+      return next;
+    }
+
+    function getLockoutMessage() {
+      const lockedUntil = getLockedUntil();
+      if (lockedUntil <= now()) return '';
+      const remainingSec = Math.max(1, Math.ceil((lockedUntil - now()) / 1000));
+      return `Too many attempts. Try again in ${remainingSec}s.`;
+    }
+
+    function scheduleIdleLogout() {
+      if (idleTimer) window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        sessionStorage.removeItem(AUTH_KEY);
+        gate.classList.remove('hidden');
+        panel.classList.add('hidden');
+        error.textContent = 'Session expired due to inactivity. Please log in again.';
+      }, IDLE_TIMEOUT_MS);
+    }
+
+    function bindIdleTracking() {
+      if (idleBound) {
+        scheduleIdleLogout();
+        return;
+      }
+      idleBound = true;
+      ['click', 'keydown', 'mousemove', 'touchstart'].forEach((eventName) => {
+        document.addEventListener(eventName, scheduleIdleLogout, { passive: true });
+      });
+      scheduleIdleLogout();
+    }
 
     function unlock() {
       gate.classList.add('hidden');
       panel.classList.remove('hidden');
       renderAdmin();
       window.dispatchEvent(new CustomEvent('sambit-admin-unlocked'));
+      bindIdleTracking();
     }
 
-    if (sessionStorage.getItem('sambitAdminAuth') === 'ok') {
+    const lockoutMessage = getLockoutMessage();
+    if (lockoutMessage) {
+      error.textContent = lockoutMessage;
+    }
+
+    if (sessionStorage.getItem(AUTH_KEY) === 'ok') {
       unlock();
       return;
     }
 
-    form.addEventListener('submit', function (event) {
+    if (!window.crypto || !window.crypto.subtle) {
+      error.textContent = 'Secure login is not supported in this browser.';
+      return;
+    }
+
+    form.addEventListener('submit', async function (event) {
       event.preventDefault();
-      const password = document.getElementById('password').value;
-      if (password === ADMIN_PASSWORD) {
-        sessionStorage.setItem('sambitAdminAuth', 'ok');
+      const lockedUntil = getLockedUntil();
+      if (lockedUntil > now()) {
+        error.textContent = getLockoutMessage();
+        return;
+      }
+      if (lockedUntil) clearAttemptState();
+
+      const passwordInput = document.getElementById('password');
+      const password = passwordInput.value;
+      const isValid = await verifyPassword(password);
+      passwordInput.value = '';
+
+      if (isValid) {
+        sessionStorage.setItem(AUTH_KEY, 'ok');
+        clearAttemptState();
         error.textContent = '';
         unlock();
         return;
       }
-      error.textContent = 'Wrong password.';
+      const attempts = registerFailedAttempt();
+      if (attempts >= MAX_LOGIN_ATTEMPTS) {
+        error.textContent = getLockoutMessage();
+        return;
+      }
+      const left = MAX_LOGIN_ATTEMPTS - attempts;
+      error.textContent = `Wrong password. ${left} attempt${left === 1 ? '' : 's'} left.`;
     });
   }
 
