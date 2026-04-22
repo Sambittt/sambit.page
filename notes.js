@@ -231,9 +231,10 @@
         return;
       }
       idleBound = true;
-      ['click', 'keydown', 'mousemove', 'touchstart'].forEach((eventName) => {
+      ['click', 'mousemove', 'touchstart'].forEach((eventName) => {
         document.addEventListener(eventName, scheduleIdleLogout, { passive: true });
       });
+      document.addEventListener('keydown', scheduleIdleLogout);
       scheduleIdleLogout();
     }
 

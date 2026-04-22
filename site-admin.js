@@ -59,7 +59,9 @@
       const parsed = new URL(value, window.location.origin);
       const isHttp = parsed.protocol === 'http:' || parsed.protocol === 'https:';
       if (!isHttp) return '';
-      if (parsed.origin !== window.location.origin && parsed.protocol !== 'https:') return '';
+      const isSameOrigin = parsed.origin === window.location.origin;
+      const isHttps = parsed.protocol === 'https:';
+      if (!isSameOrigin && !isHttps) return '';
       return parsed.href;
     } catch (e) {
       return '';
