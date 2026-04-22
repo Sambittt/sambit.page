@@ -1,154 +1,1172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <title>Sambit Kumar Satapathy | Home</title>
-  <meta name="description" content="Official portfolio of Sambit Kumar Satapathy featuring cybersecurity projects, skills, notes, certificates, and contact details.">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="Sambit Kumar Satapathy">
-  <link rel="canonical" href="https://sambit.page/">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Sambit.page">
-  <meta property="og:title" content="Sambit Kumar Satapathy | Cybersecurity Portfolio">
-  <meta property="og:description" content="Official portfolio of Sambit Kumar Satapathy with cybersecurity projects, skills, notes, and contact.">
-  <meta property="og:url" content="https://sambit.page/">
-  <meta property="og:image" content="https://avatars.githubusercontent.com/Sambittt?v=4">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Sambit Kumar Satapathy | Cybersecurity Portfolio">
-  <meta name="twitter:description" content="Explore the official website of Sambit Kumar Satapathy for cybersecurity work, notes, and contact.">
-  <meta name="twitter:image" content="https://avatars.githubusercontent.com/Sambittt?v=4">
-  <link rel="stylesheet" href="style.css">
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Sambit Kumar Satapathy",
-      "url": "https://sambit.page/",
-      "image": "https://avatars.githubusercontent.com/Sambittt?v=4",
-      "jobTitle": "Cybersecurity Learner",
-      "sameAs": [
-        "https://github.com/sambittt",
-        "https://www.linkedin.com/in/sambit-satapathy",
-        "https://instagram.com/sambit.satapathy_"
-      ]
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersecurity Portfolio | Sambit</title>
+  <meta name="description" content="Realtime cybersecurity portfolio powered by Firebase." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWix+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkR4j8x7Y7KQ2f20+Q8QhN8F6xN5x7B2xR8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbNruJQ3rluI6NfrN7kYM/qfNwCuWHa3gwxM/H2ymlk/wEYBLETymFcpnSUsctNkYheAQ7Ez+KQEiC5Ew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-yNkiY4M4R5qX6Ch12HaxDTXiiMHDL/95B2S/bRMyCV2wAPOQgpdnXl16rDpD+s/COM24kTx5cHGNy8x7BqXc9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --panel: #101018;
+      --panel-2: #151520;
+      --cyan: #00f5ff;
+      --green: #39ff14;
+      --red: #ff2d55;
+      --text: #f3f8ff;
+      --muted: #9aa4b3;
+      --border: rgba(0, 245, 255, 0.23);
     }
-  </script>
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+      cursor: none;
+      scroll-behavior: smooth;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: soft-light;
+    }
+
+    #matrix-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.25;
+    }
+
+    .boot-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: var(--green);
+      font-family: "Share Tech Mono", monospace;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      transition: opacity .6s ease;
+    }
+
+    .boot-overlay.hide { opacity: 0; pointer-events: none; }
+
+    .boot-log {
+      width: min(900px, 90vw);
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid rgba(57, 255, 20, 0.35);
+      padding: 18px;
+      min-height: 240px;
+      overflow: hidden;
+      box-shadow: 0 0 35px rgba(57, 255, 20, 0.2);
+    }
+
+    .site {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .site.ready { opacity: 1; transform: translateY(0); }
+
+    .container {
+      width: min(1150px, 92vw);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(10, 10, 15, 0.75);
+      border-bottom: 1px solid var(--border);
+      z-index: 20;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+
+    .brand {
+      font-family: "Orbitron", sans-serif;
+      letter-spacing: .12em;
+      font-size: 14px;
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
+
+    .quick-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: rgba(0, 245, 255, 0.08);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: .9rem;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 245, 255, 0.65);
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.24);
+    }
+
+    section { padding: 80px 0 28px; }
+
+    .section-heading {
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(1.2rem, 2.8vw, 2rem);
+      margin: 0 0 14px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-heading::before,
+    .section-heading::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: .75;
+      pointer-events: none;
+      clip-path: inset(0 0 0 0);
+    }
+
+    .section-heading::before { color: var(--red); transform: translate(0); }
+    .section-heading::after { color: var(--cyan); transform: translate(0); }
+
+    .section-heading.glitch-burst::before { animation: glitchA .35s steps(2, end) 3; }
+    .section-heading.glitch-burst::after { animation: glitchB .35s steps(2, end) 3; }
+
+    @keyframes glitchA {
+      0% { transform: translate(0); clip-path: inset(38% 0 42% 0); }
+      50% { transform: translate(-2px, -1px); clip-path: inset(10% 0 72% 0); }
+      100% { transform: translate(1px, 1px); clip-path: inset(80% 0 4% 0); }
+    }
+
+    @keyframes glitchB {
+      0% { transform: translate(0); clip-path: inset(70% 0 8% 0); }
+      50% { transform: translate(2px, 0); clip-path: inset(20% 0 50% 0); }
+      100% { transform: translate(-1px, 1px); clip-path: inset(45% 0 22% 0); }
+    }
+
+    .subtle { color: var(--muted); margin: 0 0 24px; line-height: 1.7; }
+    .alert {
+      background: rgba(255, 45, 85, 0.12);
+      border: 1px solid rgba(255, 45, 85, 0.4);
+      color: #ffc7d4;
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin: 14px 0 0;
+      font-size: .88rem;
+      display: none;
+    }
+
+    .panel {
+      background: linear-gradient(135deg, rgba(17, 24, 39, .8), rgba(12, 16, 24, .82));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03), 0 15px 50px rgba(0, 0, 0, .3);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .tagline {
+      font-family: "Share Tech Mono", monospace;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      margin-bottom: 10px;
+      font-size: .78rem;
+    }
+
+    .hero-name {
+      margin: 0;
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(1.9rem, 5vw, 3.4rem);
+      line-height: 1.08;
+      color: var(--text);
+      position: relative;
+    }
+
+    .hero-role {
+      min-height: 34px;
+      margin: 14px 0 22px;
+      font-family: "Share Tech Mono", monospace;
+      color: var(--cyan);
+      font-size: clamp(1rem, 2.2vw, 1.32rem);
+    }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat { background: rgba(0, 0, 0, .32); border: 1px solid rgba(0, 245, 255, .16); border-radius: 12px; padding: 14px; }
+    .stat h4 { margin: 0; font-size: 1.6rem; color: var(--green); font-family: "Orbitron", sans-serif; }
+    .stat p { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
+
+    .about-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 22px; }
+
+    .profile-card img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    .socials { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+
+    .clearance {
+      margin-top: 18px;
+      background: rgba(0, 0, 0, .36);
+      border-radius: 10px;
+      border: 1px solid rgba(57, 255, 20, .25);
+      overflow: hidden;
+    }
+
+    .clearance-fill {
+      height: 11px;
+      width: 0;
+      background: linear-gradient(90deg, var(--green), var(--cyan));
+      transition: width 1.2s ease;
+    }
+
+    .tab-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tab { border: 1px solid var(--border); padding: 8px 13px; border-radius: 999px; background: transparent; color: var(--text); cursor: pointer; }
+    .tab.active { background: rgba(0, 245, 255, .16); color: var(--cyan); }
+
+    .hex-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 16px;
+    }
+
+    .hex {
+      background: rgba(16, 16, 24, .85);
+      border: 1px solid var(--border);
+      clip-path: polygon(25% 5%, 75% 5%, 95% 50%, 75% 95%, 25% 95%, 5% 50%);
+      min-height: 170px;
+      padding: 24px 18px;
+      text-align: center;
+      transition: transform .3s ease, box-shadow .3s ease;
+      display: grid;
+      place-items: center;
+    }
+
+    .hex:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 0 25px rgba(0, 245, 255, .3);
+    }
+
+    .skill-level-wrap {
+      width: 100%;
+      height: 6px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .07);
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .skill-level {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--green), var(--cyan));
+      transition: width .9s ease;
+    }
+
+    .timeline {
+      position: relative;
+      margin-top: 10px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(var(--cyan), transparent);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      width: calc(50% - 24px);
+      margin-bottom: 18px;
+      position: relative;
+      backdrop-filter: blur(7px);
+      background: rgba(18, 20, 31, .45);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 14px;
+      padding: 15px;
+    }
+
+    .timeline-item:nth-child(odd) { margin-right: auto; }
+    .timeline-item:nth-child(even) { margin-left: auto; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-family: "Share Tech Mono", monospace;
+      margin-bottom: 8px;
+    }
+
+    .badge.completed { background: rgba(57, 255, 20, .2); color: var(--green); }
+    .badge.in-progress { background: rgba(0, 245, 255, .2); color: var(--cyan); }
+    .badge.next { background: rgba(255, 45, 85, .2); color: var(--red); }
+
+    .cert-grid,
+    .project-grid,
+    .goals-grid,
+    .exp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+    .flip {
+      perspective: 1200px;
+      min-height: 220px;
+      position: relative;
+    }
+
+    .flip-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform .6s ease;
+    }
+
+    .flip:hover .flip-inner { transform: rotateY(180deg); }
+
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(16, 18, 28, .95);
+      padding: 18px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .flip-back { transform: rotateY(180deg); }
+
+    .locked-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(10, 10, 15, .78);
+      border-radius: 16px;
+      color: var(--red);
+      font-family: "Orbitron", sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .goal-card h4,
+    .project-card h4,
+    .exp-card h4 { margin: 0 0 10px; font-family: "Orbitron", sans-serif; }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .1);
+      overflow: hidden;
+    }
+
+    .progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      transition: width .8s ease;
+    }
+
+    .stack { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .stack span {
+      border: 1px solid rgba(0, 245, 255, .25);
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: .74rem;
+      color: #d7f8ff;
+      background: rgba(0, 245, 255, .09);
+    }
+
+    .terminal {
+      background: #030405;
+      border: 1px solid rgba(0, 245, 255, .25);
+      border-radius: 12px;
+      padding: 14px;
+      font-family: "Share Tech Mono", monospace;
+      color: var(--green);
+      min-height: 170px;
+    }
+
+    .terminal .line { margin: 4px 0; }
+    .terminal .prompt { color: var(--cyan); }
+
+    .cursor-cross,
+    .cursor-dot {
+      position: fixed;
+      pointer-events: none;
+      z-index: 2000;
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-cross {
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(0, 245, 255, .9);
+      border-radius: 50%;
+    }
+
+    .cursor-cross::before,
+    .cursor-cross::after {
+      content: "";
+      position: absolute;
+      background: rgba(0, 245, 255, .9);
+    }
+
+    .cursor-cross::before { left: 50%; top: -6px; bottom: -6px; width: 1px; transform: translateX(-50%); }
+    .cursor-cross::after { top: 50%; left: -6px; right: -6px; height: 1px; transform: translateY(-50%); }
+
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .trail-dot {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(0, 245, 255, .45);
+      pointer-events: none;
+      z-index: 1500;
+      transform: translate(-50%, -50%);
+    }
+
+    .reveal { opacity: 0; transform: translateY(16px); }
+    .reveal.show { opacity: 1; transform: translateY(0); transition: all .6s ease; }
+
+    @media (max-width: 920px) {
+      .hero-grid,
+      .about-grid { grid-template-columns: 1fr; }
+      .timeline::before { left: 12px; }
+      .timeline-item { width: calc(100% - 28px); margin-left: 28px !important; }
+      .stats { grid-template-columns: 1fr; }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      html, body { cursor: auto; }
+      .cursor-cross, .cursor-dot, .trail-dot { display: none; }
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container nav-wrap">
-      <a class="brand" href="index.html">Sambit<span>.page</span></a>
-      <nav class="nav-links" aria-label="Primary navigation">
-        <a class="active" href="index.html">Home</a>
-        <a href="skills.html#skills-section">Skills</a>
-        <a href="notes.html#notes-section">Notes</a>
-        <a href="projects.html#projects-section">Projects</a>
-        <a href="certificates.html#certificates-section">Certificates</a>
-        <a href="contact.html#contact-section">Contact Me</a>
-      </nav>
-    </div>
-  </header>
+  <canvas id="matrix-bg" aria-hidden="true"></canvas>
 
-  <main class="container">
-    <section class="hero hero-rich hero-next">
-      <div class="hero-copy">
-        <span class="eyebrow">Cybersecurity Portfolio</span>
-        <div class="hero-title-wrap">
-          <h1 class="hero-title">
-            <span class="title-avatar-wrap" aria-hidden="true">
-              <img class="title-avatar profile-photo" src="IMG-20260421-WA0004.jpg" alt="Profile picture of Sambit Kumar Satapathy">
-            </span>
-            <span class="title-text">Sambit Kumar Satapathy</span>
-          </h1>
-          <p class="hero-status">Building practical SOC-ready skills through labs, projects, and focused documentation.</p>
-        </div>
-        <p class="lead">I’m focused on becoming a job-ready cybersecurity professional through consistent practice, real lab work, and documented learning. This website is a clear snapshot of what I’m learning and building.</p>
-        <div class="actions">
-          <a class="btn primary" href="projects.html#projects-section">View Projects</a>
-          <a class="btn ghost" href="contact.html#contact-section">Contact Me</a>
-          <a class="btn ghost" href="notes.html#notes-section">Read Notes</a>
-        </div>
-        <div class="hero-tags" aria-label="Profile highlights">
-          <span class="tag">SOC Path</span>
-          <span class="tag">Hands-on Labs</span>
-          <span class="tag">Project Based Learning</span>
+  <div class="boot-overlay" id="bootOverlay" aria-live="polite">
+    <div class="boot-log" id="bootLog"></div>
+  </div>
+
+  <div class="cursor-cross" id="cursorCross"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <div class="site" id="siteRoot">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">Sambit.page // cyber ops</div>
+        <div class="quick-links">
+          <a class="btn magnetic" href="#projects"><i class="fa-solid fa-terminal"></i> Projects</a>
+          <a class="btn magnetic" href="#contact"><i class="fa-solid fa-paper-plane"></i> Contact</a>
         </div>
       </div>
-      <aside class="hero-panel" aria-label="Quick profile summary">
-        <div class="hero-panel-card">
-          <p class="panel-kicker">Current Mode</p>
-          <p class="panel-value">Learning + Building Daily</p>
-          <div class="panel-grid">
+    </header>
+
+    <main class="container">
+      <section id="hero" class="reveal">
+        <div class="hero-grid">
+          <article class="panel" id="heroPanel">
+            <p class="tagline">Initializing Profile</p>
+            <h1 id="heroName" class="hero-name" data-text="Loading Agent">Loading Agent</h1>
+            <p id="heroRole" class="hero-role">Loading roles...</p>
+            <p id="heroBioShort" class="subtle">Connecting to secure datastore...</p>
+            <div class="alert" id="loadAlert">Unable to load live portfolio data right now. Showing fallback content.</div>
+            <div class="stats" id="statsGrid"></div>
+          </article>
+          <aside class="panel">
+            <h2 class="section-heading" data-text="MISSION FEED">MISSION FEED</h2>
+            <p class="subtle">Realtime portfolio stream is synced from Firebase Firestore and refreshed instantly.</p>
+            <div id="heroSocials" class="socials"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="about" class="reveal">
+        <h2 class="section-heading" data-text="ABOUT">ABOUT</h2>
+        <div class="about-grid">
+          <article class="panel profile-card">
+            <img id="aboutImage" src="https://via.placeholder.com/700x520/0A0A0F/00F5FF?text=Profile+Image" alt="Profile picture" />
+          </article>
+          <article class="panel">
+            <p id="aboutBio" class="subtle">Profile bio will load from Firestore.</p>
             <div>
-              <span class="panel-label">Track</span>
-              <strong>Cybersecurity</strong>
+              <p class="subtle" style="margin-bottom:6px;">Security Clearance</p>
+              <div class="clearance"><div class="clearance-fill" id="clearanceFill"></div></div>
             </div>
-            <div>
-              <span class="panel-label">Focus</span>
-              <strong>SOC Foundations</strong>
+            <div id="aboutSocials" class="socials"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="skills" class="reveal">
+        <h2 class="section-heading" data-text="SKILLS">SKILLS</h2>
+        <div class="tab-row" id="skillTabs"></div>
+        <div class="hex-grid" id="skillsGrid"></div>
+      </section>
+
+      <section id="learning" class="reveal">
+        <h2 class="section-heading" data-text="LEARNING LOG">LEARNING LOG</h2>
+        <div class="timeline" id="learningTimeline"></div>
+      </section>
+
+      <section id="certifications" class="reveal">
+        <h2 class="section-heading" data-text="CERTIFICATIONS">CERTIFICATIONS</h2>
+        <div class="cert-grid" id="certGrid"></div>
+      </section>
+
+      <section id="roadmap" class="reveal">
+        <h2 class="section-heading" data-text="ROADMAP &amp; GOALS">ROADMAP &amp; GOALS</h2>
+        <p class="subtle">Mission Briefing: short-term, mid-term, and long-term strategic objectives.</p>
+        <div class="goals-grid" id="goalsGrid"></div>
+      </section>
+
+      <section id="projects" class="reveal">
+        <h2 class="section-heading" data-text="PROJECTS">PROJECTS</h2>
+        <div class="project-grid" id="projectsGrid"></div>
+      </section>
+
+      <section id="experience" class="reveal">
+        <h2 class="section-heading" data-text="EXPERIENCE">EXPERIENCE</h2>
+        <div class="exp-grid" id="experienceGrid"></div>
+      </section>
+
+      <section id="contact" class="reveal">
+        <h2 class="section-heading" data-text="CONTACT">CONTACT</h2>
+        <div class="terminal" id="contactTerminal"></div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // === EDIT HERE === PASTE YOUR FIREBASE CONFIG HERE ===
+    const firebaseConfig = {
+      apiKey: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      authDomain: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      projectId: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      storageBucket: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      messagingSenderId: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      appId: "=== PASTE YOUR FIREBASE CONFIG HERE ==="
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Firestore collection name: portfolio
+    // Firestore document name: main
+    const contentRef = doc(db, "portfolio", "main");
+
+    const fallback = {
+      profile: {
+        name: "Sambit Kumar Satapathy",
+        bio: "Cybersecurity learner building practical SOC-ready skills.",
+        roles: ["SOC Learner", "Security Enthusiast", "Builder"],
+        profileImageUrl: "https://via.placeholder.com/700x520/0A0A0F/00F5FF?text=Profile+Image",
+        securityClearance: 62,
+        socialLinks: {
+          github: "https://github.com/Sambittt",
+          linkedin: "https://www.linkedin.com/",
+          whatsapp: "https://wa.me/"
+        },
+        stats: { projects: 0, certifications: 0, tools: 0 }
+      },
+      skills: [],
+      learningLog: [],
+      certificates: [],
+      goals: [],
+      projects: [],
+      experience: []
+    };
+
+    let currentData = structuredClone(fallback);
+    let currentTab = "Web Dev";
+    let roleTimer;
+
+    const el = {
+      heroName: document.getElementById("heroName"),
+      heroRole: document.getElementById("heroRole"),
+      heroBioShort: document.getElementById("heroBioShort"),
+      statsGrid: document.getElementById("statsGrid"),
+      heroSocials: document.getElementById("heroSocials"),
+      aboutImage: document.getElementById("aboutImage"),
+      aboutBio: document.getElementById("aboutBio"),
+      aboutSocials: document.getElementById("aboutSocials"),
+      clearanceFill: document.getElementById("clearanceFill"),
+      skillTabs: document.getElementById("skillTabs"),
+      skillsGrid: document.getElementById("skillsGrid"),
+      learningTimeline: document.getElementById("learningTimeline"),
+      certGrid: document.getElementById("certGrid"),
+      goalsGrid: document.getElementById("goalsGrid"),
+      projectsGrid: document.getElementById("projectsGrid"),
+      experienceGrid: document.getElementById("experienceGrid"),
+      contactTerminal: document.getElementById("contactTerminal")
+      ,loadAlert: document.getElementById("loadAlert")
+    };
+
+    const bootLines = [
+      "[BOOT] Initializing secure UI shell...",
+      "[BOOT] Handshake with Firebase endpoint... OK",
+      "[BOOT] Firestore realtime stream: STANDBY",
+      "[BOOT] Rendering tactical overlays...",
+      "[BOOT] System online. Welcome, Operator."
+    ];
+
+    function bootSequence() {
+      const box = document.getElementById("bootLog");
+      let i = 0;
+      const interval = setInterval(() => {
+        const line = document.createElement("div");
+        line.textContent = bootLines[i];
+        box.appendChild(line);
+        i += 1;
+        if (i >= bootLines.length) {
+          clearInterval(interval);
+          setTimeout(() => {
+            document.getElementById("bootOverlay").classList.add("hide");
+            document.getElementById("siteRoot").classList.add("ready");
+          }, 1300);
+        }
+      }, 360);
+    }
+
+    function mergeContent(payload = {}) {
+      return {
+        ...fallback,
+        ...payload,
+        profile: {
+          ...fallback.profile,
+          ...(payload.profile || {}),
+          socialLinks: {
+            ...fallback.profile.socialLinks,
+            ...((payload.profile || {}).socialLinks || {})
+          },
+          stats: {
+            ...fallback.profile.stats,
+            ...((payload.profile || {}).stats || {})
+          }
+        }
+      };
+    }
+
+    function makeSafe(text) {
+      return String(text ?? "").replace(/[<>&"']/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&#39;" }[ch]));
+    }
+
+    function renderProfile() {
+      const { profile } = currentData;
+      el.heroName.textContent = profile.name || fallback.profile.name;
+      el.heroName.setAttribute("data-text", profile.name || fallback.profile.name);
+      el.heroBioShort.textContent = profile.bio || fallback.profile.bio;
+      el.aboutBio.textContent = profile.bio || fallback.profile.bio;
+      el.aboutImage.src = profile.profileImageUrl || fallback.profile.profileImageUrl;
+      el.clearanceFill.style.width = `${Math.max(0, Math.min(100, Number(profile.securityClearance || 0)))}%`;
+
+      const socialItems = [
+        { key: "github", icon: "fa-brands fa-github", label: "GitHub" },
+        { key: "linkedin", icon: "fa-brands fa-linkedin", label: "LinkedIn" },
+        { key: "whatsapp", icon: "fa-brands fa-whatsapp", label: "WhatsApp" }
+      ];
+
+      const socialHTML = socialItems.map((item) => {
+        const url = profile.socialLinks?.[item.key] || "#";
+        return `<a class="btn magnetic" href="${makeSafe(url)}" target="_blank" rel="noopener noreferrer"><i class="${item.icon}"></i> ${item.label}</a>`;
+      }).join("");
+
+      el.heroSocials.innerHTML = socialHTML;
+      el.aboutSocials.innerHTML = socialHTML;
+
+      el.statsGrid.innerHTML = [
+        { label: "Projects", value: profile.stats?.projects ?? currentData.projects.length },
+        { label: "Certifications", value: profile.stats?.certifications ?? currentData.certificates.length },
+        { label: "Tools", value: profile.stats?.tools ?? currentData.skills.length }
+      ].map((s) => `
+        <article class="stat">
+          <h4 class="counter" data-target="${Number(s.value) || 0}">0</h4>
+          <p>${makeSafe(s.label)}</p>
+        </article>
+      `).join("");
+
+      setupCounters();
+      setupMagnetic();
+      runTypewriter(profile.roles?.length ? profile.roles : fallback.profile.roles);
+    }
+
+    function runTypewriter(roles) {
+      clearInterval(roleTimer);
+      const list = roles.map((r) => String(r));
+      let roleIndex = 0;
+      let charIndex = 0;
+      let deleting = false;
+
+      roleTimer = setInterval(() => {
+        const current = list[roleIndex] || "";
+        if (!deleting) {
+          charIndex += 1;
+          el.heroRole.textContent = `${current.slice(0, charIndex)}█`;
+          if (charIndex >= current.length) deleting = true;
+        } else {
+          charIndex -= 1;
+          el.heroRole.textContent = `${current.slice(0, Math.max(0, charIndex))}█`;
+          if (charIndex <= 0) {
+            deleting = false;
+            roleIndex = (roleIndex + 1) % list.length;
+          }
+        }
+      }, 90);
+    }
+
+    function renderSkills() {
+      const categories = ["Web Dev", "Offensive Security", "Networking", "Tools"];
+      if (!categories.includes(currentTab)) currentTab = categories[0];
+
+      el.skillTabs.innerHTML = categories.map((cat) => `<button class="tab ${cat === currentTab ? "active" : ""}" data-tab="${makeSafe(cat)}">${makeSafe(cat)}</button>`).join("");
+      [...el.skillTabs.querySelectorAll(".tab")].forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentTab = btn.dataset.tab;
+          renderSkills();
+        });
+      });
+
+      const filtered = (currentData.skills || []).filter((s) => (s.category || "Web Dev") === currentTab);
+      el.skillsGrid.innerHTML = filtered.length ? filtered.map((skill) => `
+        <article class="hex">
+          <div>
+            <div style="font-size:1.55rem;color:var(--cyan);"><i class="${makeSafe(skill.icon || "fa-solid fa-microchip")}"></i></div>
+            <h4 style="margin:8px 0 2px;">${makeSafe(skill.name || "Unnamed")}</h4>
+            <small style="color:var(--muted);">Level ${Math.max(1, Math.min(100, Number(skill.level || 0)))}</small>
+            <div class="skill-level-wrap"><div class="skill-level" data-skill-level="${Math.max(0, Math.min(100, Number(skill.level || 0)))}"></div></div>
+          </div>
+        </article>
+      `).join("") : `<article class="panel">No skills yet for this category.</article>`;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.width = `${entry.target.dataset.skillLevel}%`;
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      document.querySelectorAll(".skill-level").forEach((bar) => observer.observe(bar));
+    }
+
+    function renderLearningLog() {
+      const sorted = [...(currentData.learningLog || [])].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      el.learningTimeline.innerHTML = sorted.length ? sorted.map((item) => {
+        const status = String(item.status || "NEXT").toUpperCase();
+        const cls = status === "COMPLETED" ? "completed" : status === "IN PROGRESS" ? "in-progress" : "next";
+        return `
+          <article class="timeline-item reveal">
+            <span class="badge ${cls}">${makeSafe(status)}</span>
+            <h4 style="margin:0 0 4px;">${makeSafe(item.topic || "Untitled")}</h4>
+            <small style="color:var(--muted);">${makeSafe(item.date || "No date")}</small>
+            <p style="margin:8px 0 0;color:#d9e2f0;">${makeSafe(item.notes || "")}</p>
+          </article>
+        `;
+      }).join("") : `<article class="panel">No learning entries yet.</article>`;
+      observeReveal();
+    }
+
+    function renderCertificates() {
+      const certs = currentData.certificates || [];
+      el.certGrid.innerHTML = certs.length ? certs.map((cert) => `
+        <article class="flip">
+          <div class="flip-inner">
+            <div class="flip-face">
+              <div style="font-size:1.8rem;color:var(--cyan);">${cert.badgeImageUrl ? `<img src="${makeSafe(cert.badgeImageUrl)}" alt="${makeSafe(cert.name || "badge")}" style="width:48px;height:48px;object-fit:cover;border-radius:10px;border:1px solid var(--border);" />` : `<i class="fa-solid fa-certificate"></i>`}</div>
+              <h4 style="margin:4px 0;">${makeSafe(cert.name || "Untitled Certificate")}</h4>
+              <small style="color:var(--muted);">Hover to inspect</small>
             </div>
-            <div>
-              <span class="panel-label">Style</span>
-              <strong>Hands-on</strong>
-            </div>
-            <div>
-              <span class="panel-label">Output</span>
-              <strong>Projects + Notes</strong>
+            <div class="flip-face flip-back">
+              <strong>${makeSafe(cert.issuer || "Unknown issuer")}</strong>
+              <small style="color:var(--muted);">${makeSafe(cert.date || "No date")}</small>
+              <p style="margin:6px 0 0;">${makeSafe((cert.skillsCovered || []).join(", ") || "No skills listed")}</p>
             </div>
           </div>
-        </div>
-      </aside>
-    </section>
+          ${cert.locked ? `<div class="locked-overlay">Locked</div>` : ""}
+        </article>
+      `).join("") : `<article class="panel">No certificates configured yet.</article>`;
+    }
 
-    <section id="home-overview">
-      <h2 class="section-title">About Me</h2>
-      <p class="section-subtitle">I’m currently building my cybersecurity foundation with daily consistency, practical projects, and clear documentation of my progress.</p>
-      <div class="grid">
-        <article class="card">
-          <h3>Current Focus</h3>
-          <p>I’m sharpening security fundamentals, network analysis, and incident-response basics through guided practice and self-driven labs.</p>
-        </article>
-        <article class="card">
-          <h3>How I Learn</h3>
-          <p>I learn in cycles: study concepts, apply them in hands-on tasks, then publish concise notes and outputs to reinforce understanding.</p>
-        </article>
-        <article class="card">
-          <h3>Career Direction</h3>
-          <p>My goal is to grow into SOC and security operations roles where I can contribute through strong analysis, discipline, and execution.</p>
-        </article>
-      </div>
-    </section>
+    function renderGoals() {
+      const goals = currentData.goals || [];
+      el.goalsGrid.innerHTML = goals.length ? goals.map((goal) => {
+        const pct = Math.max(0, Math.min(100, Number(goal.progress || 0)));
+        return `
+          <article class="panel goal-card reveal">
+            <small class="badge ${goal.status === "COMPLETED" ? "completed" : goal.status === "ACTIVE" ? "in-progress" : "next"}">${makeSafe(goal.term || "TERM")}</small>
+            <h4>${makeSafe(goal.title || "Untitled goal")}</h4>
+            <p class="subtle" style="margin-bottom:12px;">${makeSafe(goal.description || "")}</p>
+            <small style="color:var(--muted);display:block;margin-bottom:8px;">Deadline: ${makeSafe(goal.deadline || "TBD")}</small>
+            <div class="progress"><span data-progress="${pct}"></span></div>
+            <small style="color:#c3d4ea;display:block;margin-top:8px;">Status: ${makeSafe(goal.status || "UPCOMING")} (${pct}%)</small>
+          </article>
+        `;
+      }).join("") : `<article class="panel">No roadmap goals yet.</article>`;
 
-    <section id="home-blogs">
-      <h2 class="section-title">Blog Highlights</h2>
-      <p class="section-subtitle">Quick updates from my cybersecurity journey, including preparation strategy, tools, and milestones.</p>
-      <div class="grid">
-        <article class="card">
-          <h3>Career Preparation Updates</h3>
-          <p>I track the steps I’m taking to become interview-ready and role-ready, with a focus on practical evidence over theory alone.</p>
-          <a class="card-link" href="contact.html#contact-section">Discuss Opportunities</a>
-        </article>
-        <article class="card">
-          <h3>Tools & Workflow</h3>
-          <p>I share the tools I use for learning, practice, and documentation, along with the workflow that keeps my progress consistent.</p>
-          <a class="card-link" href="skills.html#skills-section">See My Skills</a>
-        </article>
-        <article class="card">
-          <h3>2026 Learning Goals</h3>
-          <p>My priorities are deeper technical skills, stronger project quality, and more useful technical writing based on real practice.</p>
-          <a class="card-link" href="notes.html#notes-section">Read Learning Notes</a>
-        </article>
-      </div>
-    </section>
-  </main>
+      const progressObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.width = `${entry.target.dataset.progress}%`;
+            progressObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: .35 });
+      document.querySelectorAll("[data-progress]").forEach((node) => progressObserver.observe(node));
+      observeReveal();
+    }
 
-  <footer>
-    © 2026 Sambit Kumar Satapathy
-  </footer>
-  <script src="site-admin.js"></script>
-  <script src="ui.js"></script>
+    function renderProjects() {
+      const items = currentData.projects || [];
+      el.projectsGrid.innerHTML = items.length ? items.map((proj) => `
+        <article class="panel project-card reveal">
+          ${proj.thumbnail ? `<img src="${makeSafe(proj.thumbnail)}" alt="${makeSafe(proj.title || "project")}" style="width:100%;height:145px;object-fit:cover;border-radius:10px;border:1px solid var(--border);margin-bottom:10px;" />` : ""}
+          <h4>${makeSafe(proj.title || "Untitled Project")}</h4>
+          <p class="subtle" style="margin-bottom:8px;">${makeSafe(proj.description || "")}</p>
+          <div class="stack">${(proj.techStack || []).map((t) => `<span>${makeSafe(t)}</span>`).join("")}</div>
+          <div class="socials" style="margin-top:12px;">
+            <a class="btn magnetic" href="${makeSafe(proj.liveUrl || "#")}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-globe"></i> Live</a>
+            <a class="btn magnetic" href="${makeSafe(proj.githubUrl || "#")}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> Code</a>
+          </div>
+        </article>
+      `).join("") : `<article class="panel">No projects added yet.</article>`;
+      setupMagnetic();
+      observeReveal();
+    }
+
+    function renderExperience() {
+      const items = currentData.experience || [];
+      el.experienceGrid.innerHTML = items.length ? items.map((exp) => `
+        <article class="panel exp-card reveal">
+          <small class="badge ${exp.type === "WORK" ? "completed" : exp.type === "FREELANCE" ? "in-progress" : "next"}">${makeSafe(exp.type || "WORK")}</small>
+          <h4>${makeSafe(exp.role || "Untitled Role")}</h4>
+          <p style="margin:0 0 6px;color:#e4f0ff;">${makeSafe(exp.company || "Unknown Company")}</p>
+          <small style="color:var(--muted);">${makeSafe(exp.duration || "")}</small>
+          <p class="subtle" style="margin-top:10px;">${makeSafe(exp.description || "")}</p>
+        </article>
+      `).join("") : `<article class="panel">No experience records yet.</article>`;
+      observeReveal();
+    }
+
+    function renderContact() {
+      const links = currentData.profile?.socialLinks || {};
+      el.contactTerminal.innerHTML = `
+        <div class="line"><span class="prompt">root@sambit.page:~$</span> whoami</div>
+        <div class="line">cybersecurity-portfolio-operator</div>
+        <div class="line"><span class="prompt">root@sambit.page:~$</span> ./contact --show</div>
+        <div class="line">GitHub: <a href="${makeSafe(links.github || "#")}" target="_blank" rel="noopener noreferrer">${makeSafe(links.github || "not set")}</a></div>
+        <div class="line">LinkedIn: <a href="${makeSafe(links.linkedin || "#")}" target="_blank" rel="noopener noreferrer">${makeSafe(links.linkedin || "not set")}</a></div>
+        <div class="line">WhatsApp: <a href="${makeSafe(links.whatsapp || "#")}" target="_blank" rel="noopener noreferrer">${makeSafe(links.whatsapp || "not set")}</a></div>
+        <div class="line"><span class="prompt">root@sambit.page:~$</span> _</div>
+      `;
+    }
+
+    function animateHeadings() {
+      const headings = document.querySelectorAll(".section-heading");
+      const headingObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const node = entry.target;
+            node.classList.add("glitch-burst");
+            scrambleText(node);
+            setTimeout(() => node.classList.remove("glitch-burst"), 900);
+            headingObserver.unobserve(node);
+          }
+        });
+      }, { threshold: 0.55 });
+      headings.forEach((h) => {
+        h.setAttribute("data-text", h.textContent);
+        headingObserver.observe(h);
+      });
+    }
+
+    function scrambleText(node) {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const final = node.textContent;
+      let frame = 0;
+      const total = final.length + 6;
+      const timer = setInterval(() => {
+        node.textContent = final
+          .split("")
+          .map((ch, i) => (i < frame ? ch : chars[Math.floor(Math.random() * chars.length)]))
+          .join("");
+        frame += 1;
+        if (frame > total) {
+          clearInterval(timer);
+          node.textContent = final;
+        }
+      }, 30);
+    }
+
+    function observeReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("show");
+        });
+      }, { threshold: 0.16 });
+      document.querySelectorAll(".reveal").forEach((n) => observer.observe(n));
+    }
+
+    function setupCounters() {
+      document.querySelectorAll(".counter").forEach((counter) => {
+        const trigger = ScrollTrigger.create({
+          trigger: counter,
+          start: "top 90%",
+          once: true,
+          onEnter: () => {
+            const target = Number(counter.dataset.target || 0);
+            const obj = { val: 0 };
+            gsap.to(obj, {
+              val: target,
+              duration: 1.4,
+              ease: "power2.out",
+              onUpdate: () => {
+                counter.textContent = String(Math.round(obj.val));
+              }
+            });
+          }
+        });
+        return trigger;
+      });
+    }
+
+    function setupMagnetic() {
+      document.querySelectorAll(".magnetic").forEach((btn) => {
+        btn.onmousemove = (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px)`;
+        };
+        btn.onmouseleave = () => { btn.style.transform = "translate(0,0)"; };
+      });
+    }
+
+    function setupParallax() {
+      const heroPanel = document.getElementById("heroPanel");
+      window.addEventListener("mousemove", (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 10;
+        const y = (e.clientY / window.innerHeight - 0.5) * 10;
+        heroPanel.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    }
+
+    function setupCursor() {
+      const cross = document.getElementById("cursorCross");
+      const dot = document.getElementById("cursorDot");
+      const trail = Array.from({ length: 10 }, () => {
+        const d = document.createElement("div");
+        d.className = "trail-dot";
+        document.body.appendChild(d);
+        return { el: d, x: 0, y: 0 };
+      });
+      let mx = 0;
+      let my = 0;
+
+      window.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        cross.style.left = `${mx}px`;
+        cross.style.top = `${my}px`;
+        dot.style.left = `${mx}px`;
+        dot.style.top = `${my}px`;
+      });
+
+      function animateTrail() {
+        let x = mx;
+        let y = my;
+        trail.forEach((item, idx) => {
+          item.x += (x - item.x) * 0.23;
+          item.y += (y - item.y) * 0.23;
+          item.el.style.left = `${item.x}px`;
+          item.el.style.top = `${item.y}px`;
+          item.el.style.opacity = String((trail.length - idx) / trail.length);
+          x = item.x;
+          y = item.y;
+        });
+        requestAnimationFrame(animateTrail);
+      }
+      animateTrail();
+    }
+
+    function setupMatrix() {
+      const canvas = document.getElementById("matrix-bg");
+      const ctx = canvas.getContext("2d");
+      const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      resize();
+      window.addEventListener("resize", resize);
+
+      const fontSize = 14;
+      const columns = Math.floor(window.innerWidth / fontSize);
+      const drops = Array(columns).fill(0);
+      const particles = Array.from({ length: 45 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        dx: (Math.random() - 0.5) * 0.45,
+        dy: (Math.random() - 0.5) * 0.45
+      }));
+      const symbols = "01アイウエオカキクケコセキュア";
+
+      function draw() {
+        ctx.fillStyle = "rgba(10,10,15,0.13)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "rgba(57,255,20,0.85)";
+        ctx.font = `${fontSize}px Share Tech Mono`;
+        for (let i = 0; i < drops.length; i++) {
+          const txt = symbols.charAt(Math.floor(Math.random() * symbols.length));
+          ctx.fillText(txt, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.976) drops[i] = 0;
+          drops[i]++;
+        }
+
+        ctx.strokeStyle = "rgba(0,245,255,0.2)";
+        ctx.fillStyle = "rgba(0,245,255,0.35)";
+        particles.forEach((p, i) => {
+          p.x += p.dx;
+          p.y += p.dy;
+          if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j];
+            const dist = Math.hypot(p.x - q.x, p.y - q.y);
+            if (dist < 120) {
+              ctx.globalAlpha = (120 - dist) / 500;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.stroke();
+              ctx.globalAlpha = 1;
+            }
+          }
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function renderAll() {
+      renderProfile();
+      renderSkills();
+      renderLearningLog();
+      renderCertificates();
+      renderGoals();
+      renderProjects();
+      renderExperience();
+      renderContact();
+      animateHeadings();
+      observeReveal();
+
+      gsap.utils.toArray("section").forEach((section) => {
+        gsap.fromTo(section, { opacity: 0, y: 30 }, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: { trigger: section, start: "top 85%", once: true }
+        });
+      });
+    }
+
+    onSnapshot(contentRef, (snap) => {
+      el.loadAlert.style.display = "none";
+      currentData = mergeContent(snap.exists() ? snap.data() : {});
+      renderAll();
+    }, (err) => {
+      console.error(err);
+      el.loadAlert.style.display = "block";
+      currentData = mergeContent({});
+      renderAll();
+    });
+
+    bootSequence();
+    setupParallax();
+    setupCursor();
+    setupMatrix();
+  </script>
 </body>
 </html>
