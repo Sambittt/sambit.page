@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin Dashboard | Sambit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWix+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkR4j8x7Y7KQ2f20+Q8QhN8F6xN5x7B2xR8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --panel: #11131c;
+      --panel-2: #181b27;
+      --text: #edf5ff;
+      --muted: #a4afc2;
+      --cyan: #00f5ff;
+      --green: #39ff14;
+      --red: #ff2d55;
+      --border: rgba(0, 245, 255, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: radial-gradient(circle at 20% 0%, #0f1320, #0a0a0f 45%);
+      color: var(--text);
+    }
+
+    .hidden { display: none !important; }
+
+    .shell { min-height: 100vh; }
+
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: min(460px, 94vw);
+      background: rgba(10, 11, 17, 0.95);
+      border: 1px solid rgba(57, 255, 20, 0.4);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
+    }
+
+    .terminal-title {
+      font-family: "Share Tech Mono", monospace;
+      color: var(--green);
+      margin: 0 0 16px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .label { display: block; margin-bottom: 12px; font-size: .9rem; color: #d5def0; }
+    .input, .textarea, .select {
+      width: 100%;
+      margin-top: 6px;
+      background: #0d1018;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px;
+      font: inherit;
+    }
+
+    .textarea { min-height: 105px; resize: vertical; }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: rgba(0, 245, 255, 0.12);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .btn:hover { border-color: rgba(0, 245, 255, 0.6); }
+    .btn.danger { background: rgba(255, 45, 85, 0.14); border-color: rgba(255, 45, 85, 0.45); }
+    .btn.success { background: rgba(57, 255, 20, 0.12); border-color: rgba(57, 255, 20, 0.45); }
+
+    .error {
+      min-height: 22px;
+      margin-top: 10px;
+      color: var(--red);
+      font-family: "Share Tech Mono", monospace;
+    }
+
+    .error.glitch { animation: errorGlitch .35s linear 2; }
+
+    @keyframes errorGlitch {
+      0% { transform: translate(0); text-shadow: 1px 0 var(--cyan); }
+      25% { transform: translate(-1px, 1px); text-shadow: -1px 0 var(--cyan); }
+      50% { transform: translate(1px, -1px); text-shadow: 1px 0 var(--green); }
+      100% { transform: translate(0); text-shadow: none; }
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--border);
+      background: rgba(8, 9, 14, 0.95);
+      padding: 20px 14px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .side-title {
+      font-family: "Orbitron", sans-serif;
+      letter-spacing: .1em;
+      color: var(--cyan);
+      margin: 0 0 16px;
+      text-transform: uppercase;
+      font-size: .92rem;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      text-align: left;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .nav-btn.active { border-color: var(--cyan); background: rgba(0,245,255,0.12); color: var(--cyan); }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 10, 15, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar p { margin: 0; color: var(--muted); }
+
+    .content { padding: 18px; }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(20, 23, 34, .95), rgba(16, 18, 28, .95));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-family: "Orbitron", sans-serif;
+      letter-spacing: .06em;
+      font-size: 1rem;
+      text-transform: uppercase;
+    }
+
+    .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px; vertical-align: middle; }
+    .table td input, .table td select { width: 100%; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .mini-card { border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 12px; background: rgba(0,0,0,0.2); }
+
+    .tag { display: inline-block; padding: 2px 8px; border: 1px solid rgba(0,245,255,.3); border-radius: 999px; font-size: .72rem; margin: 2px; }
+
+    .sortable-row { cursor: grab; }
+    .sortable-row.dragging { opacity: .45; }
+
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      background: #0d1420;
+      border: 1px solid rgba(57, 255, 20, .5);
+      color: var(--green);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: "Share Tech Mono", monospace;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all .3s ease;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1080px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .grid2, .grid3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="login-screen" id="loginScreen">
+      <form class="login-card" id="loginForm">
+        <h1 class="terminal-title">ADMIN ACCESS // AUTH REQUIRED</h1>
+        <label class="label">Email
+          <input class="input" id="loginEmail" type="email" required autocomplete="username" />
+        </label>
+        <label class="label">Password
+          <input class="input" id="loginPassword" type="password" required autocomplete="current-password" />
+        </label>
+        <button class="btn success" type="submit">Sign In</button>
+        <p class="error" id="loginError" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="dashboard hidden" id="dashboard">
+      <aside class="sidebar">
+        <h2 class="side-title">Control Panel</h2>
+        <button class="nav-btn active" data-section="profile"><i class="fa-solid fa-user-shield"></i> Profile</button>
+        <button class="nav-btn" data-section="skills"><i class="fa-solid fa-screwdriver-wrench"></i> Skills</button>
+        <button class="nav-btn" data-section="certificates"><i class="fa-solid fa-certificate"></i> Certificates</button>
+        <button class="nav-btn" data-section="learningLog"><i class="fa-solid fa-book-open"></i> Learning Log</button>
+        <button class="nav-btn" data-section="goals"><i class="fa-solid fa-road"></i> Goals & Roadmap</button>
+        <button class="nav-btn" data-section="projects"><i class="fa-solid fa-terminal"></i> Projects</button>
+        <button class="nav-btn" data-section="experience"><i class="fa-solid fa-briefcase"></i> Experience</button>
+      </aside>
+
+      <div class="main">
+        <div class="topbar">
+          <div>
+            <h3 id="welcomeText" style="margin:0;font-family:'Orbitron',sans-serif;letter-spacing:.08em;">Welcome, Admin</h3>
+            <p id="lastUpdated">Last updated: --</p>
+          </div>
+          <button class="btn danger" id="signOutBtn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+        </div>
+
+        <div class="content">
+          <section class="panel" data-pane="profile">
+            <h2>Profile</h2>
+            <div class="grid2">
+              <label class="label">Name<input class="input" id="profileName" /></label>
+              <label class="label">Security Clearance %<input class="input" id="profileClearance" type="number" min="0" max="100" /></label>
+              <label class="label" style="grid-column:1 / -1;">Bio<textarea class="textarea" id="profileBio"></textarea></label>
+              <label class="label">Roles (comma separated)<input class="input" id="profileRoles" /></label>
+              <label class="label">GitHub URL<input class="input" id="profileGithub" type="url" /></label>
+              <label class="label">LinkedIn URL<input class="input" id="profileLinkedin" type="url" /></label>
+              <label class="label">WhatsApp URL<input class="input" id="profileWhatsapp" type="url" /></label>
+              <label class="label">Profile image file<input class="input" id="profileImageFile" type="file" accept="image/*" /></label>
+              <label class="label">Profile image URL<input class="input" id="profileImageUrl" type="url" /></label>
+              <label class="label">Projects Stat<input class="input" id="statProjects" type="number" min="0" /></label>
+              <label class="label">Certifications Stat<input class="input" id="statCertifications" type="number" min="0" /></label>
+              <label class="label">Tools Stat<input class="input" id="statTools" type="number" min="0" /></label>
+            </div>
+            <div class="actions"><button class="btn success" id="saveProfileBtn">Save Profile</button></div>
+          </section>
+
+          <section class="panel hidden" data-pane="skills">
+            <h2>Skills</h2>
+            <div style="overflow:auto;">
+              <table class="table" id="skillsTable">
+                <thead>
+                  <tr><th>Drag</th><th>Name</th><th>Category</th><th>Level</th><th>Icon</th><th>Delete</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="grid3" style="margin-top:12px;">
+              <label class="label">Skill Name<input class="input" id="newSkillName" /></label>
+              <label class="label">Category
+                <select class="select" id="newSkillCategory">
+                  <option>Web Dev</option><option>Offensive Security</option><option>Networking</option><option>Tools</option>
+                </select>
+              </label>
+              <label class="label">Level<input class="input" id="newSkillLevel" type="range" min="1" max="100" value="50" /></label>
+              <label class="label">Icon class<input class="input" id="newSkillIcon" placeholder="fa-solid fa-shield-halved" /></label>
+            </div>
+            <div class="actions">
+              <button class="btn" id="addSkillBtn">Add Skill</button>
+              <button class="btn success" id="saveSkillsBtn">Save Skills</button>
+            </div>
+          </section>
+
+          <section class="panel hidden" data-pane="certificates">
+            <h2>Certificates</h2>
+            <div class="grid3">
+              <label class="label">Name<input class="input" id="certName" /></label>
+              <label class="label">Issuer<input class="input" id="certIssuer" /></label>
+              <label class="label">Date<input class="input" id="certDate" type="date" /></label>
+              <label class="label">Skills covered (comma separated)<input class="input" id="certSkills" /></label>
+              <label class="label">Badge image file<input class="input" id="certBadgeFile" type="file" accept="image/*" /></label>
+              <label class="label">Badge image URL<input class="input" id="certBadgeUrl" type="url" /></label>
+              <label class="label">Locked?
+                <select class="select" id="certLocked"><option value="false">No</option><option value="true">Yes</option></select>
+              </label>
+            </div>
+            <div class="actions">
+              <button class="btn" id="addCertBtn">Add Certificate</button>
+              <button class="btn success" id="saveCertsBtn">Save Certificates</button>
+            </div>
+            <div class="card-grid" id="certList" style="margin-top:14px;"></div>
+          </section>
+
+          <section class="panel hidden" data-pane="learningLog">
+            <h2>Learning Log</h2>
+            <div class="grid3">
+              <label class="label">Date<input class="input" id="learnDate" type="date" /></label>
+              <label class="label">Topic<input class="input" id="learnTopic" /></label>
+              <label class="label">Status
+                <select class="select" id="learnStatus"><option>COMPLETED</option><option>IN PROGRESS</option><option>NEXT</option></select>
+              </label>
+              <label class="label" style="grid-column:1 / -1;">Notes<textarea class="textarea" id="learnNotes"></textarea></label>
+            </div>
+            <div class="actions">
+              <button class="btn" id="addLearningBtn">Add Entry</button>
+              <button class="btn" id="sortLearningBtn">Sort by Date</button>
+              <button class="btn success" id="saveLearningBtn">Save Learning Log</button>
+            </div>
+            <div id="learningList" class="card-grid" style="margin-top:14px;"></div>
+          </section>
+
+          <section class="panel hidden" data-pane="goals">
+            <h2>Goals & Roadmap</h2>
+            <div class="grid3">
+              <label class="label">Title<input class="input" id="goalTitle" /></label>
+              <label class="label">Deadline<input class="input" id="goalDeadline" type="date" /></label>
+              <label class="label">Term
+                <select class="select" id="goalTerm"><option>SHORT</option><option>MID</option><option>LONG</option></select>
+              </label>
+              <label class="label">Status
+                <select class="select" id="goalStatus"><option>ACTIVE</option><option>COMPLETED</option><option>UPCOMING</option></select>
+              </label>
+              <label class="label">Progress % <span id="goalProgressPreview">50</span>
+                <input class="input" id="goalProgress" type="range" min="0" max="100" value="50" />
+              </label>
+              <label class="label" style="grid-column:1 / -1;">Description<textarea class="textarea" id="goalDescription"></textarea></label>
+            </div>
+            <div class="actions">
+              <button class="btn" id="addGoalBtn">Add Goal</button>
+              <button class="btn success" id="saveGoalsBtn">Save Goals</button>
+            </div>
+            <div id="goalsList" class="card-grid" style="margin-top:14px;"></div>
+          </section>
+
+          <section class="panel hidden" data-pane="projects">
+            <h2>Projects</h2>
+            <div class="grid3">
+              <label class="label">Title<input class="input" id="projectTitle" /></label>
+              <label class="label">Live URL<input class="input" id="projectLiveUrl" type="url" /></label>
+              <label class="label">GitHub URL<input class="input" id="projectGithubUrl" type="url" /></label>
+              <label class="label">Tech Stack tags (comma separated)<input class="input" id="projectTech" /></label>
+              <label class="label">Thumbnail file<input class="input" id="projectThumbFile" type="file" accept="image/*" /></label>
+              <label class="label">Thumbnail URL<input class="input" id="projectThumbUrl" type="url" /></label>
+              <label class="label" style="grid-column:1 / -1;">Description<textarea class="textarea" id="projectDescription"></textarea></label>
+            </div>
+            <div class="actions">
+              <button class="btn" id="addProjectBtn">Add Project</button>
+              <button class="btn success" id="saveProjectsBtn">Save Projects</button>
+            </div>
+            <div id="projectsList" class="card-grid" style="margin-top:14px;"></div>
+          </section>
+
+          <section class="panel hidden" data-pane="experience">
+            <h2>Experience</h2>
+            <div class="grid3">
+              <label class="label">Role<input class="input" id="expRole" /></label>
+              <label class="label">Company<input class="input" id="expCompany" /></label>
+              <label class="label">Type<select class="select" id="expType"><option>WORK</option><option>FREELANCE</option><option>INTERNSHIP</option></select></label>
+              <label class="label">Start date<input class="input" id="expStart" type="date" /></label>
+              <label class="label">End date<input class="input" id="expEnd" type="date" /></label>
+              <label class="label">Present?
+                <select class="select" id="expPresent"><option value="false">No</option><option value="true">Yes</option></select>
+              </label>
+              <label class="label" style="grid-column:1 / -1;">Description<textarea class="textarea" id="expDescription"></textarea></label>
+            </div>
+            <div class="actions">
+              <button class="btn" id="addExpBtn">Add Experience</button>
+              <button class="btn success" id="saveExpBtn">Save Experience</button>
+            </div>
+            <div id="experienceList" class="card-grid" style="margin-top:14px;"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast">Saved successfully.</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, doc, onSnapshot, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+
+    // === EDIT HERE === PASTE YOUR FIREBASE CONFIG HERE ===
+    const firebaseConfig = {
+      apiKey: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      authDomain: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      projectId: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      storageBucket: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      messagingSenderId: "=== PASTE YOUR FIREBASE CONFIG HERE ===",
+      appId: "=== PASTE YOUR FIREBASE CONFIG HERE ==="
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // Firestore collection name: portfolio
+    // Firestore document name: main
+    const contentRef = doc(db, "portfolio", "main");
+
+    // === EDIT HERE === Allowed admin emails for dashboard access ===
+    const allowedAdminEmails = ["sambit@example.com"];
+
+    const fallback = {
+      profile: {
+        name: "",
+        bio: "",
+        roles: [],
+        profileImageUrl: "",
+        securityClearance: 0,
+        socialLinks: { github: "", linkedin: "", whatsapp: "" },
+        stats: { projects: 0, certifications: 0, tools: 0 }
+      },
+      skills: [],
+      certificates: [],
+      learningLog: [],
+      goals: [],
+      projects: [],
+      experience: [],
+      updatedAt: null
+    };
+
+    let data = structuredClone(fallback);
+    let editingCertIndex = -1;
+    let editingLearningIndex = -1;
+    let editingGoalIndex = -1;
+    let editingProjectIndex = -1;
+    let editingExpIndex = -1;
+
+    const ids = (id) => document.getElementById(id);
+    const loginScreen = ids("loginScreen");
+    const dashboard = ids("dashboard");
+    const loginError = ids("loginError");
+    const toast = ids("toast");
+
+    const panes = [...document.querySelectorAll("[data-pane]")];
+    const navBtns = [...document.querySelectorAll(".nav-btn")];
+
+    function safe(s) {
+      return String(s ?? "").replace(/[<>&"']/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&#39;" }[ch]));
+    }
+
+    function showToast(msg = "Saved successfully.") {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1500);
+    }
+
+    function mergePayload(payload = {}) {
+      return {
+        ...fallback,
+        ...payload,
+        profile: {
+          ...fallback.profile,
+          ...(payload.profile || {}),
+          socialLinks: {
+            ...fallback.profile.socialLinks,
+            ...((payload.profile || {}).socialLinks || {})
+          },
+          stats: {
+            ...fallback.profile.stats,
+            ...((payload.profile || {}).stats || {})
+          }
+        }
+      };
+    }
+
+    async function uploadIfAny(fileInputEl, folder) {
+      const file = fileInputEl.files?.[0];
+      if (!file) return null;
+      const randomBytes = crypto.getRandomValues(new Uint8Array(8));
+      const randomHex = Array.from(randomBytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+      const cleanName = `${Date.now()}-${randomHex}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+      const fileRef = ref(storage, `${folder}/${cleanName}`);
+      await uploadBytes(fileRef, file);
+      return getDownloadURL(fileRef);
+    }
+
+    async function saveAll() {
+      await setDoc(contentRef, { ...data, updatedAt: serverTimestamp() }, { merge: true });
+      showToast();
+    }
+
+    function setPane(name) {
+      panes.forEach((p) => p.classList.toggle("hidden", p.dataset.pane !== name));
+      navBtns.forEach((b) => b.classList.toggle("active", b.dataset.section === name));
+    }
+
+    navBtns.forEach((btn) => btn.addEventListener("click", () => setPane(btn.dataset.section)));
+
+    ids("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.textContent = "";
+      try {
+        await signInWithEmailAndPassword(auth, ids("loginEmail").value.trim(), ids("loginPassword").value);
+      } catch (err) {
+        loginError.textContent = "ACCESS DENIED: invalid email/password";
+        loginError.classList.remove("glitch");
+        void loginError.offsetWidth;
+        loginError.classList.add("glitch");
+      }
+    });
+
+    ids("signOutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const email = (user.email || "").toLowerCase();
+        const allowed = allowedAdminEmails.map((v) => v.toLowerCase()).includes(email);
+        if (!allowed) {
+          loginError.textContent = "ACCESS DENIED: account is not authorized for admin panel";
+          loginError.classList.remove("glitch");
+          void loginError.offsetWidth;
+          loginError.classList.add("glitch");
+          signOut(auth);
+          return;
+        }
+        ids("welcomeText").textContent = `Welcome, ${user.displayName || user.email || "Admin"}`;
+        loginScreen.classList.add("hidden");
+        dashboard.classList.remove("hidden");
+      } else {
+        dashboard.classList.add("hidden");
+        loginScreen.classList.remove("hidden");
+      }
+    });
+
+    function renderProfileForm() {
+      ids("profileName").value = data.profile.name || "";
+      ids("profileBio").value = data.profile.bio || "";
+      ids("profileRoles").value = (data.profile.roles || []).join(", ");
+      ids("profileGithub").value = data.profile.socialLinks?.github || "";
+      ids("profileLinkedin").value = data.profile.socialLinks?.linkedin || "";
+      ids("profileWhatsapp").value = data.profile.socialLinks?.whatsapp || "";
+      ids("profileImageUrl").value = data.profile.profileImageUrl || "";
+      ids("profileClearance").value = Number(data.profile.securityClearance || 0);
+      ids("statProjects").value = Number(data.profile.stats?.projects || 0);
+      ids("statCertifications").value = Number(data.profile.stats?.certifications || 0);
+      ids("statTools").value = Number(data.profile.stats?.tools || 0);
+    }
+
+    ids("saveProfileBtn").addEventListener("click", async () => {
+      const uploaded = await uploadIfAny(ids("profileImageFile"), "profile-images");
+      data.profile = {
+        ...data.profile,
+        name: ids("profileName").value.trim(),
+        bio: ids("profileBio").value.trim(),
+        roles: ids("profileRoles").value.split(",").map((v) => v.trim()).filter(Boolean),
+        securityClearance: Math.max(0, Math.min(100, Number(ids("profileClearance").value || 0))),
+        profileImageUrl: uploaded || ids("profileImageUrl").value.trim(),
+        socialLinks: {
+          github: ids("profileGithub").value.trim(),
+          linkedin: ids("profileLinkedin").value.trim(),
+          whatsapp: ids("profileWhatsapp").value.trim()
+        },
+        stats: {
+          projects: Number(ids("statProjects").value || 0),
+          certifications: Number(ids("statCertifications").value || 0),
+          tools: Number(ids("statTools").value || 0)
+        }
+      };
+      await saveAll();
+      renderProfileForm();
+    });
+
+    function renderSkills() {
+      const tbody = ids("skillsTable").querySelector("tbody");
+      tbody.innerHTML = data.skills.map((s, i) => `
+        <tr class="sortable-row" draggable="true" data-index="${i}">
+          <td><i class="fa-solid fa-grip-vertical"></i></td>
+          <td><input class="input" data-field="name" data-index="${i}" value="${safe(s.name)}" /></td>
+          <td>
+            <select class="select" data-field="category" data-index="${i}">
+              ${["Web Dev", "Offensive Security", "Networking", "Tools"].map((c) => `<option ${c === s.category ? "selected" : ""}>${c}</option>`).join("")}
+            </select>
+          </td>
+          <td><input class="input" type="number" min="1" max="100" data-field="level" data-index="${i}" value="${Number(s.level || 1)}" /></td>
+          <td><input class="input" data-field="icon" data-index="${i}" value="${safe(s.icon || "")}" /></td>
+          <td><button class="btn danger" data-del-skill="${i}">Delete</button></td>
+        </tr>
+      `).join("");
+
+      tbody.querySelectorAll("input,select").forEach((el) => {
+        el.addEventListener("input", () => {
+          const idx = Number(el.dataset.index);
+          const field = el.dataset.field;
+          data.skills[idx][field] = field === "level" ? Number(el.value) : el.value;
+        });
+      });
+
+      tbody.querySelectorAll("[data-del-skill]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (confirm("Delete this skill?")) {
+            data.skills.splice(Number(btn.dataset.delSkill), 1);
+            renderSkills();
+          }
+        });
+      });
+
+      let dragIndex = null;
+      tbody.querySelectorAll(".sortable-row").forEach((row) => {
+        row.addEventListener("dragstart", () => {
+          dragIndex = Number(row.dataset.index);
+          row.classList.add("dragging");
+        });
+        row.addEventListener("dragend", () => row.classList.remove("dragging"));
+        row.addEventListener("dragover", (e) => e.preventDefault());
+        row.addEventListener("drop", () => {
+          const dropIndex = Number(row.dataset.index);
+          if (dragIndex === null || dragIndex === dropIndex) return;
+          const [moved] = data.skills.splice(dragIndex, 1);
+          data.skills.splice(dropIndex, 0, moved);
+          renderSkills();
+        });
+      });
+    }
+
+    ids("addSkillBtn").addEventListener("click", () => {
+      data.skills.push({
+        name: ids("newSkillName").value.trim(),
+        category: ids("newSkillCategory").value,
+        level: Number(ids("newSkillLevel").value),
+        icon: ids("newSkillIcon").value.trim() || "fa-solid fa-shield-halved"
+      });
+      ids("newSkillName").value = "";
+      ids("newSkillIcon").value = "";
+      renderSkills();
+    });
+
+    ids("saveSkillsBtn").addEventListener("click", saveAll);
+
+    function renderCertificates() {
+      ids("certList").innerHTML = data.certificates.map((c, i) => `
+        <article class="mini-card">
+          ${c.badgeImageUrl ? `<img src="${safe(c.badgeImageUrl)}" alt="badge" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">` : ""}
+          <h4 style="margin:6px 0;">${safe(c.name)}</h4>
+          <p style="margin:0;color:var(--muted);">${safe(c.issuer)} · ${safe(c.date)}</p>
+          <div>${(c.skillsCovered || []).map((t) => `<span class="tag">${safe(t)}</span>`).join("")}</div>
+          <p style="margin:6px 0;color:${c.locked ? "var(--red)" : "var(--green)"};">${c.locked ? "LOCKED" : "UNLOCKED"}</p>
+          <button class="btn" data-edit-cert="${i}">Edit</button>
+          <button class="btn danger" data-del-cert="${i}">Delete</button>
+        </article>
+      `).join("");
+      ids("certList").querySelectorAll("[data-edit-cert]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.editCert);
+          const c = data.certificates[idx];
+          editingCertIndex = idx;
+          ids("certName").value = c.name || "";
+          ids("certIssuer").value = c.issuer || "";
+          ids("certDate").value = c.date || "";
+          ids("certSkills").value = (c.skillsCovered || []).join(", ");
+          ids("certBadgeUrl").value = c.badgeImageUrl || "";
+          ids("certLocked").value = String(Boolean(c.locked));
+          ids("addCertBtn").textContent = "Update Certificate";
+        });
+      });
+      ids("certList").querySelectorAll("[data-del-cert]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (confirm("Delete this certificate?")) {
+            data.certificates.splice(Number(btn.dataset.delCert), 1);
+            if (editingCertIndex === Number(btn.dataset.delCert)) {
+              editingCertIndex = -1;
+              ids("addCertBtn").textContent = "Add Certificate";
+            }
+            renderCertificates();
+          }
+        });
+      });
+    }
+
+    ids("addCertBtn").addEventListener("click", async () => {
+      const uploaded = await uploadIfAny(ids("certBadgeFile"), "certificate-badges");
+      const next = {
+        name: ids("certName").value.trim(),
+        issuer: ids("certIssuer").value.trim(),
+        date: ids("certDate").value,
+        skillsCovered: ids("certSkills").value.split(",").map((v) => v.trim()).filter(Boolean),
+        badgeImageUrl: uploaded || ids("certBadgeUrl").value.trim(),
+        locked: ids("certLocked").value === "true"
+      };
+      if (editingCertIndex >= 0) data.certificates[editingCertIndex] = next;
+      else data.certificates.push(next);
+      ["certName", "certIssuer", "certDate", "certSkills", "certBadgeUrl"].forEach((id) => ids(id).value = "");
+      ids("certLocked").value = "false";
+      ids("certBadgeFile").value = "";
+      editingCertIndex = -1;
+      ids("addCertBtn").textContent = "Add Certificate";
+      renderCertificates();
+    });
+
+    ids("saveCertsBtn").addEventListener("click", saveAll);
+
+    function renderLearning() {
+      ids("learningList").innerHTML = data.learningLog.map((l, i) => `
+        <article class="mini-card">
+          <strong>${safe(l.topic)}</strong>
+          <p style="margin:6px 0;color:var(--muted);">${safe(l.date)} · ${safe(l.status)}</p>
+          <p style="margin:0;">${safe(l.notes)}</p>
+          <button class="btn" data-edit-learning="${i}" style="margin-top:8px;">Edit</button>
+          <button class="btn danger" data-del-learning="${i}" style="margin-top:8px;">Delete</button>
+        </article>
+      `).join("");
+      ids("learningList").querySelectorAll("[data-edit-learning]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.editLearning);
+          const l = data.learningLog[idx];
+          editingLearningIndex = idx;
+          ids("learnDate").value = l.date || "";
+          ids("learnTopic").value = l.topic || "";
+          ids("learnNotes").value = l.notes || "";
+          ids("learnStatus").value = l.status || "COMPLETED";
+          ids("addLearningBtn").textContent = "Update Entry";
+        });
+      });
+      ids("learningList").querySelectorAll("[data-del-learning]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (confirm("Delete this learning entry?")) {
+            data.learningLog.splice(Number(btn.dataset.delLearning), 1);
+            if (editingLearningIndex === Number(btn.dataset.delLearning)) {
+              editingLearningIndex = -1;
+              ids("addLearningBtn").textContent = "Add Entry";
+            }
+            renderLearning();
+          }
+        });
+      });
+    }
+
+    ids("addLearningBtn").addEventListener("click", () => {
+      const next = {
+        date: ids("learnDate").value,
+        topic: ids("learnTopic").value.trim(),
+        notes: ids("learnNotes").value.trim(),
+        status: ids("learnStatus").value
+      };
+      if (editingLearningIndex >= 0) data.learningLog[editingLearningIndex] = next;
+      else data.learningLog.push(next);
+      ["learnDate", "learnTopic", "learnNotes"].forEach((id) => ids(id).value = "");
+      ids("learnStatus").value = "COMPLETED";
+      editingLearningIndex = -1;
+      ids("addLearningBtn").textContent = "Add Entry";
+      renderLearning();
+    });
+
+    ids("sortLearningBtn").addEventListener("click", () => {
+      data.learningLog.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      renderLearning();
+    });
+
+    ids("saveLearningBtn").addEventListener("click", saveAll);
+
+    ids("goalProgress").addEventListener("input", (e) => {
+      ids("goalProgressPreview").textContent = e.target.value;
+    });
+
+    function renderGoals() {
+      ids("goalsList").innerHTML = data.goals.map((g, i) => `
+        <article class="mini-card">
+          <strong>${safe(g.title)}</strong>
+          <p style="margin:6px 0;color:var(--muted);">${safe(g.term)} · ${safe(g.status)} · ${Number(g.progress || 0)}%</p>
+          <p style="margin:0;">${safe(g.description)}</p>
+          <button class="btn" data-edit-goal="${i}" style="margin-top:8px;">Edit</button>
+          <button class="btn danger" data-del-goal="${i}" style="margin-top:8px;">Delete</button>
+        </article>
+      `).join("");
+      ids("goalsList").querySelectorAll("[data-edit-goal]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.editGoal);
+          const g = data.goals[idx];
+          editingGoalIndex = idx;
+          ids("goalTitle").value = g.title || "";
+          ids("goalDescription").value = g.description || "";
+          ids("goalDeadline").value = g.deadline || "";
+          ids("goalTerm").value = g.term || "SHORT";
+          ids("goalStatus").value = g.status || "ACTIVE";
+          ids("goalProgress").value = Number(g.progress || 0);
+          ids("goalProgressPreview").textContent = String(Number(g.progress || 0));
+          ids("addGoalBtn").textContent = "Update Goal";
+        });
+      });
+      ids("goalsList").querySelectorAll("[data-del-goal]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (confirm("Delete this goal?")) {
+            data.goals.splice(Number(btn.dataset.delGoal), 1);
+            if (editingGoalIndex === Number(btn.dataset.delGoal)) {
+              editingGoalIndex = -1;
+              ids("addGoalBtn").textContent = "Add Goal";
+            }
+            renderGoals();
+          }
+        });
+      });
+    }
+
+    ids("addGoalBtn").addEventListener("click", () => {
+      const next = {
+        title: ids("goalTitle").value.trim(),
+        description: ids("goalDescription").value.trim(),
+        deadline: ids("goalDeadline").value,
+        term: ids("goalTerm").value,
+        status: ids("goalStatus").value,
+        progress: Number(ids("goalProgress").value)
+      };
+      if (editingGoalIndex >= 0) data.goals[editingGoalIndex] = next;
+      else data.goals.push(next);
+      ["goalTitle", "goalDescription", "goalDeadline"].forEach((id) => ids(id).value = "");
+      ids("goalTerm").value = "SHORT";
+      ids("goalStatus").value = "ACTIVE";
+      ids("goalProgress").value = 50;
+      ids("goalProgressPreview").textContent = "50";
+      editingGoalIndex = -1;
+      ids("addGoalBtn").textContent = "Add Goal";
+      renderGoals();
+    });
+
+    ids("saveGoalsBtn").addEventListener("click", saveAll);
+
+    function renderProjects() {
+      ids("projectsList").innerHTML = data.projects.map((p, i) => `
+        <article class="mini-card">
+          ${p.thumbnail ? `<img src="${safe(p.thumbnail)}" alt="thumb" style="width:100%;height:100px;object-fit:cover;border-radius:8px;">` : ""}
+          <strong>${safe(p.title)}</strong>
+          <p style="margin:6px 0;">${safe(p.description)}</p>
+          <div>${(p.techStack || []).map((t) => `<span class="tag">${safe(t)}</span>`).join("")}</div>
+          <button class="btn" data-edit-project="${i}" style="margin-top:8px;">Edit</button>
+          <button class="btn danger" data-del-project="${i}" style="margin-top:8px;">Delete</button>
+        </article>
+      `).join("");
+      ids("projectsList").querySelectorAll("[data-edit-project]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.editProject);
+          const p = data.projects[idx];
+          editingProjectIndex = idx;
+          ids("projectTitle").value = p.title || "";
+          ids("projectDescription").value = p.description || "";
+          ids("projectTech").value = (p.techStack || []).join(", ");
+          ids("projectLiveUrl").value = p.liveUrl || "";
+          ids("projectGithubUrl").value = p.githubUrl || "";
+          ids("projectThumbUrl").value = p.thumbnail || "";
+          ids("addProjectBtn").textContent = "Update Project";
+        });
+      });
+      ids("projectsList").querySelectorAll("[data-del-project]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (confirm("Delete this project?")) {
+            data.projects.splice(Number(btn.dataset.delProject), 1);
+            if (editingProjectIndex === Number(btn.dataset.delProject)) {
+              editingProjectIndex = -1;
+              ids("addProjectBtn").textContent = "Add Project";
+            }
+            renderProjects();
+          }
+        });
+      });
+    }
+
+    ids("addProjectBtn").addEventListener("click", async () => {
+      const uploaded = await uploadIfAny(ids("projectThumbFile"), "project-thumbnails");
+      const next = {
+        title: ids("projectTitle").value.trim(),
+        description: ids("projectDescription").value.trim(),
+        techStack: ids("projectTech").value.split(",").map((v) => v.trim()).filter(Boolean),
+        liveUrl: ids("projectLiveUrl").value.trim(),
+        githubUrl: ids("projectGithubUrl").value.trim(),
+        thumbnail: uploaded || ids("projectThumbUrl").value.trim()
+      };
+      if (editingProjectIndex >= 0) data.projects[editingProjectIndex] = next;
+      else data.projects.push(next);
+      ["projectTitle", "projectDescription", "projectTech", "projectLiveUrl", "projectGithubUrl", "projectThumbUrl"].forEach((id) => ids(id).value = "");
+      ids("projectThumbFile").value = "";
+      editingProjectIndex = -1;
+      ids("addProjectBtn").textContent = "Add Project";
+      renderProjects();
+    });
+
+    ids("saveProjectsBtn").addEventListener("click", saveAll);
+
+    function renderExperience() {
+      ids("experienceList").innerHTML = data.experience.map((x, i) => `
+        <article class="mini-card">
+          <strong>${safe(x.role)} @ ${safe(x.company)}</strong>
+          <p style="margin:6px 0;color:var(--muted);">${safe(x.duration)} · ${safe(x.type)}</p>
+          <p style="margin:0;">${safe(x.description)}</p>
+          <button class="btn" data-edit-exp="${i}" style="margin-top:8px;">Edit</button>
+          <button class="btn danger" data-del-exp="${i}" style="margin-top:8px;">Delete</button>
+        </article>
+      `).join("");
+      ids("experienceList").querySelectorAll("[data-edit-exp]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.editExp);
+          const x = data.experience[idx];
+          editingExpIndex = idx;
+          ids("expRole").value = x.role || "";
+          ids("expCompany").value = x.company || "";
+          ids("expDescription").value = x.description || "";
+          ids("expType").value = x.type || "WORK";
+          const parts = String(x.duration || "").split(" - ");
+          ids("expStart").value = parts[0] || "";
+          if (parts[1] === "Present") {
+            ids("expPresent").value = "true";
+            ids("expEnd").value = "";
+          } else {
+            ids("expPresent").value = "false";
+            ids("expEnd").value = parts[1] || "";
+          }
+          ids("addExpBtn").textContent = "Update Experience";
+        });
+      });
+      ids("experienceList").querySelectorAll("[data-del-exp]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (confirm("Delete this experience item?")) {
+            data.experience.splice(Number(btn.dataset.delExp), 1);
+            if (editingExpIndex === Number(btn.dataset.delExp)) {
+              editingExpIndex = -1;
+              ids("addExpBtn").textContent = "Add Experience";
+            }
+            renderExperience();
+          }
+        });
+      });
+    }
+
+    ids("addExpBtn").addEventListener("click", () => {
+      const start = ids("expStart").value;
+      const end = ids("expPresent").value === "true" ? "Present" : (ids("expEnd").value || "");
+      const next = {
+        role: ids("expRole").value.trim(),
+        company: ids("expCompany").value.trim(),
+        duration: start && end ? `${start} - ${end}` : "",
+        description: ids("expDescription").value.trim(),
+        type: ids("expType").value
+      };
+      if (editingExpIndex >= 0) data.experience[editingExpIndex] = next;
+      else data.experience.push(next);
+      ["expRole", "expCompany", "expStart", "expEnd", "expDescription"].forEach((id) => ids(id).value = "");
+      ids("expType").value = "WORK";
+      ids("expPresent").value = "false";
+      editingExpIndex = -1;
+      ids("addExpBtn").textContent = "Add Experience";
+      renderExperience();
+    });
+
+    ids("saveExpBtn").addEventListener("click", saveAll);
+
+    function renderAll() {
+      renderProfileForm();
+      renderSkills();
+      renderCertificates();
+      renderLearning();
+      renderGoals();
+      renderProjects();
+      renderExperience();
+    }
+
+    onSnapshot(contentRef, (snap) => {
+      data = mergePayload(snap.exists() ? snap.data() : {});
+      renderAll();
+      const stamp = data.updatedAt?.toDate ? data.updatedAt.toDate() : null;
+      ids("lastUpdated").textContent = `Last updated: ${stamp ? stamp.toLocaleString() : "--"}`;
+    });
+  </script>
+</body>
+</html>
