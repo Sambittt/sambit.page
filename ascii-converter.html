@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ASCII Art Studio — Convert Video, Image & GIF to ASCII Art | sambit.page</title>
+<meta name="description" content="Free online ASCII art converter by Sambit Satapathy. Convert videos, images and animated GIFs into ASCII art. 6 colour palettes, download as PNG, GIF or TXT. No signup needed."/>
+<meta name="keywords" content="ASCII art converter, video to ASCII, image to ASCII, GIF to ASCII art, ASCII art generator, online ASCII converter, sambit.page, Sambit Satapathy"/>
+<meta name="author" content="Sambit Satapathy"/>
+<meta property="og:title" content="ASCII Art Studio — sambit.page"/>
+<meta property="og:description" content="Convert videos, images and GIFs into ASCII art. Free tool by Sambit Satapathy."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://sambit.page/ascii-converter.html"/>
+<link rel="canonical" href="https://sambit.page/ascii-converter.html"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#030303;--card:#080808;--muted:#0f0f0f;--border:#1c1c1c;--fg:#f0f0f0;--dim:#606060;--green:#4ade80;--accent:#4ade80}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--fg);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+nav{border-bottom:1px solid var(--border);background:var(--card);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-brand{font-size:.95rem;font-weight:600;letter-spacing:.08em;color:var(--accent)}
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--accent)}
+.nav-r{display:flex;align-items:center;gap:1.2rem}
+#clock{font-size:.7rem;color:var(--dim)}
+.pulse{font-size:.65rem;color:var(--accent);display:flex;align-items:center;gap:.35rem}
+.pulse::before{content:'';width:6px;height:6px;background:var(--accent);display:block;animation:p 2s ease-in-out infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.2}}
+
+main{max-width:1080px;margin:0 auto;padding:2rem 1.5rem;display:flex;flex-direction:column;gap:1.5rem}
+h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:500}
+.sub{font-size:.82rem;color:var(--dim);margin-top:.3rem}
+.hr{height:1px;background:var(--border);margin-top:.9rem}
+
+.card{border:1px solid var(--border);background:var(--card)}
+.cb{padding:1.5rem 2rem}
+
+.tf{border:1px solid var(--border);background:var(--bg)}
+.tf-bar{display:flex;align-items:center;justify-content:space-between;padding:.4rem .7rem;background:var(--muted);border-bottom:1px solid var(--border)}
+.tf-dots{display:flex;gap:4px}
+.tf-dots span{width:10px;height:10px;border-radius:50%}
+.dr{background:#ef4444}.dy{background:#eab308}.dg{background:#22c55e}
+.tf-lbl{font-size:.68rem;color:var(--dim)}
+.tf-body{padding:1rem}
+
+#drop-zone{border:2px dashed var(--border);cursor:pointer;transition:border-color .2s}
+#drop-zone:hover,#drop-zone.over{border-color:var(--accent)}
+.di{padding:2.5rem 2rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.dico{width:48px;height:48px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--dim);transition:border-color .2s,color .2s}
+#drop-zone:hover .dico{border-color:var(--accent);color:var(--accent)}
+.dtitle{font-size:.95rem;font-weight:500}
+.dsub{font-size:.76rem;color:var(--dim)}
+
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.48rem 1rem;font-family:inherit;font-size:.76rem;font-weight:500;letter-spacing:.06em;background:transparent;border:1px solid var(--border);color:var(--fg);cursor:pointer;transition:border-color .2s,background .2s,color .2s;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--accent);background:rgba(74,222,128,.05)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-green{background:var(--accent);color:#000;border-color:var(--accent)}
+.btn-green:hover{opacity:.85}
+.btn-row{display:flex;flex-wrap:wrap;gap:.6rem;padding-top:.9rem;border-top:1px solid var(--border);margin-top:.9rem}
+
+/* Palette */
+.pal-row{display:flex;align-items:center;gap:.6rem;margin:.4rem 0 .9rem}
+.pal-lbl{font-size:.68rem;color:var(--dim);letter-spacing:.06em}
+.sw{width:22px;height:22px;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s}
+.sw:hover{transform:scale(1.2)}
+.sw.on{border-color:var(--fg)!important;transform:scale(1.15)}
+.sg{background:#4ade80}.sr{background:#f87171}.sbw{background:linear-gradient(135deg,#fff 50%,#222 50%)}
+.sy{background:#fbbf24}.sb{background:#60a5fa}.sp{background:#c084fc}
+
+/* Sliders */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:.6rem 0}
+@media(max-width:550px){.cgrid{grid-template-columns:1fr}}
+.cg{display:flex;flex-direction:column;gap:.45rem}
+.cgl{font-size:.7rem;color:var(--dim);letter-spacing:.05em}
+.sr-row{display:flex;align-items:center;gap:.7rem}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:2px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:12px;height:12px;background:var(--accent)}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;background:var(--accent);border:none;border-radius:0}
+.sv{font-size:.7rem;color:var(--accent);min-width:4rem;text-align:right}
+
+/* Progress */
+#pw{display:none;flex-direction:column;gap:.4rem}
+#pw.v{display:flex}
+.pt{width:100%;height:2px;background:var(--border)}
+.pf{height:100%;background:var(--accent);width:0%;transition:width .15s}
+.pl{font-size:.68rem;color:var(--dim)}
+
+/* Output */
+#oc{display:none}#oc.v{display:block}
+.oh{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.ot{font-size:.9rem;font-weight:500}
+.fc{font-size:.7rem;color:var(--dim)}
+.av{background:var(--bg);border:1px solid var(--border);padding:.6rem;overflow-x:auto;overflow-y:auto;position:relative;max-width:100%;-webkit-overflow-scrolling:touch}
+.av::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:20px 20px}
+#ao{font-family:'Courier New',Courier,monospace;line-height:1.05;white-space:pre;color:var(--green);position:relative;z-index:1;transition:color .3s;display:block;font-size:7px}
+
+/* Download panel */
+#dlp{display:none;border:1px solid var(--border);background:var(--card);margin-top:0}
+#dlp.v{display:block}
+.dlp-inner{padding:1.2rem 2rem}
+.dl-title{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:.8rem}
+.dl-row{display:flex;flex-wrap:wrap;gap:.6rem}
+
+/* Chat panel */
+#chatp{display:none;border:1px solid var(--border);background:var(--card)}
+#chatp.v{display:block}
+.chat-inner{padding:1.2rem 2rem}
+.chat-note{font-size:.72rem;color:var(--dim);line-height:1.7;margin-top:.8rem;padding:.7rem;border:1px solid var(--border);background:var(--muted)}
+.chat-note span{color:var(--accent)}
+
+#cc{display:none}#cc.v{display:block}
+.ctrl-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.ct{font-size:.9rem;font-weight:500}
+.ft{font-size:.67rem;color:var(--dim);border:1px solid var(--border);background:var(--muted);padding:.12rem .4rem;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#prev{display:block}#prev.h{display:none}
+#fi{display:none}
+
+/* ─ Coffee Popup ─ */
+#cpop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1000;align-items:center;justify-content:center;animation:popIn .3s ease}
+#cpop.show{display:flex}
+@keyframes popIn{from{opacity:0}to{opacity:1}}
+#cpop-box{background:#080808;border:1px solid #1c1c1c;padding:1.8rem;width:min(420px,92vw);position:relative;animation:slideUp .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.cpop-emoji{font-size:2.2rem;margin-bottom:.6rem}
+.cpop-title{font-size:1rem;font-weight:600;margin-bottom:.4rem;letter-spacing:.02em}
+.cpop-sub{font-size:.75rem;color:#606060;margin-bottom:1.2rem;line-height:1.75}
+.cpop-btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}
+.cpop-skip{width:100%;padding:.5rem;background:transparent;border:1px solid #1c1c1c;color:#444;font-family:inherit;font-size:.72rem;cursor:pointer;letter-spacing:.06em;transition:border-color .2s,color .2s}
+.cpop-skip:hover{border-color:#606060;color:#888}
+.cpop-qr{margin-top:.8rem;padding-top:.8rem;border-top:1px solid #1c1c1c}
+.cpop-qr-lbl{font-size:.62rem;color:#444;margin-top:.4rem;letter-spacing:.06em}
+@media(max-width:600px){#cpop-qr-wrap{display:none}}
+@media(max-width:600px){
+  main{padding:1rem .75rem;gap:1rem}
+  .cb{padding:1rem}
+  .cgrid{grid-template-columns:1fr}
+  .dl-row{flex-direction:column}
+  .chat-inner,.dlp-inner{padding:1rem}
+  nav{padding:.5rem .75rem}
+  .nav-links a{font-size:.6rem}
+  h1{font-size:1.2rem}
+  .tf-body video{max-width:100%!important}
+}
+body{padding-bottom:52px}
+#coffee-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:#080808;border-top:1px solid #1c1c1c}
+#coffee-toggle{padding:.75rem 1.5rem;cursor:pointer;font-size:.75rem;font-weight:600;display:flex;align-items:center;justify-content:space-between;user-select:none;letter-spacing:.04em}
+#coffee-toggle:hover{background:#0f0f0f}
+#coffee-panel{display:none;padding:1rem 1.5rem;border-top:1px solid #1c1c1c}
+#coffee-panel.open{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){#coffee-panel.open{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-brand">sambit.page</span>
+  <div class="nav-links">
+    <a href="index.html">← Portfolio</a>
+    <a href="ascii-converter.html" class="active">ASCII Studio</a>
+    <a href="font-animator.html">Font Animator</a>
+  </div>
+  <div class="nav-r">
+    <span id="clock"></span>
+    <span class="pulse">ACTIVE</span>
+  </div>
+</nav>
+
+<main>
+  <div>
+    <h1>ASCII Art Studio</h1>
+    <p class="sub">Convert videos, images &amp; GIFs into ASCII art — by sambit.page</p>
+    <div class="hr"></div>
+  </div>
+
+  <div class="card" id="prev">
+    <div class="cb">
+      <div class="tf">
+        <div class="tf-bar">
+          <div class="tf-dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div>
+          <div class="tf-lbl">preview.mov</div>
+          <div style="width:44px"></div>
+        </div>
+        <div class="tf-body">
+          <video autoplay loop muted playsinline style="width:100%;max-width:600px;display:block;margin:0 auto">
+            <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RPReplay_Final1758943384-lFlOhPjiu0rgv5mbWLixF6xIQk8pUX.mov" type="video/mp4"/>
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="drop-zone" role="button" tabindex="0">
+    <div class="di">
+      <div class="dico">+</div>
+      <div>
+        <div class="dtitle">Drop file here</div>
+        <div class="dsub">Video (MP4 WebM MOV AVI) · Image (JPG PNG WebP BMP) · GIF</div>
+      </div>
+      <button class="btn" id="selbtn">Select File</button>
+    </div>
+    <input type="file" id="fi" accept="video/*,image/*,.gif"/>
+  </div>
+
+  <div class="card" id="cc">
+    <div class="cb">
+      <div class="ctrl-hdr">
+        <span class="ct">Processing Controls</span>
+        <span class="ft" id="ftag"></span>
+      </div>
+
+      <div class="pal-row">
+        <span class="pal-lbl">COLOR</span>
+        <div class="sw sg on" data-c="#4ade80" title="Green"></div>
+        <div class="sw sr"   data-c="#f87171" title="Red"></div>
+        <div class="sw sbw"  data-c="#e5e5e5" title="B&amp;W"></div>
+        <div class="sw sy"   data-c="#fbbf24" title="Yellow"></div>
+        <div class="sw sb"   data-c="#60a5fa" title="Blue"></div>
+        <div class="sw sp"   data-c="#c084fc" title="Purple"></div>
+      </div>
+
+            <div class="pal-row" style="margin-top:.5rem">
+        <span class="pal-lbl">MULTI</span>
+        <div class="sw" data-g="linear-gradient(90deg,#f87171,#fbbf24,#4ade80,#60a5fa,#c084fc)" title="Rainbow" style="background:linear-gradient(90deg,#f87171,#fbbf24,#4ade80,#60a5fa,#c084fc)"></div>
+        <div class="sw" data-g="linear-gradient(90deg,#f97316,#ec4899,#8b5cf6)" title="Sunset" style="background:linear-gradient(90deg,#f97316,#ec4899,#8b5cf6)"></div>
+        <div class="sw" data-g="linear-gradient(90deg,#06b6d4,#3b82f6,#0ea5e9)" title="Ocean" style="background:linear-gradient(90deg,#06b6d4,#3b82f6,#0ea5e9)"></div>
+        <div class="sw" data-g="linear-gradient(90deg,#00ffff,#ff00ff,#ffff00)" title="Neon" style="background:linear-gradient(90deg,#00ffff,#ff00ff,#ffff00)"></div>
+        <div class="sw" data-g="linear-gradient(90deg,#f472b6,#a78bfa,#60a5fa)" title="Candy" style="background:linear-gradient(90deg,#f472b6,#a78bfa,#60a5fa)"></div>
+        <div class="sw" data-g="linear-gradient(90deg,#166534,#4ade80,#bef264)" title="Forest" style="background:linear-gradient(90deg,#166534,#4ade80,#bef264)"></div>
+      </div>
+
+      <div class="cgrid">
+        <div class="cg">
+          <div class="cgl">WIDTH</div>
+          <div class="sr-row">
+            <input type="range" id="wsl" min="20" max="120" step="5" value="90"/>
+            <span class="sv"><span id="wv">90</span> ch</span>
+          </div>
+        </div>
+        <div class="cg">
+          <div class="cgl">FRAME RATE <span style="color:#333;font-size:.62rem">(video/gif)</span></div>
+          <div class="sr-row">
+            <input type="range" id="fpssl" min="5" max="30" step="5" value="10"/>
+            <span class="sv"><span id="fpsv">10</span> fps</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="pw">
+        <div class="pt"><div class="pf" id="pfill"></div></div>
+        <div class="pl">Processing… <span id="ppct">0</span>%</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" id="cvbtn">Convert to ASCII</button>
+        <button class="btn" id="plbtn" style="display:none">Play</button>
+        <button class="btn" id="rsbtn">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="oc">
+    <div class="cb">
+      <div class="oh">
+        <span class="ot">ASCII Output</span>
+        <span class="fc" id="fctr"></span>
+      </div>
+      <div class="av"><pre id="ao">No frame data</pre></div>
+    </div>
+  </div>
+
+  <!-- Download Panel -->
+  <div id="dlp">
+    <div class="dlp-inner">
+      <div class="dl-title">⬇ Download</div>
+      <div class="dl-row">
+        <button class="btn" id="dltxt">📄 TXT</button>
+        <button class="btn" id="dlpng">🖼 PNG</button>
+        <button class="btn" id="dlgif">🎞 GIF (animated)</button>
+        <button class="btn" id="dlvid">🎥 Video (MP4/WebM)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Copy Panel (images only) -->
+  <div id="chatp">
+    <div class="chat-inner">
+      <div class="dl-title">💬 Copy for Chat</div>
+      <div class="dl-row">
+        <button class="btn" id="cpraw">Copy Plain Text</button>
+        <button class="btn" id="cpwa">Copy for WhatsApp (monospace)</button>
+        <button class="btn" id="cpig">Copy for Instagram</button>
+        <button class="btn" id="cpnarrow">Compact (30ch mobile)</button>
+      </div>
+      <div class="chat-note">
+        <span>WhatsApp:</span> wrap in ``` backticks for monospace — works best on Desktop.<br/>
+        <span>Instagram:</span> paste in Bio or Caption. Uses proportional font so short widths look best.<br/>
+        <span>Discord/Telegram:</span> wrap in ``` code blocks for perfect rendering.
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Coffee Popup (shows after conversion) -->
+<div id="cpop">
+  <div id="cpop-box">
+    <div class="cpop-emoji">☕</div>
+    <div class="cpop-title">Enjoying ASCII Art Studio?</div>
+    <div class="cpop-sub">If this tool saved you time, buying me a coffee helps keep these tools free and updated!</div>
+    <div class="cpop-btns">
+      <a href="https://paypal.me/sambit221220" target="_blank"
+        style="display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;background:transparent;border:1px solid #1c1c1c;color:#60a5fa;font-family:inherit;font-size:.78rem;text-decoration:none;transition:border-color .2s"
+        onmouseover="this.style.borderColor='#60a5fa'" onmouseout="this.style.borderColor='#1c1c1c'">
+        💙 PayPal
+      </a>
+      <div style="display:flex;gap:.4rem;align-items:center">
+        <input type="number" id="pop-amt" placeholder="₹ Amount" min="1"
+          style="padding:.45rem .6rem;background:#030303;border:1px solid #1c1c1c;color:#f0f0f0;font-family:inherit;font-size:.75rem;width:100px;outline:none"
+          onfocus="this.style.borderColor='#4ade80'" onblur="this.style.borderColor='#1c1c1c'"/>
+        <button onclick="popUPI()" style="padding:.45rem .9rem;background:#4ade80;color:#000;border:none;font-family:inherit;font-size:.75rem;font-weight:600;cursor:pointer">☕ UPI</button>
+      </div>
+    </div>
+    <div id="cpop-qr-wrap" class="cpop-qr">
+      <div id="cpop-qr-box"></div>
+      <div class="cpop-qr-lbl">Scan with any UPI app</div>
+    </div>
+    <button class="cpop-skip" onclick="closePop()">Skip for now — maybe next time 🪄</button>
+  </div>
+</div>
+
+<!-- Buy Me a Coffee (fixed bottom bar) -->
+<div id="coffee-bar">
+  <div id="coffee-toggle" onclick="document.getElementById('coffee-panel').classList.toggle('open');this.querySelector('.arr').textContent=document.getElementById('coffee-panel').classList.contains('open')?'▼':'▲'">
+    <span>☕ Buy Me a Coffee</span><span class="arr">▲</span>
+  </div>
+  <div id="coffee-panel">
+  <div style="border:1px solid #1c1c1c;background:#030303;padding:1rem">
+  <div style="border:1px solid #1c1c1c;background:#080808">
+    <div style="padding:1.2rem 2rem;border-bottom:1px solid #1c1c1c;display:flex;align-items:center;gap:.8rem">
+      <span style="font-size:1.3rem">☕</span>
+      <div>
+        <div style="font-size:.9rem;font-weight:600;letter-spacing:.04em">Buy Me a Coffee</div>
+        <div style="font-size:.72rem;color:#606060;margin-top:.15rem">If this tool saved you time, a coffee goes a long way ☕</div>
+      </div>
+    </div>
+    <div style="padding:1.5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+
+      <!-- PayPal -->
+      <div style="border:1px solid #1c1c1c;background:#030303;padding:1.2rem">
+        <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#606060;margin-bottom:.6rem">PayPal</div>
+        <a href="https://paypal.me/sambit221220" target="_blank"
+           style="display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border:1px solid #1c1c1c;color:#60a5fa;font-family:inherit;font-size:.8rem;font-weight:500;text-decoration:none;transition:border-color .2s,background .2s"
+           onmouseover="this.style.borderColor='#60a5fa';this.style.background='rgba(96,165,250,.06)'"
+           onmouseout="this.style.borderColor='#1c1c1c';this.style.background='transparent'">
+          💙 Pay via PayPal
+        </a>
+        <div style="font-size:.65rem;color:#444;margin-top:.4rem">paypal.me/sambit221220</div>
+      </div>
+      <div style="border:1px solid #1c1c1c;background:#030303;padding:1rem">
+        <div style="font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#606060;margin-bottom:.5rem">UPI (India)</div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <input type="number" id="upi-amt" placeholder="₹ Amount" min="1"
+            style="padding:.4rem .6rem;background:#080808;border:1px solid #1c1c1c;color:#f0f0f0;font-family:inherit;font-size:.78rem;width:110px;outline:none"
+            onfocus="this.style.borderColor='#4ade80'" onblur="this.style.borderColor='#1c1c1c'"/>
+          <button onclick="payUPI()" style="padding:.4rem .9rem;background:#4ade80;color:#000;border:none;font-family:inherit;font-size:.75rem;font-weight:600;cursor:pointer">☕ Pay</button>
+        </div>
+        <div style="font-size:.65rem;color:#444;margin-top:.4rem">UPI ID: bundi.ka14@upi</div>
+        <div id="qr-wrap"><div id="qr-box"></div><div class="qr-label">Scan with UPI app</div></div>
+      </div>
+  </div>
+</div>
+
+<style>
+@media(max-width:767px){#qr-wrap{display:none!important}}
+#qr-wrap{margin-top:.8rem}
+#qr-box canvas,#qr-box img{border:3px solid #1c1c1c;background:#fff;display:block}
+.qr-label{font-size:.65rem;color:#444;margin-top:.4rem;letter-spacing:.08em}
+</style>
+
+<video id="pv" style="display:none" muted preload="metadata"></video>
+<canvas id="pc" style="display:none"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+<script>
+// Clock
+const clk=document.getElementById('clock');
+setInterval(()=>{clk.textContent=new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'})},1000);
+
+const AC=' .:-=+*#%@';
+let frames=[],cur=0,playing=false,timer=null,color='#4ade80',isImage=false;
+
+const dz=document.getElementById('drop-zone'),fi=document.getElementById('fi');
+const prev=document.getElementById('prev'),cc=document.getElementById('cc');
+const oc=document.getElementById('oc'),dlp=document.getElementById('dlp'),chatp=document.getElementById('chatp');
+const ftag=document.getElementById('ftag'),wsl=document.getElementById('wsl'),wv=document.getElementById('wv');
+const fpssl=document.getElementById('fpssl'),fpsv=document.getElementById('fpsv');
+const cvbtn=document.getElementById('cvbtn'),plbtn=document.getElementById('plbtn'),rsbtn=document.getElementById('rsbtn');
+const pw=document.getElementById('pw'),pfill=document.getElementById('pfill'),ppct=document.getElementById('ppct');
+const ao=document.getElementById('ao'),fctr=document.getElementById('fctr');
+const pv=document.getElementById('pv'),pc=document.getElementById('pc');
+
+wsl.oninput=()=>{wv.textContent=wsl.value;autoScale();};
+fpssl.oninput=()=>fpsv.textContent=fpssl.value;
+
+// ── Auto-scale ASCII font to fit container ──
+function autoScale(){
+  const container=document.querySelector('.av');
+  if(!container)return;
+  const chars=+wsl.value||90;
+  // Available width minus padding
+  const avail=container.clientWidth-16;
+  // Courier New char width ≈ 0.601× font size
+  const ideal=avail/(chars*0.601);
+  // Clamp between 3px (tiny mobile) and 10px (desktop)
+  ao.style.fontSize=Math.min(10,Math.max(3,ideal))+'px';
+}
+window.addEventListener('resize',autoScale);
+
+// Swatches — solid + gradient
+let activeGradient=null;
+document.querySelectorAll('.sw').forEach(s=>{
+  s.addEventListener('click',()=>{
+    document.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));
+    s.classList.add('on');
+    if(s.dataset.g){
+      // Multi-color gradient
+      activeGradient=s.dataset.g;
+      ao.style.background=activeGradient;
+      ao.style.webkitBackgroundClip='text';
+      ao.style.webkitTextFillColor='transparent';
+      ao.style.backgroundClip='text';
+      ao.style.color='transparent';
+      color=s.dataset.g; // store for renderToCanvas
+    } else {
+      // Solid color
+      activeGradient=null;
+      ao.style.background='';
+      ao.style.webkitBackgroundClip='';
+      ao.style.webkitTextFillColor='';
+      ao.style.backgroundClip='';
+      color=s.dataset.c;
+      ao.style.color=color;
+    }
+  });
+});
+
+// Drop zone
+document.getElementById('selbtn').addEventListener('click',e=>{e.stopPropagation();fi.click()});
+dz.addEventListener('click',()=>fi.click());
+dz.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')fi.click()});
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])load(e.dataTransfer.files[0])});
+fi.addEventListener('change',()=>{if(fi.files[0])load(fi.files[0])});
+
+function load(f){
+  pv._f=f;pv._u=URL.createObjectURL(f);
+  ftag.textContent=f.name;
+  isImage=f.type.startsWith('image/')&&f.type!=='image/gif';
+  dz.style.display='none';prev.style.display='none';
+  cc.classList.add('v');frames=[];cur=0;
+  oc.classList.remove('v');dlp.classList.remove('v');chatp.classList.remove('v');
+  plbtn.style.display='none';
+}
+
+function toAscii(id,cw){
+  const{data,width:sw,height:sh}=id;
+  const ch=Math.floor((sh*cw)/sw/2);
+  let o='';
+  for(let y=0;y<ch;y++){
+    for(let x=0;x<cw;x++){
+      const sx=Math.floor((x*sw)/cw),sy=Math.floor((y*sh)/ch);
+      const i=(sy*sw+sx)*4;
+      o+=AC[Math.floor(((data[i]+data[i+1]+data[i+2])/3/255)*(AC.length-1))];
+    }
+    o+='\n';
+  }
+  return o;
+}
+
+function setP(p){pfill.style.width=p+'%';ppct.textContent=p}
+
+async function doVideo(u){
+  await new Promise(r=>{if(pv.readyState>=1)r();else{pv.src=u;pv.onloadedmetadata=r}});
+  const fps=+fpssl.value,cw=+wsl.value,dur=pv.duration,fc=Math.floor(dur*fps);
+  const ctx=pc.getContext('2d'),res=[];
+  for(let i=0;i<fc;i++){
+    pv.currentTime=(i/fc)*dur;
+    await new Promise(r=>{pv.onseeked=r});
+    pc.width=pv.videoWidth;pc.height=pv.videoHeight;
+    ctx.drawImage(pv,0,0);
+    res.push(toAscii(ctx.getImageData(0,0,pc.width,pc.height),cw));
+    setP(Math.floor(((i+1)/fc)*100));
+  }
+  return res;
+}
+
+async function doImage(u){
+  const img=new Image();img.src=u;
+  await new Promise(r=>{img.onload=r});
+  const ctx=pc.getContext('2d');
+  pc.width=img.naturalWidth;pc.height=img.naturalHeight;
+  ctx.fillStyle='#000';ctx.fillRect(0,0,pc.width,pc.height);
+  ctx.drawImage(img,0,0);setP(100);
+  return[toAscii(ctx.getImageData(0,0,pc.width,pc.height),+wsl.value)];
+}
+
+async function doGif(u){
+  const img=document.createElement('img');
+  img.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:.01';
+  img.src=u;document.body.appendChild(img);
+  await new Promise(r=>{img.onload=r});
+  const fps=+fpssl.value,cw=+wsl.value,total=fps*5,delay=1000/fps,res=[];
+  const c=document.createElement('canvas');
+  c.width=img.naturalWidth;c.height=img.naturalHeight;
+  const cx=c.getContext('2d');
+  return new Promise(resolve=>{
+    let n=0;
+    function cap(){
+      cx.clearRect(0,0,c.width,c.height);cx.drawImage(img,0,0);
+      res.push(toAscii(cx.getImageData(0,0,c.width,c.height),cw));
+      n++;setP(Math.floor((n/total)*100));
+      if(n<total)setTimeout(cap,delay);
+      else{document.body.removeChild(img);resolve(res);}
+    }
+    setTimeout(cap,80);
+  });
+}
+
+cvbtn.addEventListener('click',async()=>{
+  const f=pv._f,u=pv._u;if(!f)return;
+  cvbtn.disabled=true;pw.classList.add('v');setP(0);
+  try{
+    if(f.type.startsWith('video/'))frames=await doVideo(u);
+    else if(f.type==='image/gif')frames=await doGif(u);
+    else frames=await doImage(u);
+    oc.classList.add('v');dlp.classList.add('v');
+    if(isImage)chatp.classList.add('v');
+    ao.style.color=color;
+    autoScale(); // fit font to screen width
+    if(frames.length>1){plbtn.style.display='inline-flex';setTimeout(startPlay,400);}
+    else{ao.textContent=frames[0]||'';fctr.textContent='1 frame';}
+  }catch(e){console.error(e);}
+  cvbtn.disabled=false;pw.classList.remove('v');
+  // Show coffee popup 3s after conversion
+  setTimeout(showPop, 3000);
+});
+
+function startPlay(){
+  if(!frames.length)return;playing=true;plbtn.textContent='Stop';cur=0;
+  const fps=+fpssl.value;
+  timer=setInterval(()=>{
+    ao.textContent=frames[cur];ao.style.color=color;
+    fctr.textContent=`Frame ${cur+1} of ${frames.length}`;
+    cur=(cur+1)%frames.length;
+  },1000/fps);
+}
+function stopPlay(){playing=false;plbtn.textContent='Play';clearInterval(timer);}
+plbtn.addEventListener('click',()=>playing?stopPlay():startPlay());
+
+rsbtn.addEventListener('click',()=>{
+  stopPlay();frames=[];cur=0;pv._f=null;pv._u='';pv.src='';fi.value='';isImage=false;
+  dz.style.display='';prev.style.display='';
+  cc.classList.remove('v');oc.classList.remove('v');
+  dlp.classList.remove('v');chatp.classList.remove('v');
+  plbtn.style.display='none';ao.textContent='No frame data';fctr.textContent='';
+});
+
+// ── Render ASCII frame to canvas ──
+function renderToCanvas(frameText){
+  const lines=frameText.split('\n');
+  const fs=Math.max(4,Math.floor(360/+wsl.value));
+  const cw2=fs*0.6,lh=fs*1.1;
+  const cv=document.createElement('canvas');
+  cv.width=Math.max(...lines.map(l=>l.length))*cw2;
+  cv.height=lines.length*lh;
+  const cx=cv.getContext('2d');
+  cx.fillStyle='#030303';cx.fillRect(0,0,cv.width,cv.height);
+  cx.fillStyle=color;cx.font=`${fs}px "Courier New",monospace`;
+  lines.forEach((ln,i)=>cx.fillText(ln,0,(i+1)*lh-1));
+  return cv;
+}
+
+// ── TXT download ──
+document.getElementById('dltxt').addEventListener('click',()=>{
+  const txt=frames.length>1?frames.join('\n\n--- FRAME BREAK ---\n\n'):frames[0]||'';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+  a.download='ascii-art.txt';a.click();
+});
+
+// ── PNG download ──
+document.getElementById('dlpng').addEventListener('click',()=>{
+  const cv=renderToCanvas(frames[cur]||frames[0]||'');
+  const a=document.createElement('a');a.href=cv.toDataURL('image/png');
+  a.download='ascii-art.png';a.click();
+});
+
+// ── GIF download ──
+document.getElementById('dlgif').addEventListener('click',async function(){
+  if(frames.length<2){alert('Need animated content (video or GIF input) to export as GIF.');return;}
+  this.textContent='Encoding GIF…';this.disabled=true;
+  try{
+    if(!window.GIF){
+      await new Promise((res,rej)=>{
+        const s=document.createElement('script');
+        s.src='https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js';
+        s.onload=res;s.onerror=rej;document.head.appendChild(s);
+      });
+    }
+    const wt=await fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js').then(r=>r.text());
+    const wu=URL.createObjectURL(new Blob([wt],{type:'application/javascript'}));
+    const sample=renderToCanvas(frames[0]);
+    const gif=new GIF({workerScript:wu,workers:2,quality:8,width:sample.width,height:sample.height});
+    const delay=Math.round(1000/+fpssl.value);
+    frames.forEach(f=>gif.addFrame(renderToCanvas(f),{delay,copy:true}));
+    gif.on('finished',blob=>{
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download='ascii-animation.gif';a.click();URL.revokeObjectURL(wu);
+    });
+    gif.render();
+  }catch(e){alert('GIF encoding failed — try TXT or PNG instead.');}
+  this.textContent='🎞 GIF (animated)';this.disabled=false;
+});
+
+
+// ── Video (MP4 / WebM) download ──
+document.getElementById('dlvid').addEventListener('click',async function(){
+  if(frames.length<2){alert('Need animated content (video or GIF input) to export as video.');return;}
+  if(!window.MediaRecorder){alert('MediaRecorder not supported in this browser.');return;}
+  const types=['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'video/webm';
+  const ext=mimeType.startsWith('video/mp4')?'mp4':'webm';
+  this.textContent='Encoding '+ext.toUpperCase()+'…';this.disabled=true;
+  try{
+    const sample=renderToCanvas(frames[0]);
+    const cvs=document.createElement('canvas');
+    cvs.width=sample.width;cvs.height=sample.height;
+    const ctx=cvs.getContext('2d');
+    const fps=+fpssl.value;
+    const stream=cvs.captureStream(fps);
+    const recorder=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:2500000});
+    const chunks=[];
+    recorder.ondataavailable=e=>{if(e.data&&e.data.size>0)chunks.push(e.data);};
+    recorder.onstop=()=>{
+      const blob=new Blob(chunks,{type:mimeType});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download='ascii-animation.'+ext;a.click();
+      URL.revokeObjectURL(a.href);
+    };
+    recorder.start();
+    const delay=Math.round(1000/fps);
+    for(let i=0;i<frames.length;i++){
+      ctx.clearRect(0,0,cvs.width,cvs.height);
+      ctx.drawImage(renderToCanvas(frames[i]),0,0);
+      await new Promise(r=>setTimeout(r,delay));
+    }
+    await new Promise(r=>setTimeout(r,delay));
+    recorder.stop();
+  }catch(e){console.error(e);alert('Video export failed: '+e.message);}
+  this.textContent='🎥 Video (MP4/WebM)';this.disabled=false;
+});
+(function(){
+  const types=['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm'];
+  const supported=window.MediaRecorder&&types.find(t=>MediaRecorder.isTypeSupported(t));
+  const btn=document.getElementById('dlvid');
+  if(!supported){btn.disabled=true;btn.title='Not supported in this browser';}
+  else btn.textContent='🎥 '+(supported.startsWith('video/mp4')?'MP4':'WebM')+' Video';
+})();
+// ── Copy helpers ──
+function copyText(t){
+  // Try modern clipboard API first
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t)
+      .then(()=>toast('Copied to clipboard!'))
+      .catch(()=>fallbackCopy(t));
+  } else { fallbackCopy(t); }
+}
+function fallbackCopy(t){
+  const ta=document.createElement('textarea');
+  ta.value=t;
+  ta.style.cssText='position:fixed;top:-999px;left:-999px;opacity:0;font-size:12px';
+  document.body.appendChild(ta);
+  ta.focus();ta.select();
+  ta.setSelectionRange(0,999999);
+  try{
+    document.execCommand('copy');
+    toast('Copied to clipboard!');
+  }catch(e){
+    toast('Could not auto-copy — select text manually');
+  }
+  document.body.removeChild(ta);
+}
+function toast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#4ade80;color:#000;font-family:monospace;font-size:.8rem;font-weight:600;padding:.5rem 1.2rem;z-index:9999;pointer-events:none;transition:opacity .3s';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.style.opacity='0',2200);
+}
+
+document.getElementById('cpraw').addEventListener('click',()=>copyText(frames[cur]||frames[0]||''));
+document.getElementById('cpwa').addEventListener('click',()=>copyText('```\n'+(frames[cur]||frames[0]||'')+'\n```'));
+document.getElementById('cpig').addEventListener('click',()=>copyText(frames[cur]||frames[0]||''));
+
+document.getElementById('cpnarrow').addEventListener('click',async()=>{
+  if(!pv._f)return;
+  const f=pv._f,u=pv._u;
+  const img=new Image();img.src=u;
+  await new Promise(r=>{img.onload=r});
+  const cv2=document.createElement('canvas');
+  cv2.width=img.naturalWidth;cv2.height=img.naturalHeight;
+  const cx=cv2.getContext('2d');
+  cx.fillStyle='#000';cx.fillRect(0,0,cv2.width,cv2.height);cx.drawImage(img,0,0);
+  const narrow=toAscii(cx.getImageData(0,0,cv2.width,cv2.height),30);
+  copyText(narrow);
+});
+
+// ── Coffee Popup ──
+let popShown=false;
+function showPop(){
+  if(popShown)return;popShown=true;
+  const pop=document.getElementById('cpop');pop.classList.add('show');
+  if(window.QRCode&&document.getElementById('cpop-qr-box')&&!document.getElementById('cpop-qr-box').hasChildNodes()){
+    new QRCode(document.getElementById('cpop-qr-box'),{text:'upi://pay?pa=bundi.ka14@upi&pn=Sambit&cu=INR',width:110,height:110,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+  }
+}
+function closePop(){document.getElementById('cpop').classList.remove('show');}
+function popUPI(){const a=document.getElementById('pop-amt').value;if(!a||a<=0){toast('Enter amount');return;}window.location.href=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${a}&cu=INR&tn=Support+ASCII+Studio`;}
+document.getElementById('cpop').addEventListener('click',e=>{if(e.target===document.getElementById('cpop'))closePop();});
+
+// ── UPI Payment ──
+function payUPI(){
+  const amt=document.getElementById('upi-amt').value;
+  if(!amt||amt<=0){toast('Please enter a valid amount');return;}
+  const link=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${amt}&cu=INR&tn=Support+ASCII+Studio`;
+  window.location.href=link;
+  setTimeout(()=>toast('UPI link opened — use a UPI app on mobile for best results'),600);
+}
+
+// ── QR Code (desktop only) ──
+window.addEventListener('load',()=>{
+  if(window.QRCode&&document.getElementById('qr-box')){
+    new QRCode(document.getElementById('qr-box'),{
+      text:'upi://pay?pa=bundi.ka14@upi&pn=Sambit&cu=INR',
+      width:140,height:140,
+      colorDark:'#000000',colorLight:'#ffffff',
+      correctLevel:QRCode.CorrectLevel.M
+    });
+  }
+});
+
+</script>
+</body>
+</html>
