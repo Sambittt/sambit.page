@@ -137,7 +137,7 @@
     document.getElementById('gate').style.display='none';
     document.getElementById('app-nav').style.display='flex';
     document.getElementById('builder').style.display='grid';
-    document.getElementById('mob-tabs').style.display='flex';
+    if(window.innerWidth<=700) document.getElementById('mob-tabs').style.display='flex';
     document.getElementById('nav-user').textContent=user.displayName||user.email||'';
     document.getElementById('btn-out').onclick=()=>signOut(auth).then(()=>window.location.href='/login/');
     initApp();
