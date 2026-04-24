@@ -46,6 +46,23 @@
     .nav-login{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-family:inherit;letter-spacing:.1em;padding:.38rem .9rem;border:1px solid rgba(74,222,128,.3);color:var(--green);background:rgba(74,222,128,.05);cursor:pointer;text-decoration:none;transition:background .2s,border-color .2s;margin-left:.6rem;white-space:nowrap}
     .nav-login:hover{background:rgba(74,222,128,.15);border-color:var(--green)}
     .nav-login svg{width:13px;height:13px;fill:var(--green);flex-shrink:0}
+    /* Nav avatar (shown when logged in) */
+    .nav-avatar-wrap{position:relative;display:none;margin-left:.6rem}
+    .nav-avatar-btn{width:32px;height:32px;border-radius:50%;border:2px solid rgba(74,222,128,.4);background:var(--muted);cursor:pointer;overflow:hidden;padding:0;flex-shrink:0;transition:border-color .2s}
+    .nav-avatar-btn:hover{border-color:var(--green)}
+    .nav-avatar-btn img{width:100%;height:100%;object-fit:cover;display:block}
+    .nav-avatar-default{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    .nav-avatar-default svg{width:18px;height:18px;fill:var(--green)}
+    /* Avatar dropdown */
+    .avatar-dropdown{position:absolute;top:calc(100% + .7rem);right:0;min-width:210px;background:var(--card);border:1px solid var(--border);z-index:300;display:none;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+    .avatar-dropdown.open{display:block}
+    .avatar-drop-info{padding:.85rem 1rem;border-bottom:1px solid var(--border)}
+    .avatar-drop-name{font-size:.78rem;font-weight:600;margin-bottom:.2rem;color:var(--fg)}
+    .avatar-drop-email{font-size:.62rem;color:var(--fg-muted);word-break:break-all}
+    .avatar-drop-item{display:flex;align-items:center;gap:.6rem;padding:.65rem 1rem;font-size:.7rem;color:var(--fg-dim);transition:background .2s,color .2s;cursor:pointer;border:none;background:transparent;width:100%;font-family:inherit;letter-spacing:.04em;text-align:left;text-decoration:none}
+    .avatar-drop-item:hover{background:var(--muted);color:var(--fg)}
+    .avatar-drop-item svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
+    .avatar-drop-divider{height:1px;background:var(--border)}
     /* Mobile tool pills — visible only on mobile */
     .nav-tools-mob{display:none;gap:.45rem;align-items:center}
     .nav-tool-mob{font-size:.6rem;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.08em;white-space:nowrap;padding:.32rem .7rem;border:1px solid rgba(74,222,128,.45);color:var(--green);background:rgba(74,222,128,.07);transition:background .2s,border-color .2s;text-decoration:none}
@@ -56,8 +73,16 @@
     #hmbg.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
     #hmbg.open span:nth-child(2){opacity:0}
     #hmbg.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-    /* Mobile overlay menu */
-    #mob-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(3,3,3,.97);z-index:199;flex-direction:column;align-items:center;justify-content:center;gap:2rem;padding-top:4rem}
+    /* Mobile overlay user card (shown when logged in) */
+    .mob-user-card{display:none;flex-direction:column;align-items:center;gap:.5rem;width:80%;max-width:280px;padding:1rem;border:1px solid var(--border);background:var(--card)}
+    .mob-user-card.visible{display:flex}
+    .mob-avatar-lg{width:54px;height:54px;border-radius:50%;border:2px solid rgba(74,222,128,.4);overflow:hidden;background:var(--muted);display:flex;align-items:center;justify-content:center}
+    .mob-avatar-lg img{width:100%;height:100%;object-fit:cover}
+    .mob-avatar-lg svg{width:26px;height:26px;fill:var(--green)}
+    .mob-user-name{font-size:.82rem;font-weight:600;color:var(--fg)}
+    .mob-user-email{font-size:.62rem;color:var(--fg-muted);word-break:break-all;text-align:center}
+    .mob-signout-btn{font-size:.65rem;font-family:inherit;letter-spacing:.1em;padding:.35rem .9rem;border:1px solid var(--border);color:var(--fg-muted);background:transparent;cursor:pointer;margin-top:.3rem;transition:border-color .2s,color .2s}
+    .mob-signout-btn:hover{border-color:var(--fg-dim);color:var(--fg)}
     #mob-menu.open{display:flex}
     #mob-menu a{font-size:1.1rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fg-dim);transition:color .2s;padding:.4rem 0}
     #mob-menu a:hover{color:var(--green)}
@@ -174,12 +199,34 @@
     footer{text-align:center;padding:2rem;border-top:1px solid var(--border);font-size:.7rem;color:var(--fg-muted);letter-spacing:.06em}
     footer span{color:var(--green)}
 
+    /* Welcome popup */
+    .welcome-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+    .welcome-backdrop.open{display:flex}
+    .welcome-popup{background:var(--card);border:1px solid var(--border);width:100%;max-width:440px;position:relative;animation:popIn .25s ease}
+    @keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+    .welcome-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent 70%)}
+    .welcome-close{position:absolute;top:.7rem;right:.7rem;width:26px;height:26px;background:transparent;border:1px solid var(--border);color:var(--fg-dim);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s}
+    .welcome-close:hover{border-color:var(--fg);color:var(--fg)}
+    .welcome-body{padding:2rem 2rem 1rem}
+    .welcome-tag{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:.6rem}
+    .welcome-title{font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+    .welcome-sub{font-size:.75rem;color:var(--fg-dim);line-height:1.7}
+    .welcome-tools{padding:.5rem 2rem 1rem;display:flex;flex-direction:column;gap:.45rem}
+    .welcome-tool{display:flex;align-items:center;justify-content:space-between;padding:.65rem .9rem;border:1px solid var(--border);background:var(--muted);transition:background .2s,border-color .2s;text-decoration:none}
+    .welcome-tool:hover{background:#111;border-color:rgba(74,222,128,.3)}
+    .welcome-tool-name{font-size:.76rem;font-weight:500;color:var(--fg)}
+    .welcome-tool-badge{font-size:.58rem;letter-spacing:.1em;color:var(--green);text-transform:uppercase}
+    .welcome-footer{padding:.8rem 2rem 1.5rem;border-top:1px solid var(--border)}
+    .welcome-dismiss{width:100%;padding:.6rem;background:transparent;border:1px solid var(--border);color:var(--fg-dim);font-family:inherit;font-size:.68rem;letter-spacing:.1em;cursor:pointer;transition:background .2s}
+    .welcome-dismiss:hover{background:var(--muted);color:var(--fg)}
+
     /* ── MOBILE ── */
     @media(max-width:768px){
       nav{padding:.6rem 1rem}
       .nav-links{display:none}
       .nav-tools-row{display:none}
       .nav-login{display:none}
+      .nav-avatar-wrap{display:none!important}/* avatar shown in mobile menu instead */
       .nav-tools-mob{display:flex}
       #hmbg{display:flex}
       .hero-name{font-size:clamp(3rem,16vw,5rem)}
@@ -220,11 +267,33 @@
     <a href="/ascii-converter/" class="nav-tool">ASCII Studio →</a>
     <a href="/font-animator/" class="nav-tool" style="margin-left:.4rem">Font Animator →</a>
   </div>
-  <!-- Login button: desktop only -->
+  <!-- Sign Up button: desktop only, hidden when logged in -->
   <a href="/login/" class="nav-login" id="nav-login-btn">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-    Login
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    Sign Up
   </a>
+  <!-- Avatar: shown when logged in, hidden when not -->
+  <div class="nav-avatar-wrap" id="nav-avatar-wrap">
+    <button class="nav-avatar-btn" id="nav-avatar-btn" onclick="toggleAvatarMenu()" aria-label="Account menu">
+      <span id="nav-avatar-inner"></span>
+    </button>
+    <div class="avatar-dropdown" id="avatar-dropdown">
+      <div class="avatar-drop-info">
+        <div class="avatar-drop-name" id="drop-name">—</div>
+        <div class="avatar-drop-email" id="drop-email">—</div>
+      </div>
+      <div class="avatar-drop-divider"></div>
+      <a href="/resume-builder/" class="avatar-drop-item">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-5 4h8v2H8zm0 4h5v2H8z"/></svg>
+        Resume Builder
+      </a>
+      <div class="avatar-drop-divider"></div>
+      <button class="avatar-drop-item" id="drop-signout-btn">
+        <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </div>
   <button id="hmbg" onclick="toggleMob()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -232,7 +301,14 @@
 
 <!-- Mobile Menu Overlay -->
 <div id="mob-menu">
-  <!-- Tools featured at top of mobile menu -->
+  <!-- Logged-in user card (hidden by default, shown via JS) -->
+  <div class="mob-user-card" id="mob-user-card">
+    <div class="mob-avatar-lg" id="mob-avatar-lg"></div>
+    <div class="mob-user-name" id="mob-user-name"></div>
+    <div class="mob-user-email" id="mob-user-email"></div>
+    <button class="mob-signout-btn" id="mob-signout-btn">Sign Out</button>
+  </div>
+  <!-- Tools -->
   <div class="mob-tool-label">— Tools —</div>
   <div class="mob-tools-featured">
     <a href="/ascii-converter/" class="tool-link" onclick="closeMob()">ASCII Studio ↗</a>
@@ -245,9 +321,39 @@
   <a href="#projects" onclick="closeMob()">Projects</a>
   <a href="#contact" onclick="closeMob()">Contact</a>
   <div class="mob-divider"></div>
-  <a href="/login/" class="tool-link" onclick="closeMob()" style="letter-spacing:.12em">
-    🔐 Login / Register
+  <!-- Login link: hidden when logged in -->
+  <a href="/login/" class="tool-link" id="mob-login-link" onclick="closeMob()" style="letter-spacing:.12em">
+    🔐 Sign Up / Login
   </a>
+</div>
+
+<!-- ── Welcome popup ── -->
+<div class="welcome-backdrop" id="welcome-backdrop">
+  <div class="welcome-popup" role="dialog" aria-modal="true">
+    <button class="welcome-close" onclick="closeWelcome()" aria-label="Close">✕</button>
+    <div class="welcome-body">
+      <div class="welcome-tag">// access granted</div>
+      <div class="welcome-title" id="welcome-title">Welcome!</div>
+      <div class="welcome-sub" id="welcome-sub">You're now signed in. Here are the tools available on sambit.page:</div>
+    </div>
+    <div class="welcome-tools">
+      <a href="/ascii-converter/" class="welcome-tool">
+        <span class="welcome-tool-name">ASCII Art Studio</span>
+        <span class="welcome-tool-badge">Live ↗</span>
+      </a>
+      <a href="/font-animator/" class="welcome-tool">
+        <span class="welcome-tool-name">Font Animator</span>
+        <span class="welcome-tool-badge">Live ↗</span>
+      </a>
+      <a href="/resume-builder/" class="welcome-tool">
+        <span class="welcome-tool-name">Resume Builder</span>
+        <span class="welcome-tool-badge">Beta ↗</span>
+      </a>
+    </div>
+    <div class="welcome-footer">
+      <button class="welcome-dismiss" onclick="closeWelcome()">Explore on my own →</button>
+    </div>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -578,5 +684,104 @@ window.addEventListener('scroll',()=>{
   });
 },{passive:true});
 </script>
+<script type="module">
+// ── Firebase Auth — homepage awareness ───────────────────────────────────────
+import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+                               from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+const _fbApp  = initializeApp({
+  apiKey:"AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",
+  authDomain:"sambit-portfolio.firebaseapp.com",
+  projectId:"sambit-portfolio",
+  storageBucket:"sambit-portfolio.firebasestorage.app",
+  messagingSenderId:"98909249081",
+  appId:"1:98909249081:web:00bdbda2f0ed56a2c177e8"
+});
+const _auth = getAuth(_fbApp);
+
+const DEFAULT_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" fill="#4ade80"/></svg>`;
+
+onAuthStateChanged(_auth, user => {
+  const loginBtn  = document.getElementById('nav-login-btn');
+  const avatarWrap = document.getElementById('nav-avatar-wrap');
+  const mobLoginLink = document.getElementById('mob-login-link');
+  const mobUserCard  = document.getElementById('mob-user-card');
+
+  if (user) {
+    // ─ Desktop: hide Sign Up, show avatar ───────────────────────────
+    if (loginBtn)  loginBtn.style.display  = 'none';
+    if (avatarWrap) avatarWrap.style.display = 'block';
+
+    // Populate avatar image
+    const inner = document.getElementById('nav-avatar-inner');
+    if (user.photoURL) {
+      inner.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName||'User'}">`;
+    } else {
+      inner.innerHTML = `<span class="nav-avatar-default">${DEFAULT_SVG}</span>`;
+    }
+    document.getElementById('drop-name').textContent  = user.displayName || 'User';
+    document.getElementById('drop-email').textContent = user.email || '';
+
+    // Sign-out from dropdown
+    document.getElementById('drop-signout-btn').onclick = async () => {
+      await signOut(_auth);
+      document.getElementById('avatar-dropdown').classList.remove('open');
+    };
+
+    // ─ Mobile overlay: hide login link, show user card ──────────────
+    if (mobLoginLink) mobLoginLink.style.display = 'none';
+    if (mobUserCard)  mobUserCard.classList.add('visible');
+
+    // Populate mobile card
+    const mobAvatar = document.getElementById('mob-avatar-lg');
+    if (user.photoURL) {
+      mobAvatar.innerHTML = `<img src="${user.photoURL}" alt="avatar">`;
+    } else {
+      mobAvatar.innerHTML = DEFAULT_SVG;
+    }
+    document.getElementById('mob-user-name').textContent  = user.displayName || 'User';
+    document.getElementById('mob-user-email').textContent = user.email || '';
+    document.getElementById('mob-signout-btn').onclick = async () => {
+      await signOut(_auth); closeMob();
+    };
+
+    // ─ Welcome popup — once per session ─────────────────────────
+    if (!sessionStorage.getItem('welcomed')) {
+      const first = user.displayName ? user.displayName.split(' ')[0] : null;
+      document.getElementById('welcome-title').textContent =
+        first ? `Hey ${first}, welcome! 👋` : 'Access granted! ✅';
+      document.getElementById('welcome-backdrop').classList.add('open');
+      sessionStorage.setItem('welcomed', '1');
+    }
+
+  } else {
+    // ─ Logged out state ──────────────────────────────────────
+    if (loginBtn)  loginBtn.style.display  = '';
+    if (avatarWrap) avatarWrap.style.display = 'none';
+    if (mobLoginLink) mobLoginLink.style.display = '';
+    if (mobUserCard)  mobUserCard.classList.remove('visible');
+  }
+});
+
+// Avatar dropdown toggle + close outside
+window.toggleAvatarMenu = () =>
+  document.getElementById('avatar-dropdown').classList.toggle('open');
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('nav-avatar-wrap');
+  if (wrap && !wrap.contains(e.target))
+    document.getElementById('avatar-dropdown').classList.remove('open');
+});
+
+// Welcome popup
+window.closeWelcome = () =>
+  document.getElementById('welcome-backdrop').classList.remove('open');
+
+document.getElementById('welcome-backdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('welcome-backdrop')) closeWelcome();
+});
+</script>
+
 </body>
 </html>
