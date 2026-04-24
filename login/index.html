@@ -287,9 +287,17 @@
   });
 
   // ── Helpers ────────────────────────────────────────────────────
+  // ── Redirect after login ───────────────────────────────────────
+  // Reads ?redirect= param; only allows safe relative paths (security)
   function redirectAfterLogin() {
-    // Change this to whatever page you want after login
-    window.location.href = '/resume-builder/';
+    const params   = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    // Security: only allow own-origin relative paths, block open redirects
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+      window.location.href = redirect;
+    } else {
+      window.location.href = '/';
+    }
   }
 
   function showMsg(text, type = 'error') {
