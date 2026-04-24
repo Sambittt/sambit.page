@@ -17,7 +17,8 @@
   <meta name="twitter:title" content="Sambit Satapathy | Cybersecurity Portfolio"/>
   <meta name="twitter:description" content="BCA student, cybersecurity enthusiast and creator of ASCII Art Studio & Font Animator."/>
   <link rel="canonical" href="https://sambit.page"/>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Sambit Satapathy","url":"https://sambit.page","jobTitle":"Cybersecurity Student","description":"BCA student specialising in cybersecurity, ethical hacking and Linux administration","sameAs":["https://github.com/Sambittt","https://linkedin.com/in/sambit-satapathy","https://instagram.com/sambit.satapathy_"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Sambit Satapathy","url":"https://sambit.page","image":"https://sambit.page/og-image.png","jobTitle":"Cybersecurity Student","description":"BCA student specialising in cybersecurity, ethical hacking and Linux administration","sameAs":["https://github.com/Sambittt","https://linkedin.com/in/sambit-satapathy","https://instagram.com/sambit.satapathy_"]}</script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23030303'/><text y='72' x='10' font-size='72' fill='%234ade80' font-family='monospace' font-weight='bold'>S</text></svg>"/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -95,7 +96,7 @@
     #mob-menu .tool-link:hover{background:rgba(74,222,128,.14);border-color:var(--green);transform:translateY(-1px)}
     @media(max-width:700px){
       nav{padding:.5rem 1rem}
-      .nav-brand{font-size:.78rem;letter-spacing:.04em}
+      .nav-brand{font-size:.85rem;letter-spacing:.04em;margin-right:.6rem}
       .nav-links{display:none}
       .nav-tools-row{display:none}
       .nav-tools-mob{display:flex}
@@ -139,14 +140,14 @@
     @media(max-width:700px){.about-grid{grid-template-columns:1fr}}
     .about-text p{font-size:.85rem;color:var(--fg-dim);line-height:2;margin-bottom:1rem}
     .about-text p span{color:var(--green)}
-    .terminal-box{border:1px solid var(--border);background:var(--card);overflow:hidden}
+    .terminal-box{border:1px solid var(--border);background:var(--card)}
     .terminal-bar{display:flex;align-items:center;gap:.4rem;padding:.5rem .75rem;background:var(--muted);border-bottom:1px solid var(--border)}
     .terminal-bar span{width:10px;height:10px;border-radius:50%;flex-shrink:0}
     .t-body{padding:1rem;font-size:.75rem;line-height:1.9;color:var(--fg-dim);overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre}
     .t-green{color:var(--green)}
     .t-dim{color:var(--fg-muted)}
     @media(max-width:700px){
-      .t-body{font-size:.68rem;padding:.75rem;white-space:normal;word-break:break-word}
+      .t-body{font-size:.68rem;padding:.75rem;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;white-space:pre}
       .terminal-box{margin-top:1.5rem}
     }
 
@@ -329,6 +330,7 @@
   <div class="mob-tools-featured">
     <a href="/ascii-converter/" class="tool-link" onclick="closeMob()">ASCII Studio ↗</a>
     <a href="/font-animator/" class="tool-link" onclick="closeMob()">Font Animator ↗</a>
+    <a href="/resume-builder/" class="tool-link" onclick="closeMob()">Resume Builder ↗</a>
   </div>
   <div class="mob-divider"></div>
   <a href="#about" onclick="closeMob()">About</a>
