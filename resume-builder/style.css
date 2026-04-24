@@ -1,6 +1,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#030303;--card:#090909;--muted:#111;--border:#1e1e1e;--fg:#f0f0f0;--fd:#888;--fm:#444;--green:#4ade80;--gg:rgba(74,222,128,.1)}
 html,body{height:100%;font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;overflow:hidden}
+body{padding-bottom:52px}
 a{text-decoration:none;color:inherit}
 
 /* Gate */
@@ -214,6 +215,29 @@ input::placeholder,textarea::placeholder{color:var(--fm)}
   .r2,.r3{grid-template-columns:1fr}
   #resume-sheet{width:100%;min-height:auto}
 }
-@media(min-width:701px){
-  #mob-tabs{display:none!important}
-}
+@media(min-width:701px){#mob-tabs{display:none!important}}
+
+/* ── Coffee popup (same as ASCII tool) ── */
+#cpop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1000;align-items:center;justify-content:center}
+#cpop.show{display:flex}
+#cpop-box{background:#080808;border:1px solid #1c1c1c;padding:1.8rem;width:min(420px,92vw);position:relative}
+.cpop-emoji{font-size:2.2rem;margin-bottom:.6rem}
+.cpop-title{font-size:1rem;font-weight:600;margin-bottom:.4rem;letter-spacing:.02em}
+.cpop-sub{font-size:.75rem;color:#606060;margin-bottom:1.2rem;line-height:1.75}
+.cpop-btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}
+.cpop-skip{width:100%;padding:.5rem;background:transparent;border:1px solid #1c1c1c;color:#444;font-family:inherit;font-size:.72rem;cursor:pointer;letter-spacing:.06em;transition:border-color .2s,color .2s}
+.cpop-skip:hover{border-color:#606060;color:#888}
+.cpop-qr{margin-top:.8rem;padding-top:.8rem;border-top:1px solid #1c1c1c}
+.cpop-qr-lbl{font-size:.62rem;color:#444;margin-top:.4rem;letter-spacing:.06em}
+@media(max-width:600px){#cpop-qr-wrap{display:none}}
+/* Coffee bar */
+#coffee-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:#080808;border-top:1px solid #1c1c1c}
+#coffee-toggle{padding:.75rem 1.5rem;cursor:pointer;font-size:.75rem;font-weight:600;display:flex;align-items:center;justify-content:space-between;user-select:none;letter-spacing:.04em}
+#coffee-toggle:hover{background:#0f0f0f}
+#coffee-panel{display:none;padding:1rem 1.5rem;border-top:1px solid #1c1c1c}
+#coffee-panel.open{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){#coffee-panel.open{grid-template-columns:1fr}}
+#qr-wrap{margin-top:.8rem}
+#qr-box canvas,#qr-box img{border:3px solid #1c1c1c;background:#fff;display:block}
+.qr-label{font-size:.65rem;color:#444;margin-top:.4rem;letter-spacing:.08em}
+@media(max-width:767px){#qr-wrap{display:none!important}}
