@@ -130,15 +130,21 @@
     /* ── CERTIFICATIONS ── */
     #certs{background:var(--bg);border-top:1px solid var(--border)}
     .certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;margin-top:2rem}
-    .cert-card{background:var(--card);border:1px solid var(--border);padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.2rem;transition:background .2s,border-color .3s;position:relative;overflow:hidden}
+    .cert-card{background:var(--card);border:1px solid var(--border);padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.2rem;transition:background .2s,border-color .3s;position:relative}
     .cert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent);opacity:0;transition:opacity .3s}
     .cert-card:hover{background:var(--muted);border-color:rgba(74,222,128,.25)}
     .cert-card:hover::before{opacity:1}
-    .cert-badge-wrap{display:flex;justify-content:center;align-items:center;min-height:200px}
+    .cert-badge-wrap{display:flex;justify-content:center;align-items:center;width:100%;min-height:280px}
+    .cert-badge-wrap iframe{max-width:100%!important}
     .cert-meta{text-align:center;width:100%}
     .cert-issuer{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.4rem;opacity:.8}
     .cert-name{font-size:.82rem;font-weight:600;color:var(--fg);line-height:1.5}
     .cert-date{font-size:.68rem;color:var(--fg-muted);margin-top:.4rem;letter-spacing:.06em}
+    @media(max-width:768px){
+      .certs-grid{grid-template-columns:1fr}
+      .cert-card{padding:1.5rem 1rem}
+      .cert-badge-wrap{min-height:290px}
+    }
 
     /* ── CONTACT ── */
     #contact{background:var(--card);border-top:1px solid var(--border)}
