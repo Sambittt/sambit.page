@@ -149,10 +149,60 @@ function executive(){
   </div></div>`;
 }
 
+// ── COMPACT ────────────────────────────────────────────────────────
+function compact(){
+  const acc=S.accent||'#2563eb';const s='cp-mst';
+  const side=`<div class="cp-side">
+    ${photo('cp-photo',72)}
+    <div class="cp-name">${esc(S.name)||'Your Name'}</div>
+    ${S.title?`<div class="cp-title">${esc(S.title)}</div>`:''}
+    <div class="cp-slbl">Contact</div>
+    ${[S.email,S.phone,S.location,S.website].filter(Boolean).map(v=>`<div class="cp-ci">${esc(String(v))}</div>`).join('')}
+    ${S.linkedin?`<div class="cp-ci">in/${esc(S.linkedin)}</div>`:''}
+    ${S.github?`<div class="cp-ci">gh/${esc(S.github)}</div>`:''}
+    ${S.skills.filter(s=>s.items).length?`<div class="cp-slbl">Skills</div>${S.skills.filter(s=>s.items).map(s=>`<div style="margin-bottom:5px"><span style="font-size:9px;color:#777;text-transform:uppercase;letter-spacing:1px">${esc(s.category||'')}</span><div>${s.items.split(',').map(i=>`<span class="cp-sk">${esc(i.trim())}</span>`).join('')}</div></div>`).join('')}`:''}
+    ${S.certs.filter(c=>c.name).length?`<div class="cp-slbl">Certs</div>${S.certs.filter(c=>c.name).map(c=>`<div class="cp-ci" style="margin-bottom:5px"><strong>${esc(c.name)}</strong><br/>${c.issuer?esc(c.issuer)+'<br/>':''}${c.date||''}</div>`).join('')}`:''}
+  </div>`;
+  const main=`<div class="cp-main">
+    ${S.summary?`<div class="${s}" style="color:${acc};border-color:${acc}">Summary</div><p class="cp-sum">${esc(S.summary)}</p>`:''}
+    ${S.exp.filter(e=>e.company||e.role).length?`<div class="${s}" style="color:${acc};border-color:${acc}">Experience</div>${S.exp.filter(e=>e.company||e.role).map(e=>`<div style="margin-bottom:10px"><div class="cp-eh"><span class="cp-role">${esc(e.role)}</span><span class="cp-dt">${dates(e.start,e.end,e.current)}</span></div><div class="cp-co">${esc(e.company)}${e.location?', '+esc(e.location):''}</div>${bullets(e.bullets)}</div>`).join('')}`:''}
+    ${S.edu.filter(e=>e.school||e.degree).length?`<div class="${s}" style="color:${acc};border-color:${acc}">Education</div>${S.edu.filter(e=>e.school||e.degree).map(e=>`<div style="margin-bottom:9px"><div class="cp-eh"><span class="cp-role">${esc(e.degree)}</span><span class="cp-dt">${dates(e.start,e.end,false)}</span></div><div class="cp-co">${esc(e.school)}${e.gpa?' · GPA '+e.gpa:''}</div></div>`).join('')}`:''}
+    ${S.proj.filter(p=>p.name).length?`<div class="${s}" style="color:${acc};border-color:${acc}">Projects</div>${S.proj.filter(p=>p.name).map(p=>`<div style="margin-bottom:8px"><div class="cp-eh"><span class="cp-role">${p.link?`<a href="${esc(p.link)}">${esc(p.name)}</a>`:esc(p.name)}</span>${p.tech?`<span class="cp-dt">${esc(p.tech)}</span>`:''}</div>${p.desc?`<p style="font-size:11px;color:#555">${esc(p.desc)}</p>`:''}</div>`).join('')}`:''}
+  </div>`;
+  return`<div class="cp">${side}${main}</div>`;
+}
+
+// ── SHARP ─────────────────────────────────────────────────────────
+function sharp(){
+  const acc=S.accent||'#e11d48';
+  const hdr=`<div class="sh-hdr">
+    <div class="sh-top">
+      ${photo('sh-photo',74)}
+      <div>
+        <div class="sh-name">${esc(S.name)||'Your Name'}</div>
+        ${S.title?`<div class="sh-title" style="color:${acc}">${esc(S.title)}</div>`:''}
+        <span class="sh-bar" style="background:${acc};width:${S.name?Math.min(100,S.name.length*11):60}px"></span>
+      </div>
+    </div>
+    <div class="sh-contact">${[S.email,S.phone,S.location,S.website,S.linkedin&&`linkedin: ${S.linkedin}`,S.github&&`github: ${S.github}`].filter(Boolean).map(v=>esc(String(v))).join(' &nbsp;·&nbsp; ')}</div>
+  </div>`;
+  const left=`<div>
+    ${S.summary?`<div class="sh-st">Profile</div><p class="sh-sum">${esc(S.summary)}</p>`:''}
+    ${S.exp.filter(e=>e.company||e.role).length?`<div class="sh-st">Experience</div>${S.exp.filter(e=>e.company||e.role).map(e=>`<div style="margin-bottom:11px"><div class="sh-eh"><span class="sh-role">${esc(e.role)}</span><span class="sh-dt">${dates(e.start,e.end,e.current)}</span></div><div class="sh-co">${esc(e.company)}${e.location?', '+esc(e.location):''}</div>${bullets(e.bullets)}</div>`).join('')}`:''}
+    ${S.edu.filter(e=>e.school||e.degree).length?`<div class="sh-st">Education</div>${S.edu.filter(e=>e.school||e.degree).map(e=>`<div style="margin-bottom:9px"><div class="sh-eh"><span class="sh-role">${esc(e.degree)}</span><span class="sh-dt">${dates(e.start,e.end,false)}</span></div><div class="sh-co">${esc(e.school)}${e.gpa?' · '+e.gpa:''}</div></div>`).join('')}`:''}
+    ${S.proj.filter(p=>p.name).length?`<div class="sh-st">Projects</div>${S.proj.filter(p=>p.name).map(p=>`<div style="margin-bottom:8px"><div class="sh-eh"><span class="sh-role">${p.link?`<a href="${esc(p.link)}">${esc(p.name)}</a>`:esc(p.name)}</span>${p.tech?`<span class="sh-dt">${esc(p.tech)}</span>`:''}</div>${p.desc?`<p style="font-size:11px;color:#555">${esc(p.desc)}</p>`:''}</div>`).join('')}`:''}
+  </div>`;
+  const right=`<div class="sh-side">
+    ${S.skills.filter(s=>s.items).length?`<div class="sh-st">Skills</div>${S.skills.filter(s=>s.items).map(s=>`<div style="margin-bottom:8px">${s.category?`<div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-bottom:4px">${esc(s.category)}</div>`:''}<div>${s.items.split(',').map(i=>`<span class="sh-skpill">${esc(i.trim())}</span>`).join('')}</div></div>`).join('')}`:''}
+    ${S.certs.filter(c=>c.name).length?`<div class="sh-st">Certs</div>${S.certs.filter(c=>c.name).map(c=>`<div style="margin-bottom:7px;font-size:11px"><strong>${esc(c.name)}</strong><br/><span style="color:#888;font-size:10px">${c.issuer?esc(c.issuer)+' · ':''} ${c.date||''}</span></div>`).join('')}`:''}
+  </div>`;
+  return`<div class="sh">${hdr}<div class="sh-body">${left}${right}</div></div>`;
+}
+
 // ── RENDER ────────────────────────────────────────────────────────
 function render(){
   const el=document.getElementById('resume-sheet');if(!el)return;
-  const map={classic,modern,minimal,creative,executive};
+  const map={classic,modern,minimal,creative,executive,compact,sharp};
   el.innerHTML=(map[S.tpl]||classic)();
   scaleSheet();
 }
