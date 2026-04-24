@@ -163,13 +163,23 @@ function loadPhoto(input){
   if(!file)return;
   const reader=new FileReader();
   reader.onload=function(e){
-    S.photo=e.target.result;
-    // Show thumbnail in editor
-    const thumb=document.getElementById('photo-thumb');
-    if(thumb){thumb.src=S.photo;thumb.style.display='block';}
-    const rm=document.getElementById('photo-rm');
-    if(rm)rm.style.display='';
-    render();
+    // Resize to max 200x200 to avoid localStorage overflow
+    const img=new Image();
+    img.onload=function(){
+      const MAX=200;
+      const scale=Math.min(1,MAX/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*scale);
+      c.height=Math.round(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      S.photo=c.toDataURL('image/jpeg',.75);
+      const thumb=document.getElementById('photo-thumb');
+      if(thumb){thumb.src=S.photo;thumb.style.display='block';}
+      const rm=document.getElementById('photo-rm');
+      if(rm)rm.style.display='';
+      render();
+    };
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
 }
