@@ -159,12 +159,30 @@ function render(){
 
 // ── PHOTO ─────────────────────────────────────────────────────────
 function loadPhoto(input){
-  const file=input.files[0];if(!file)return;
+  const file=input.files[0];
+  if(!file)return;
   const reader=new FileReader();
-  reader.onload=e=>{S.photo=e.target.result;document.getElementById('photo-rm').style.display='';render();};
+  reader.onload=function(e){
+    S.photo=e.target.result;
+    // Show thumbnail in editor
+    const thumb=document.getElementById('photo-thumb');
+    if(thumb){thumb.src=S.photo;thumb.style.display='block';}
+    const rm=document.getElementById('photo-rm');
+    if(rm)rm.style.display='';
+    render();
+  };
   reader.readAsDataURL(file);
 }
-function removePhoto(){S.photo='';document.getElementById('photo-rm').style.display='none';document.getElementById('photo-input').value='';render();}
+function removePhoto(){
+  S.photo='';
+  const thumb=document.getElementById('photo-thumb');
+  if(thumb){thumb.src='';thumb.style.display='none';}
+  const rm=document.getElementById('photo-rm');
+  if(rm)rm.style.display='none';
+  const inp=document.getElementById('photo-input');
+  if(inp)inp.value='';
+  render();
+}
 window.loadPhoto=loadPhoto;window.removePhoto=removePhoto;
 
 // ── DOWNLOAD ──────────────────────────────────────────────────────
