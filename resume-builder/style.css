@@ -1,7 +1,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#030303;--card:#090909;--muted:#111;--border:#1e1e1e;--fg:#f0f0f0;--fd:#888;--fm:#444;--green:#4ade80;--gg:rgba(74,222,128,.1)}
-html,body{height:100%;font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;overflow:hidden}
-body{padding-bottom:52px}
+html{height:100%}
+body{height:100%;font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;overflow:hidden;padding-bottom:52px}
 a{text-decoration:none;color:inherit}
 
 /* Gate */
@@ -231,7 +231,7 @@ input::placeholder,textarea::placeholder{color:var(--fm)}
 .cpop-qr-lbl{font-size:.62rem;color:#444;margin-top:.4rem;letter-spacing:.06em}
 @media(max-width:600px){#cpop-qr-wrap{display:none}}
 /* Coffee bar */
-#coffee-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:#080808;border-top:1px solid #1c1c1c}
+#coffee-bar{position:fixed;bottom:0;left:0;right:0;z-index:900;background:#080808;border-top:1px solid #1c1c1c}
 #coffee-toggle{padding:.75rem 1.5rem;cursor:pointer;font-size:.75rem;font-weight:600;display:flex;align-items:center;justify-content:space-between;user-select:none;letter-spacing:.04em}
 #coffee-toggle:hover{background:#0f0f0f}
 #coffee-panel{display:none;padding:1rem 1.5rem;border-top:1px solid #1c1c1c}
