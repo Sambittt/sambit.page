@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Resume Builder | sambit.page</title>
-  <meta name="description" content="Free professional resume builder — create, customize and download as PDF or PNG."/>
+  <title>Resume Builder — Free PDF Resume Maker | sambit.page</title>
+  <meta name="description" content="Free online resume builder. Choose from 5 professional templates, fill in your details, and download as PDF or PNG instantly. No signup required to preview."/>
+  <meta name="keywords" content="free resume builder, CV maker, resume templates, PDF resume download, professional resume, resume creator online"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="canonical" href="https://sambit.page/resume-builder/"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -12,81 +15,119 @@
 </head>
 <body>
 
+<!-- Auth gate -->
 <div id="gate"><div class="gate-dots"><span></span><span></span><span></span></div><div class="gate-lbl">Verifying session…</div></div>
 
+<!-- Nav -->
 <nav id="app-nav">
-  <a href="/" class="brand">sambit.page</a>
+  <div class="nav-l">
+    <a href="/" class="nav-back" title="Back to sambit.page">← sambit.page</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-title">Resume Builder</span>
+  </div>
   <div class="nav-r">
-    <a href="https://buymeacoffee.com/sambitsatapathy" target="_blank" rel="noopener" class="bmc">☕ Buy Me a Coffee</a>
     <span class="nav-user" id="nav-user"></span>
     <button class="btn-out" id="btn-out">Sign Out</button>
   </div>
 </nav>
 
+<!-- Builder -->
 <div class="builder" id="builder">
-  <!-- EDITOR -->
+
+  <!-- EDITOR PANEL -->
   <div class="editor" id="editor-panel">
+
+    <!-- Top bar: template + accent + photo -->
     <div class="tpl-bar">
-      <span class="tpl-label">// template</span>
-      <div class="tpl-btns">
-        <button class="tpl-btn active" onclick="setTpl('classic')">Classic</button>
-        <button class="tpl-btn" onclick="setTpl('modern')">Modern</button>
-        <button class="tpl-btn" onclick="setTpl('minimal')">Minimal</button>
+      <div class="tpl-row">
+        <span class="bar-lbl">Template</span>
+        <div class="tpl-btns" id="tpl-btns">
+          <button class="tpl-btn active" onclick="setTpl('classic')">Classic</button>
+          <button class="tpl-btn" onclick="setTpl('modern')">Modern</button>
+          <button class="tpl-btn" onclick="setTpl('minimal')">Minimal</button>
+          <button class="tpl-btn" onclick="setTpl('creative')">Creative</button>
+          <button class="tpl-btn" onclick="setTpl('executive')">Executive</button>
+        </div>
       </div>
-      <label class="color-wrap" title="Accent colour"><input type="color" id="accent" value="#2563eb" oninput="S.accent=this.value;render()"/></label>
+      <div class="tpl-row">
+        <span class="bar-lbl">Accent</span>
+        <input type="color" id="accent" value="#2563eb" oninput="S.accent=this.value;render()"/>
+        <span class="bar-lbl" style="margin-left:.8rem">Photo</span>
+        <label class="photo-btn" title="Upload profile photo">
+          <input type="file" id="photo-input" accept="image/*" onchange="loadPhoto(this)"/> 📷 Upload
+        </label>
+        <button class="photo-rm" id="photo-rm" onclick="removePhoto()" style="display:none">✕ Remove</button>
+      </div>
     </div>
 
-    <!-- Personal -->
-    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Personal Info</span><span class="chev">▼</span></div>
-    <div class="acc-b open">
-      <div class="r2"><label>Full Name<input oninput="S.name=this.value;render()" placeholder="Jane Doe"/></label><label>Job Title<input oninput="S.title=this.value;render()" placeholder="Software Engineer"/></label></div>
-      <div class="r2"><label>Email<input type="email" oninput="S.email=this.value;render()" placeholder="jane@email.com"/></label><label>Phone<input oninput="S.phone=this.value;render()" placeholder="+1 555 000 0000"/></label></div>
-      <div class="r2"><label>Location<input oninput="S.location=this.value;render()" placeholder="City, State"/></label><label>Website<input oninput="S.website=this.value;render()" placeholder="https://yoursite.com"/></label></div>
-      <div class="r2"><label>LinkedIn<input oninput="S.linkedin=this.value;render()" placeholder="username"/></label><label>GitHub<input oninput="S.github=this.value;render()" placeholder="username"/></label></div>
-    </div></div>
+    <!-- Form sections -->
+    <div class="secs">
 
-    <!-- Summary -->
-    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Professional Summary</span><span class="chev">▼</span></div>
-    <div class="acc-b"><textarea rows="4" oninput="S.summary=this.value;render()" placeholder="Write 2–3 sentences about your background and goals…"></textarea></div></div>
+      <!-- Personal -->
+      <div class="acc"><div class="acc-h open" onclick="tog(this)"><span>Personal Info</span><span class="chev">▾</span></div>
+      <div class="acc-b open">
+        <div class="r2"><label>Full Name<input oninput="S.name=this.value;render()" placeholder="Jane Doe"/></label><label>Job Title<input oninput="S.title=this.value;render()" placeholder="Software Engineer"/></label></div>
+        <div class="r2"><label>Email<input type="email" oninput="S.email=this.value;render()" placeholder="jane@email.com"/></label><label>Phone<input oninput="S.phone=this.value;render()" placeholder="+1 555 000 0000"/></label></div>
+        <div class="r2"><label>Location<input oninput="S.location=this.value;render()" placeholder="City, Country"/></label><label>Website<input oninput="S.website=this.value;render()" placeholder="yoursite.com"/></label></div>
+        <div class="r2"><label>LinkedIn<input oninput="S.linkedin=this.value;render()" placeholder="username"/></label><label>GitHub<input oninput="S.github=this.value;render()" placeholder="username"/></label></div>
+      </div></div>
 
-    <!-- Experience -->
-    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Work Experience</span><span class="chev">▼</span></div>
-    <div class="acc-b"><div id="exp-list"></div><button class="add-btn" onclick="addE('exp')">+ Add Experience</button></div></div>
+      <!-- Summary -->
+      <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Professional Summary</span><span class="chev">▾</span></div>
+      <div class="acc-b"><textarea rows="3" oninput="S.summary=this.value;render()" placeholder="2–3 sentences about your background, skills and goals…"></textarea></div></div>
 
-    <!-- Education -->
-    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Education</span><span class="chev">▼</span></div>
-    <div class="acc-b"><div id="edu-list"></div><button class="add-btn" onclick="addE('edu')">+ Add Education</button></div></div>
+      <!-- Experience -->
+      <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Work Experience</span><span class="chev">▾</span></div>
+      <div class="acc-b"><div id="exp-list"></div><button class="add-btn" onclick="addE('exp')">+ Add Experience</button></div></div>
 
-    <!-- Skills -->
-    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Skills</span><span class="chev">▼</span></div>
-    <div class="acc-b"><div id="skills-list"></div><button class="add-btn" onclick="addE('skills')">+ Add Skill Group</button></div></div>
+      <!-- Education -->
+      <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Education</span><span class="chev">▾</span></div>
+      <div class="acc-b"><div id="edu-list"></div><button class="add-btn" onclick="addE('edu')">+ Add Education</button></div></div>
 
-    <!-- Projects -->
-    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Projects</span><span class="chev">▼</span></div>
-    <div class="acc-b"><div id="proj-list"></div><button class="add-btn" onclick="addE('proj')">+ Add Project</button></div></div>
+      <!-- Skills -->
+      <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Skills</span><span class="chev">▾</span></div>
+      <div class="acc-b"><div id="skills-list"></div><button class="add-btn" onclick="addE('skills')">+ Add Skill Group</button></div></div>
 
-    <!-- Certifications -->
-    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Certifications</span><span class="chev">▼</span></div>
-    <div class="acc-b"><div id="certs-list"></div><button class="add-btn" onclick="addE('certs')">+ Add Certification</button></div></div>
+      <!-- Projects -->
+      <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Projects</span><span class="chev">▾</span></div>
+      <div class="acc-b"><div id="proj-list"></div><button class="add-btn" onclick="addE('proj')">+ Add Project</button></div></div>
 
+      <!-- Certifications -->
+      <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Certifications</span><span class="chev">▾</span></div>
+      <div class="acc-b"><div id="certs-list"></div><button class="add-btn" onclick="addE('certs')">+ Add Certification</button></div></div>
+
+    </div><!-- /secs -->
+
+    <!-- Download + BMC -->
     <div class="dl-bar">
-      <button class="dl-btn primary" id="btn-pdf" onclick="dlPDF()">⬇ PDF</button>
-      <button class="dl-btn" id="btn-png" onclick="dlPNG()">⬇ PNG</button>
+      <button class="dl-btn primary" id="btn-pdf" onclick="dlPDF()">⬇ Download PDF</button>
+      <button class="dl-btn" id="btn-png" onclick="dlPNG()">⬇ Download PNG</button>
+      <a href="https://buymeacoffee.com/sambitsatapathy" target="_blank" rel="noopener" class="bmc-link">☕ Buy Me a Coffee</a>
     </div>
   </div>
 
-  <!-- PREVIEW -->
+  <!-- PREVIEW PANEL -->
   <div class="preview" id="preview-panel">
-    <div class="prev-label">// live preview — A4</div>
-    <div class="sheet-wrap"><div id="resume-sheet"></div></div>
+    <div class="prev-bar">
+      <span class="prev-lbl">// live preview</span>
+      <div class="prev-actions">
+        <button class="prev-dl" onclick="dlPDF()">⬇ PDF</button>
+        <button class="prev-dl" onclick="dlPNG()">⬇ PNG</button>
+      </div>
+    </div>
+    <div class="sheet-wrap" id="sheet-wrap">
+      <div id="resume-sheet"></div>
+    </div>
   </div>
-</div>
 
-<!-- Mobile tab bar -->
+</div><!-- /builder -->
+
+<!-- Mobile tabs -->
 <div class="mob-tabs" id="mob-tabs">
   <button class="mob-tab active" id="tab-edit" onclick="mobTab('edit')">✏ Edit</button>
   <button class="mob-tab" id="tab-prev" onclick="mobTab('prev')">👁 Preview</button>
-  <button class="mob-tab primary" onclick="dlPDF()">⬇ PDF</button>
+  <button class="mob-tab green" onclick="dlPDF()">⬇ PDF</button>
+  <button class="mob-tab" onclick="dlPNG()">🖼 PNG</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
