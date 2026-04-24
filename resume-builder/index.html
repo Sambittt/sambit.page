@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Resume Builder | sambit.page</title>
+  <meta name="description" content="Free professional resume builder — create, customize and download as PDF or PNG."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="gate"><div class="gate-dots"><span></span><span></span><span></span></div><div class="gate-lbl">Verifying session…</div></div>
+
+<nav id="app-nav">
+  <a href="/" class="brand">sambit.page</a>
+  <div class="nav-r">
+    <a href="https://buymeacoffee.com/sambitsatapathy" target="_blank" rel="noopener" class="bmc">☕ Buy Me a Coffee</a>
+    <span class="nav-user" id="nav-user"></span>
+    <button class="btn-out" id="btn-out">Sign Out</button>
+  </div>
+</nav>
+
+<div class="builder" id="builder">
+  <!-- EDITOR -->
+  <div class="editor" id="editor-panel">
+    <div class="tpl-bar">
+      <span class="tpl-label">// template</span>
+      <div class="tpl-btns">
+        <button class="tpl-btn active" onclick="setTpl('classic')">Classic</button>
+        <button class="tpl-btn" onclick="setTpl('modern')">Modern</button>
+        <button class="tpl-btn" onclick="setTpl('minimal')">Minimal</button>
+      </div>
+      <label class="color-wrap" title="Accent colour"><input type="color" id="accent" value="#2563eb" oninput="S.accent=this.value;render()"/></label>
+    </div>
+
+    <!-- Personal -->
+    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Personal Info</span><span class="chev">▼</span></div>
+    <div class="acc-b open">
+      <div class="r2"><label>Full Name<input oninput="S.name=this.value;render()" placeholder="Jane Doe"/></label><label>Job Title<input oninput="S.title=this.value;render()" placeholder="Software Engineer"/></label></div>
+      <div class="r2"><label>Email<input type="email" oninput="S.email=this.value;render()" placeholder="jane@email.com"/></label><label>Phone<input oninput="S.phone=this.value;render()" placeholder="+1 555 000 0000"/></label></div>
+      <div class="r2"><label>Location<input oninput="S.location=this.value;render()" placeholder="City, State"/></label><label>Website<input oninput="S.website=this.value;render()" placeholder="https://yoursite.com"/></label></div>
+      <div class="r2"><label>LinkedIn<input oninput="S.linkedin=this.value;render()" placeholder="username"/></label><label>GitHub<input oninput="S.github=this.value;render()" placeholder="username"/></label></div>
+    </div></div>
+
+    <!-- Summary -->
+    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Professional Summary</span><span class="chev">▼</span></div>
+    <div class="acc-b"><textarea rows="4" oninput="S.summary=this.value;render()" placeholder="Write 2–3 sentences about your background and goals…"></textarea></div></div>
+
+    <!-- Experience -->
+    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Work Experience</span><span class="chev">▼</span></div>
+    <div class="acc-b"><div id="exp-list"></div><button class="add-btn" onclick="addE('exp')">+ Add Experience</button></div></div>
+
+    <!-- Education -->
+    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Education</span><span class="chev">▼</span></div>
+    <div class="acc-b"><div id="edu-list"></div><button class="add-btn" onclick="addE('edu')">+ Add Education</button></div></div>
+
+    <!-- Skills -->
+    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Skills</span><span class="chev">▼</span></div>
+    <div class="acc-b"><div id="skills-list"></div><button class="add-btn" onclick="addE('skills')">+ Add Skill Group</button></div></div>
+
+    <!-- Projects -->
+    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Projects</span><span class="chev">▼</span></div>
+    <div class="acc-b"><div id="proj-list"></div><button class="add-btn" onclick="addE('proj')">+ Add Project</button></div></div>
+
+    <!-- Certifications -->
+    <div class="acc"><div class="acc-h" onclick="tog(this)"><span>Certifications</span><span class="chev">▼</span></div>
+    <div class="acc-b"><div id="certs-list"></div><button class="add-btn" onclick="addE('certs')">+ Add Certification</button></div></div>
+
+    <div class="dl-bar">
+      <button class="dl-btn primary" id="btn-pdf" onclick="dlPDF()">⬇ PDF</button>
+      <button class="dl-btn" id="btn-png" onclick="dlPNG()">⬇ PNG</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview" id="preview-panel">
+    <div class="prev-label">// live preview — A4</div>
+    <div class="sheet-wrap"><div id="resume-sheet"></div></div>
+  </div>
+</div>
+
+<!-- Mobile tab bar -->
+<div class="mob-tabs" id="mob-tabs">
+  <button class="mob-tab active" id="tab-edit" onclick="mobTab('edit')">✏ Edit</button>
+  <button class="mob-tab" id="tab-prev" onclick="mobTab('prev')">👁 Preview</button>
+  <button class="mob-tab primary" onclick="dlPDF()">⬇ PDF</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="app.js"></script>
+<script type="module">
+  import{initializeApp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  const auth=getAuth(initializeApp({apiKey:"AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",authDomain:"sambit-portfolio.firebaseapp.com",projectId:"sambit-portfolio",storageBucket:"sambit-portfolio.firebasestorage.app",messagingSenderId:"98909249081",appId:"1:98909249081:web:00bdbda2f0ed56a2c177e8"}));
+  onAuthStateChanged(auth,user=>{
+    if(!user){window.location.replace('/login/?redirect='+encodeURIComponent(window.location.pathname));return;}
+    document.getElementById('gate').style.display='none';
+    document.getElementById('app-nav').style.display='flex';
+    document.getElementById('builder').style.display='grid';
+    document.getElementById('mob-tabs').style.display='flex';
+    document.getElementById('nav-user').textContent=user.displayName||user.email||'';
+    document.getElementById('btn-out').onclick=()=>signOut(auth).then(()=>window.location.href='/login/');
+    initApp();
+  });
+</script>
+</body>
+</html>
