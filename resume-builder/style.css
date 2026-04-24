@@ -24,10 +24,10 @@ a{text-decoration:none;color:inherit}
 .btn-out:hover{border-color:var(--fd);color:var(--fg)}
 
 /* Builder grid */
-.builder{display:none;padding-top:40px;height:100vh;grid-template-columns:360px 1fr;overflow:hidden}
+.builder{display:none;padding-top:40px;height:calc(100vh - 52px);grid-template-columns:360px 1fr;overflow:hidden}
 
 /* Editor */
-.editor{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;height:calc(100vh - 40px);overflow:hidden}
+.editor{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;height:calc(100vh - 40px - 52px);overflow:hidden}
 .tpl-bar{padding:.65rem .9rem;border-bottom:1px solid var(--border);background:var(--muted);display:flex;flex-direction:column;gap:.5rem;flex-shrink:0}
 .tpl-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
 .bar-lbl{font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fm);flex-shrink:0}
@@ -83,17 +83,19 @@ input::placeholder,textarea::placeholder{color:var(--fm)}
 .bmc-link:hover{color:var(--green)}
 
 /* Preview panel */
-.preview{background:#ccc;display:flex;flex-direction:column;height:calc(100vh - 40px);overflow:hidden}
-.prev-bar{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;background:#bbb;border-bottom:1px solid #aaa;flex-shrink:0}
-.prev-lbl{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:#666;font-family:'JetBrains Mono',monospace}
-.prev-actions{display:flex;gap:.4rem}
-.prev-dl{font-size:.6rem;font-family:'JetBrains Mono',monospace;letter-spacing:.06em;padding:.25rem .6rem;border:1px solid #999;background:transparent;color:#444;cursor:pointer;transition:all .2s}
-.prev-dl:hover{background:#fff;border-color:#666}
-.sheet-wrap{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;justify-content:center;padding:1rem}
+.preview{background:#ccc;display:flex;flex-direction:column;height:calc(100vh - 40px - 52px);overflow:hidden}
+.prev-bar{display:flex;align-items:center;justify-content:space-between;padding:.45rem .9rem;background:#bbb;border-bottom:1px solid #aaa;flex-shrink:0}
+.prev-lbl{font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:#555;font-family:'JetBrains Mono',monospace}
+.prev-dl-row{display:flex;gap:.4rem}
+.prev-dl{font-size:.62rem;font-family:'JetBrains Mono',monospace;letter-spacing:.06em;padding:.3rem .75rem;border:1px solid #999;background:transparent;color:#333;cursor:pointer;transition:all .2s;font-weight:600}
+.prev-dl:hover{background:#fff;border-color:#555}
+.prev-dl.primary{background:#222;color:#fff;border-color:#222}
+.prev-dl.primary:hover{background:#000}
+.sheet-wrap{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;justify-content:center;padding:.8rem}
 #resume-sheet{width:794px;min-height:1122px;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.25);transform-origin:top center;flex-shrink:0;color-scheme:light}
 
 /* Mobile tabs */
-.mob-tabs{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--card);border-top:1px solid var(--border);height:46px;flex-direction:row}
+.mob-tabs{display:none;position:fixed;bottom:52px;left:0;right:0;z-index:800;background:var(--card);border-top:1px solid var(--border);height:46px;flex-direction:row}
 .mob-tab{flex:1;font-family:inherit;font-size:.6rem;letter-spacing:.07em;padding:.6rem .2rem;border:none;background:transparent;color:var(--fd);cursor:pointer;transition:color .2s}
 .mob-tab.active{color:var(--green)}
 .mob-tab.green{background:var(--green);color:#000;font-weight:700}
@@ -200,17 +202,55 @@ input::placeholder,textarea::placeholder{color:var(--fm)}
 #resume-sheet .ex-sk{font-size:12px;margin-bottom:4px}
 #resume-sheet .ex-skc{font-weight:700}
 
+/* ── COMPACT ── */
+#resume-sheet .cp{font-family:'Inter','Helvetica Neue',Arial,sans-serif;display:grid;grid-template-columns:200px 1fr;min-height:1122px;font-size:12px;background:#fff;color:#222}
+#resume-sheet .cp-side{background:#f5f5f5;padding:24px 16px;border-right:1px solid #e0e0e0}
+#resume-sheet .cp-main{padding:24px 22px;background:#fff}
+#resume-sheet .cp-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:2px solid #ddd}
+#resume-sheet .cp-name{font-size:14px;font-weight:700;text-align:center;margin-bottom:2px;line-height:1.2}
+#resume-sheet .cp-title{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-align:center;margin-bottom:14px}
+#resume-sheet .cp-slbl{font-size:7.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;border-bottom:1px solid #ddd;padding-bottom:2px;margin:12px 0 7px}
+#resume-sheet .cp-ci{font-size:9.5px;color:#555;margin-bottom:4px;word-break:break-all;line-height:1.5}
+#resume-sheet .cp-sk{font-size:9.5px;color:#444;margin-bottom:3px;padding:2px 6px;background:#ebebeb;display:inline-block;margin-right:2px;margin-bottom:3px}
+#resume-sheet .cp-mst{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;border-bottom:2px solid;padding-bottom:2px;margin:14px 0 8px}
+#resume-sheet .cp-eh{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px}
+#resume-sheet .cp-role{font-size:12.5px;font-weight:600}
+#resume-sheet .cp-dt{font-size:9.5px;color:#888}
+#resume-sheet .cp-co{font-size:11px;color:#666;margin-bottom:3px}
+#resume-sheet .cp-sum{font-size:11.5px;color:#444;line-height:1.75}
+#resume-sheet .cp-skrow{font-size:11px;margin-bottom:3px}
+
+/* ── SHARP ── */
+#resume-sheet .sh{font-family:'Inter','Helvetica Neue',Arial,sans-serif;padding:0;font-size:12px;color:#111;background:#fff}
+#resume-sheet .sh-hdr{padding:32px 44px 20px;border-bottom:4px solid #111}
+#resume-sheet .sh-top{display:flex;align-items:center;gap:18px;margin-bottom:10px}
+#resume-sheet .sh-photo{width:74px;height:74px;border-radius:4px;object-fit:cover;flex-shrink:0}
+#resume-sheet .sh-name{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1;text-transform:uppercase}
+#resume-sheet .sh-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-top:4px}
+#resume-sheet .sh-bar{height:3px;margin:6px 0 0;display:block}
+#resume-sheet .sh-contact{display:flex;flex-wrap:wrap;gap:16px;font-size:10.5px;color:#555}
+#resume-sheet .sh-body{padding:20px 44px 36px;display:grid;grid-template-columns:1fr 260px;gap:24px}
+#resume-sheet .sh-st{font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin:18px 0 8px;padding-bottom:2px;border-bottom:2px solid #111}
+#resume-sheet .sh-st:first-child{margin-top:0}
+#resume-sheet .sh-eh{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px}
+#resume-sheet .sh-role{font-size:13px;font-weight:700}
+#resume-sheet .sh-dt{font-size:10px;color:#777;font-style:italic}
+#resume-sheet .sh-co{font-size:11px;color:#555;margin-bottom:3px}
+#resume-sheet .sh-sum{font-size:12px;color:#333;line-height:1.75}
+#resume-sheet .sh-side .sh-st{border-bottom-color:#111}
+#resume-sheet .sh-skpill{display:inline-block;font-size:10px;padding:2px 8px;margin:2px;border:1px solid #ddd;color:#444}
+
 /* Responsive */
 @media(max-width:900px){
   .builder{grid-template-columns:320px 1fr}
 }
+
 @media(max-width:700px){
   html,body{overflow:auto}
-  .builder{grid-template-columns:1fr;height:calc(100vh - 40px - 46px);overflow:hidden}
-  .editor,.preview{height:calc(100vh - 40px - 46px);overflow-y:auto}
+  .builder{grid-template-columns:1fr;height:calc(100vh - 40px - 46px - 52px);overflow:hidden}
+  .editor,.preview{height:calc(100vh - 40px - 46px - 52px);overflow-y:auto}
   .mob-tabs{display:flex}
   .dl-bar{display:none}
-  .prev-actions{display:flex}
   .nav-user{display:none}
   .r2,.r3{grid-template-columns:1fr}
   #resume-sheet{width:100%;min-height:auto}
