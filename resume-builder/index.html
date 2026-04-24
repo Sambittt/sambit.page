@@ -53,10 +53,10 @@
         <span class="bar-lbl">Accent</span>
         <input type="color" id="accent" value="#2563eb" oninput="S.accent=this.value;render()"/>
         <span class="bar-lbl" style="margin-left:.8rem">Photo</span>
-        <label class="photo-btn" title="Upload profile photo">
-          <input type="file" id="photo-input" accept="image/*" onchange="loadPhoto(this)"/> 📷 Upload
-        </label>
-        <button class="photo-rm" id="photo-rm" onclick="removePhoto()" style="display:none">✕ Remove</button>
+        <button type="button" class="photo-btn" onclick="document.getElementById('photo-input').click()">+ Upload</button>
+        <input type="file" id="photo-input" accept="image/*" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" onchange="loadPhoto(this)"/>
+        <img id="photo-thumb" style="display:none;width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid #444;flex-shrink:0" alt=""/>
+        <button class="photo-rm" id="photo-rm" onclick="removePhoto()" style="display:none">✕</button>
       </div>
     </div>
 
@@ -109,12 +109,8 @@
   <!-- PREVIEW PANEL -->
   <div class="preview" id="preview-panel">
     <div class="prev-bar">
-      <span class="prev-lbl">// live preview</span>
-      <div class="prev-actions">
-        <button class="prev-dl" onclick="dlPDF()">⬇ PDF</button>
-        <button class="prev-dl" onclick="dlPNG()">⬇ PNG</button>
-      </div>
-    </div>
+    <span class="prev-lbl">// live preview — A4</span>
+  </div>
     <div class="sheet-wrap" id="sheet-wrap">
       <div id="resume-sheet"></div>
     </div>
@@ -124,10 +120,10 @@
 
 <!-- Mobile tabs -->
 <div class="mob-tabs" id="mob-tabs">
-  <button class="mob-tab active" id="tab-edit" onclick="mobTab('edit')">✏ Edit</button>
-  <button class="mob-tab" id="tab-prev" onclick="mobTab('prev')">👁 Preview</button>
-  <button class="mob-tab green" onclick="dlPDF()">⬇ PDF</button>
-  <button class="mob-tab" onclick="dlPNG()">🖼 PNG</button>
+  <button class="mob-tab active" id="tab-edit" onclick="mobTab('edit')">Edit</button>
+  <button class="mob-tab" id="tab-prev" onclick="mobTab('prev')">Preview</button>
+  <button class="mob-tab green" onclick="dlPDF()">PDF</button>
+  <button class="mob-tab" onclick="dlPNG()">PNG</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
