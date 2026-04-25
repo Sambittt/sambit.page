@@ -47,6 +47,8 @@
           <button class="tpl-btn" onclick="setTpl('minimal')">Minimal</button>
           <button class="tpl-btn" onclick="setTpl('creative')">Creative</button>
           <button class="tpl-btn" onclick="setTpl('executive')">Executive</button>
+          <button class="tpl-btn" onclick="setTpl('compact')">Compact</button>
+          <button class="tpl-btn" onclick="setTpl('sharp')">Sharp</button>
         </div>
       </div>
       <div class="tpl-row">
@@ -97,19 +99,17 @@
       <div class="acc-b"><div id="certs-list"></div><button class="add-btn" onclick="addE('certs')">+ Add Certification</button></div></div>
 
     </div><!-- /secs -->
-
-    <!-- Download + BMC -->
-    <div class="dl-bar">
-      <button class="dl-btn primary" id="btn-pdf" onclick="dlPDF()">⬇ Download PDF</button>
-      <button class="dl-btn" id="btn-png" onclick="dlPNG()">⬇ Download PNG</button>
-    </div>
   </div>
 
   <!-- PREVIEW PANEL -->
   <div class="preview" id="preview-panel">
     <div class="prev-bar">
-    <span class="prev-lbl">// live preview — A4</span>
-  </div>
+      <span class="prev-lbl">// live preview — US Letter</span>
+      <div class="prev-dl-row">
+        <button class="prev-dl primary" onclick="dlPDF()">⬇ PDF</button>
+        <button class="prev-dl" onclick="dlPNG()">PNG</button>
+      </div>
+    </div>
     <div class="sheet-wrap" id="sheet-wrap">
       <div id="resume-sheet"></div>
     </div>
@@ -126,6 +126,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="app.js"></script>
 
