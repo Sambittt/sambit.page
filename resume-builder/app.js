@@ -250,15 +250,15 @@ async function dlPDF(){
   const b=document.getElementById('btn-pdf');if(b){b.textContent='Generating…';b.disabled=true;}
   try{
     const el=document.getElementById('resume-sheet');
-    el.style.transform='';el.style.width='794px';
-    await html2pdf().set({margin:0,filename:(S.name||'resume').toLowerCase().replace(/\s+/g,'_')+'_resume.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,logging:false,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
+    el.style.transform='';el.style.width='816px';
+    await html2pdf().set({margin:0,filename:(S.name||'resume').toLowerCase().replace(/\s+/g,'_')+'_resume.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,logging:false,backgroundColor:'#ffffff'},jsPDF:{unit:'in',format:'letter',orientation:'portrait'}}).from(el).save();
   }finally{if(b){b.textContent='⬇ Download PDF';b.disabled=false;}scaleSheet();}
 }
 async function dlPNG(){
   const b=document.getElementById('btn-png');if(b){b.textContent='Generating…';b.disabled=true;}
   try{
     const el=document.getElementById('resume-sheet');
-    el.style.transform='';el.style.width='794px';
+    el.style.transform='';el.style.width='816px';
     const canvas=await html2canvas(el,{scale:2,useCORS:true,logging:false,backgroundColor:'#ffffff'});
     const a=document.createElement('a');a.download=(S.name||'resume').toLowerCase().replace(/\s+/g,'_')+'_resume.png';a.href=canvas.toDataURL('image/png');a.click();
   }finally{if(b){b.textContent='⬇ Download PNG';b.disabled=false;}scaleSheet();}
@@ -271,7 +271,7 @@ function scaleSheet(){
   const wrap=document.getElementById('sheet-wrap');
   if(!el||!wrap)return;
   const w=wrap.clientWidth-24;
-  if(w>0&&w<810){const sc=w/794;el.style.transform=`scale(${sc})`;el.style.transformOrigin='top center';el.style.marginBottom=`${(sc-1)*el.offsetHeight}px`;}
+  if(w>0&&w<840){const sc=w/816;el.style.transform=`scale(${sc})`;el.style.transformOrigin='top center';el.style.marginBottom=`${(sc-1)*el.offsetHeight}px`;}
   else{el.style.transform='';el.style.marginBottom='';}
 }
 
