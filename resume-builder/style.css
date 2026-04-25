@@ -92,7 +92,7 @@ input::placeholder,textarea::placeholder{color:var(--fm)}
 .prev-dl.primary{background:#222;color:#fff;border-color:#222}
 .prev-dl.primary:hover{background:#000}
 .sheet-wrap{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;justify-content:center;padding:.8rem}
-#resume-sheet{width:794px;min-height:1122px;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.25);transform-origin:top center;flex-shrink:0;color-scheme:light}
+#resume-sheet{width:816px;min-height:1056px;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.25);transform-origin:top center;flex-shrink:0;color-scheme:light}
 
 /* Mobile tabs */
 .mob-tabs{display:none;position:fixed;bottom:52px;left:0;right:0;z-index:800;background:var(--card);border-top:1px solid var(--border);height:46px;flex-direction:row}
@@ -203,7 +203,7 @@ input::placeholder,textarea::placeholder{color:var(--fm)}
 #resume-sheet .ex-skc{font-weight:700}
 
 /* ── COMPACT ── */
-#resume-sheet .cp{font-family:'Inter','Helvetica Neue',Arial,sans-serif;display:grid;grid-template-columns:200px 1fr;min-height:1122px;font-size:12px;background:#fff;color:#222}
+#resume-sheet .cp{font-family:'Inter','Helvetica Neue',Arial,sans-serif;display:grid;grid-template-columns:200px 1fr;min-height:1056px;font-size:12px;background:#fff;color:#222}
 #resume-sheet .cp-side{background:#f5f5f5;padding:24px 16px;border-right:1px solid #e0e0e0}
 #resume-sheet .cp-main{padding:24px 22px;background:#fff}
 #resume-sheet .cp-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:2px solid #ddd}
