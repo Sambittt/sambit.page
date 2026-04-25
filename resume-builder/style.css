@@ -253,7 +253,6 @@ input::placeholder,textarea::placeholder{color:var(--fm)}
   .dl-bar{display:none}
   .nav-user{display:none}
   .r2,.r3{grid-template-columns:1fr}
-  #resume-sheet{width:100%;min-height:auto}
 }
 @media(min-width:701px){#mob-tabs{display:none!important}}
 
