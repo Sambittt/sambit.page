@@ -176,12 +176,12 @@
 
 <script>
 let popShown=false;
-function showPop(){if(popShown)return;popShown=true;const pop=document.getElementById('cpop');pop.classList.add('show');if(window.QRCode&&document.getElementById('cpop-qr-box')&&!document.getElementById('cpop-qr-box').hasChildNodes()){new QRCode(document.getElementById('cpop-qr-box'),{text:'upi://pay?pa=bundi.ka14@upi&pn=Sambit&cu=INR',width:110,height:110,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});}}
+function showPop(){if(popShown)return;popShown=true;const pop=document.getElementById('cpop');pop.classList.add('show');if(window.QRCode&&document.getElementById('cpop-qr-box')&&!document.getElementById('cpop-qr-box').hasChildNodes()){new QRCode(document.getElementById('cpop-qr-box'),{text:'upi://pay?pa=sambit22@upi&pn=Sambit&cu=INR',width:110,height:110,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});}}
 function closePop(){document.getElementById('cpop').classList.remove('show');}
-function popUPI(){const a=document.getElementById('pop-amt').value;if(!a||a<=0)return;window.location.href=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${a}&cu=INR&tn=Support+Resume+Builder`;}
-function payUPI(){const amt=document.getElementById('upi-amt').value;if(!amt||amt<=0)return;window.location.href=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${amt}&cu=INR&tn=Support+Resume+Builder`;}
+function popUPI(){const a=document.getElementById('pop-amt').value;if(!a||a<=0)return;window.location.href=`upi://pay?pa=sambit22@upi&pn=Sambit&am=${a}&cu=INR&tn=Support+Resume+Builder`;}
+function payUPI(){const amt=document.getElementById('upi-amt').value;if(!amt||amt<=0)return;window.location.href=`upi://pay?pa=sambit22@upi&pn=Sambit&am=${amt}&cu=INR&tn=Support+Resume+Builder`;}
 document.getElementById('cpop').addEventListener('click',e=>{if(e.target===document.getElementById('cpop'))closePop();});
-window.addEventListener('load',()=>{if(window.QRCode&&document.getElementById('qr-box')){new QRCode(document.getElementById('qr-box'),{text:'upi://pay?pa=bundi.ka14@upi&pn=Sambit&cu=INR',width:140,height:140,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}});
+window.addEventListener('load',()=>{if(window.QRCode&&document.getElementById('qr-box')){new QRCode(document.getElementById('qr-box'),{text:'upi://pay?pa=sambit22@upi&pn=Sambit&cu=INR',width:140,height:140,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}});
 // Show popup after download
 const _dlPDF=window.dlPDF;window.dlPDF=async function(){await _dlPDF();setTimeout(showPop,1000);};
 const _dlPNG=window.dlPNG;window.dlPNG=async function(){await _dlPNG();setTimeout(showPop,1000);};
