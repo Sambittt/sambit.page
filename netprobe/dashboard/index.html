@@ -29,7 +29,6 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
 .dots span{width:8px;height:8px;border-radius:50%;background:var(--green);animation:dot 1.2s ease-in-out infinite}
 .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
 @keyframes dot{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
-.loading-lbl{font-size:.72rem;color:var(--dim);letter-spacing:.1em}
 
 /* CARD */
 .card{background:var(--card);border:1px solid var(--border);padding:2.5rem 2rem;width:100%;max-width:480px;position:relative}
@@ -50,7 +49,7 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
 .field textarea{resize:vertical;min-height:80px;padding:.6rem}
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.4rem;font-family:inherit;font-size:.75rem;font-weight:600;letter-spacing:.08em;cursor:pointer;border:none;transition:opacity .2s,transform .15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem 1.4rem;font-family:inherit;font-size:.75rem;font-weight:600;letter-spacing:.08em;cursor:pointer;border:none;transition:opacity .2s,transform .15s}
 .btn:hover{transform:translateY(-1px)}.btn:active{transform:none}
 .btn-green{background:var(--green);color:#000}
 .btn-green:hover{opacity:.88}
@@ -58,16 +57,28 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
 .btn-outline:hover{border-color:var(--green);background:rgba(74,222,128,.06)}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-/* SCANNER (placeholder for now) */
-#st-scanner{flex-direction:column;padding:1rem 1.5rem}
-.scanner-inner{max-width:800px;width:100%;margin:0 auto}
-.scanner-title{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:1.5rem}
-
 /* MSG */
 .msg{font-size:.72rem;padding:.6rem .8rem;margin-top:.8rem;border-left:2px solid;display:none}
 .msg.show{display:block}
 .msg.err{border-color:var(--red);color:var(--red);background:rgba(248,113,113,.08)}
 .msg.ok{border-color:var(--green);color:var(--green);background:rgba(74,222,128,.08)}
+
+/* SCANNER */
+#st-scanner{align-items:flex-start;padding:3rem 1.5rem}
+.scanner-inner{max-width:800px;width:100%;margin:0 auto}
+.scanner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.scanner-title{font-size:1.1rem;font-weight:700;color:var(--green)}
+.scan-limit{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid rgba(74,222,128,.3);color:var(--green);background:rgba(74,222,128,.06)}
+.scan-bar{display:flex;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap}
+.scan-bar .input-wrap{flex:1;min-width:200px}
+.term{border:1px solid var(--border);background:var(--card);overflow:hidden;margin-top:2rem;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.term-bar{background:var(--muted);border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between}
+.term-dot{width:10px;height:10px;border-radius:50%}
+.term-title{font-size:.65rem;color:var(--fmuted);letter-spacing:.1em;text-transform:uppercase}
+.term-body{padding:1.5rem;font-size:.75rem;line-height:1.8;color:var(--dim);min-height:300px;max-height:550px;overflow-y:auto}
+.t-g{color:var(--green)}.t-y{color:var(--yellow)}.t-r{color:var(--red)}.t-w{color:var(--fg)}.t-d{color:var(--fmuted)}
+.t-line{animation:fadeIn .2s forwards}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
@@ -80,13 +91,13 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
   </div>
 </nav>
 
-<!-- STATE: LOADING -->
+<!-- LOADING -->
 <div class="state active" id="st-loading">
   <div class="dots"><span></span><span></span><span></span></div>
-  <div class="loading-lbl">Verifying access…</div>
+  <div style="font-size:.72rem;color:var(--dim);letter-spacing:.1em;margin-top:1rem">Verifying access…</div>
 </div>
 
-<!-- STATE: REQUEST FORM -->
+<!-- REQUEST FORM -->
 <div class="state" id="st-request">
   <div class="card">
     <div class="card-icon">🔐</div>
@@ -96,95 +107,127 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
     <form id="req-form">
       <div class="field">
         <label>Your Name</label>
-        <div class="input-wrap">
-          <span class="input-pfx">›</span>
-          <input type="text" id="req-name" placeholder="e.g. John Doe" required/>
-        </div>
+        <div class="input-wrap"><span class="input-pfx">›</span><input type="text" id="req-name" required/></div>
       </div>
       <div class="field">
-        <label>Why do you want access?</label>
-        <textarea id="req-reason" placeholder="e.g. I'm a security student and want to practice recon techniques…" required></textarea>
+        <label>Reason</label>
+        <textarea id="req-reason" required></textarea>
       </div>
-      <button type="submit" class="btn btn-green" id="req-btn">Submit Request</button>
+      <button type="submit" class="btn btn-green" id="req-btn" style="width:100%">Submit Request</button>
     </form>
     <div class="msg" id="req-msg"></div>
   </div>
 </div>
 
-<!-- STATE: PENDING -->
+<!-- PENDING -->
 <div class="state" id="st-pending">
   <div class="card" style="text-align:center">
     <div class="card-icon">⏳</div>
     <div class="tag">// pending review</div>
     <div class="card-title">Request Submitted</div>
-    <div class="card-sub">Your access request is under review. I'll approve it manually — check back soon.<br/><br/>Questions? Reach me at <span style="color:var(--green)">contact@sambit.page</span></div>
-    <a href="/" class="btn btn-outline">← Back to Portfolio</a>
+    <div class="card-sub">Your access request is under review.</div>
+    <a href="/" class="btn btn-outline">← Portfolio</a>
   </div>
 </div>
 
-<!-- STATE: REJECTED -->
+<!-- REJECTED -->
 <div class="state" id="st-rejected">
   <div class="card" style="text-align:center">
     <div class="card-icon">🚫</div>
     <div class="tag" style="border-color:rgba(248,113,113,.4);color:var(--red)">// access denied</div>
     <div class="card-title">Access Denied</div>
-    <div class="card-sub">Your request was not approved. Contact me at <span style="color:var(--green)">contact@sambit.page</span> if you think this is a mistake.</div>
-    <a href="/" class="btn btn-outline">← Back to Portfolio</a>
+    <div class="card-sub">Your request was not approved.</div>
+    <a href="/" class="btn btn-outline">← Portfolio</a>
   </div>
 </div>
 
-<!-- STATE: SCANNER (approved users) -->
+<!-- SCANNER -->
 <div class="state" id="st-scanner">
   <div class="scanner-inner">
-    <div class="scanner-title">// NETPROBE — Network Reconnaissance Dashboard</div>
-    <div style="color:var(--dim);font-size:.78rem">✅ Access approved. Scanner coming next step!</div>
+    <div class="scanner-header">
+      <div>
+        <div class="scanner-title">// NETPROBE RECONNAISSANCE</div>
+        <div style="color:var(--dim);font-size:.7rem;margin-top:.4rem">Authorized access only. All scans are logged.</div>
+      </div>
+      <div class="scan-limit" id="scan-limit">Scans today: - / 5</div>
+    </div>
+    
+    <div class="scan-bar">
+      <div class="input-wrap">
+        <span class="input-pfx">target ›</span>
+        <input type="text" id="scan-target" placeholder="example.com (domain only)" spellcheck="false"/>
+      </div>
+      <button class="btn btn-green" id="btn-scan">Initiate Scan</button>
+    </div>
+    
+    <div class="msg" id="scan-msg"></div>
+
+    <div class="term" id="scan-term" style="display:none">
+      <div class="term-bar">
+        <div style="display:flex;gap:.4rem"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--yellow)"></span><span class="term-dot" style="background:var(--green)"></span></div>
+        <div class="term-title" id="term-title">waiting...</div>
+      </div>
+      <div class="term-body" id="term-out"></div>
+    </div>
   </div>
 </div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-import{getFirestore,doc,getDoc,setDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import{getFirestore,doc,getDoc,setDoc,collection,addDoc,query,where,getDocs,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const FB={apiKey:"AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",authDomain:"sambit-portfolio.firebaseapp.com",projectId:"sambit-portfolio",storageBucket:"sambit-portfolio.firebasestorage.app",messagingSenderId:"98909249081",appId:"1:98909249081:web:00bdbda2f0ed56a2c177e8"};
 const app=initializeApp(FB);
 const auth=getAuth(app);
 const db=getFirestore(app);
 
+let currentUser = null;
+let scansToday = 0;
+const MAX_SCANS = 5;
+const SHODAN_KEY = 'HgQbaZolSnYOJwD3eXulRE1Duu3YVCEY';
+
 function show(id){
   document.querySelectorAll('.state').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
+async function checkRateLimit(){
+  const startOfDay = new Date();
+  startOfDay.setHours(0,0,0,0);
+  const q = query(collection(db,'scan_logs'), where('uid','==',currentUser.uid), where('timestamp','>=',startOfDay));
+  const snap = await getDocs(q);
+  scansToday = snap.size;
+  document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ${MAX_SCANS}`;
+  return scansToday < MAX_SCANS;
+}
+
 onAuthStateChanged(auth,async user=>{
-  if(!user){
-    window.location.href='/login/?redirect='+encodeURIComponent('/netprobe/dashboard/');
-    return;
-  }
-  document.getElementById('nav-user').textContent=user.displayName||user.email||'';
+  if(!user){window.location.href='/login/?redirect='+encodeURIComponent('/netprobe/dashboard/');return;}
+  currentUser = user;
+  document.getElementById('nav-user').textContent=user.email||'';
   document.getElementById('btn-out').onclick=()=>signOut(auth).then(()=>window.location.href='/');
 
-  const uRef=doc(db,'users',user.uid);
-  const uSnap=await getDoc(uRef);
-
+  const uSnap=await getDoc(doc(db,'users',user.uid));
   if(!uSnap.exists()||!uSnap.data().status){
     show('st-request');
   } else {
     const s=uSnap.data().status;
-    if(s==='approved') show('st-scanner');
+    if(s==='approved'){
+      show('st-scanner');
+      checkRateLimit();
+    }
     else if(s==='pending') show('st-pending');
     else if(s==='rejected') show('st-rejected');
     else show('st-request');
   }
 
-  // Request form submit
   document.getElementById('req-form').onsubmit=async e=>{
     e.preventDefault();
     const btn=document.getElementById('req-btn');
-    const msg=document.getElementById('req-msg');
     btn.disabled=true;btn.textContent='Submitting…';
     try{
-      await setDoc(uRef,{
+      await setDoc(doc(db,'users',user.uid),{
         status:'pending',
         displayName:document.getElementById('req-name').value.trim(),
         email:user.email,
@@ -192,16 +235,155 @@ onAuthStateChanged(auth,async user=>{
         reason:document.getElementById('req-reason').value.trim(),
         requestedAt:serverTimestamp()
       },{merge:true});
-      msg.textContent='// Request submitted! Awaiting manual approval.';
-      msg.className='msg ok show';
-      setTimeout(()=>show('st-pending'),1500);
-    }catch(err){
-      msg.textContent='// Error: '+err.message;
-      msg.className='msg err show';
-      btn.disabled=false;btn.textContent='Submit Request';
-    }
+      setTimeout(()=>show('st-pending'),1000);
+    }catch(err){alert('Error: '+err.message);btn.disabled=false;}
   };
 });
+
+// ── SCANNER LOGIC ──
+const btnScan = document.getElementById('btn-scan');
+const inpTarget = document.getElementById('scan-target');
+const termOut = document.getElementById('term-out');
+const termTitle = document.getElementById('term-title');
+const scanMsg = document.getElementById('scan-msg');
+
+function print(html) {
+  const d = document.createElement('div');
+  d.className = 't-line';
+  d.innerHTML = html;
+  termOut.appendChild(d);
+  termOut.scrollTop = termOut.scrollHeight;
+}
+
+function printSection(title) {
+  print(`<br/><span class="t-y">[ ${title} ]</span>`);
+}
+
+async function runScan() {
+  const target = inpTarget.value.trim().toLowerCase();
+  // Basic domain validation
+  if(!target || target.includes('http') || target.includes('/') || target.split('.').length < 2) {
+    scanMsg.textContent = '// Please enter a valid domain (e.g. example.com)';
+    scanMsg.className = 'msg err show';
+    return;
+  }
+  
+  if(!await checkRateLimit()) {
+    scanMsg.textContent = '// Rate limit exceeded. You can only run 5 scans per day.';
+    scanMsg.className = 'msg err show';
+    return;
+  }
+
+  scanMsg.className = 'msg';
+  btnScan.disabled = true;
+  btnScan.textContent = 'Scanning...';
+  document.getElementById('scan-term').style.display = 'block';
+  termOut.innerHTML = '';
+  termTitle.textContent = `Target: ${target}`;
+
+  print(`<span class="t-d">$ netprobe --target ${target}</span>`);
+  print(`<span class="t-g">✓ Target acquired. Initiating OSINT modules...</span>`);
+
+  let resolvedIP = null;
+
+  try {
+    // 1. DNS
+    printSection('DNS ENUMERATION');
+    const dnsRes = await fetch(`https://dns.google/resolve?name=${target}&type=A`);
+    const dnsData = await dnsRes.json();
+    if(dnsData.Answer && dnsData.Answer.length > 0) {
+      resolvedIP = dnsData.Answer[0].data;
+      dnsData.Answer.forEach(a => print(`  A      → <span class="t-w">${a.data}</span>`));
+    } else {
+      print(`  <span class="t-r">No A records found.</span>`);
+    }
+
+    // MX
+    const mxRes = await fetch(`https://dns.google/resolve?name=${target}&type=MX`);
+    const mxData = await mxRes.json();
+    if(mxData.Answer) mxData.Answer.forEach(a => print(`  MX     → <span class="t-w">${a.data}</span>`));
+
+    // 2. WHOIS
+    printSection('WHOIS DATA');
+    try {
+      const whoRes = await fetch(`https://who-dat.as93.net/${target}`);
+      const whoData = await whoRes.json();
+      if(whoData.domain) {
+        if(whoData.domain.registrar) print(`  Registrar → <span class="t-w">${whoData.domain.registrar}</span>`);
+        if(whoData.domain.created_date) print(`  Created   → <span class="t-w">${whoData.domain.created_date.split('T')[0]}</span>`);
+        if(whoData.domain.expiration_date) print(`  Expires   → <span class="t-w">${whoData.domain.expiration_date.split('T')[0]}</span>`);
+      } else {
+        print(`  <span class="t-d">No WHOIS data available.</span>`);
+      }
+    } catch(e) { print(`  <span class="t-r">WHOIS lookup failed.</span>`); }
+
+    // 3. SSL
+    printSection('SSL CERTIFICATE (crt.sh)');
+    try {
+      // crt.sh doesn't have CORS, use allorigins proxy
+      const sslUrl = encodeURIComponent(`https://crt.sh/?q=${target}&output=json`);
+      const sslRes = await fetch(`https://api.allorigins.win/get?url=${sslUrl}`);
+      const sslWrap = await sslRes.json();
+      const sslData = JSON.parse(sslWrap.contents);
+      if(sslData && sslData.length > 0) {
+        print(`  Issuer    → <span class="t-w">${sslData[0].issuer_name.split('O=')[1]?.split(',')[0] || 'Unknown'}</span>`);
+        print(`  Not After → <span class="t-w">${sslData[0].not_after.split('T')[0]}</span>`);
+      } else {
+        print(`  <span class="t-d">No certificates found.</span>`);
+      }
+    } catch(e) { print(`  <span class="t-r">SSL lookup failed.</span>`); }
+
+    // 4. Geolocation & Shodan
+    if(resolvedIP) {
+      printSection('IP GEOLOCATION');
+      try {
+        const geoRes = await fetch(`https://ipapi.co/${resolvedIP}/json/`);
+        const geoData = await geoRes.json();
+        print(`  IP        → <span class="t-w">${resolvedIP}</span>`);
+        print(`  Location  → <span class="t-w">${geoData.city}, ${geoData.country_name}</span>`);
+        print(`  ISP/ASN   → <span class="t-w">${geoData.org}</span>`);
+      } catch(e) { print(`  <span class="t-r">Geolocation failed.</span>`); }
+
+      printSection('OPEN PORTS (SHODAN)');
+      try {
+        const shodanRes = await fetch(`https://api.shodan.io/shodan/host/${resolvedIP}?key=${SHODAN_KEY}`);
+        if(shodanRes.ok) {
+          const shodanData = await shodanRes.json();
+          if(shodanData.ports && shodanData.ports.length > 0) {
+            shodanData.ports.forEach(p => print(`  Port <span class="t-g">${p}</span>  → OPEN`));
+            if(shodanData.vulns) print(`  <span class="t-r">Vulns     → ${shodanData.vulns.length} CVEs found!</span>`);
+          } else {
+            print(`  <span class="t-d">No open ports found.</span>`);
+          }
+        } else {
+          print(`  <span class="t-d">No Shodan data for this IP.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-r">Shodan lookup blocked by browser (use API directly).</span>`); }
+    }
+
+    print('<br/><span class="t-d">─────────────────────────────────────</span>');
+    print('<span class="t-g">✓ Scan complete. Results logged to database.</span>');
+
+    // LOG TO FIRESTORE
+    await addDoc(collection(db, 'scan_logs'), {
+      uid: currentUser.uid,
+      email: currentUser.email,
+      target: target,
+      timestamp: serverTimestamp()
+    });
+    
+    checkRateLimit(); // update UI counter
+
+  } catch (err) {
+    print(`<br/><span class="t-r">Fatal Error: ${err.message}</span>`);
+  }
+
+  btnScan.disabled = false;
+  btnScan.textContent = 'Initiate Scan';
+}
+
+btnScan.onclick = runScan;
+inpTarget.onkeypress = e => { if(e.key==='Enter') runScan(); };
 </script>
 </body>
 </html>
