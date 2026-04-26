@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>NetProbe Dashboard | sambit.page</title>
+<title>NetProbe SOC Dashboard | sambit.page</title>
 <meta name="robots" content="noindex,nofollow"/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<!-- Mini SOC Dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-:root{--bg:#030303;--card:#080808;--muted:#0f0f0f;--border:#1c1c1c;--fg:#f0f0f0;--dim:#888;--fmuted:#444;--green:#4ade80;--red:#f87171;--yellow:#facc15;}
+:root{--bg:#030303;--card:#080808;--muted:#0f0f0f;--border:#1c1c1c;--fg:#f0f0f0;--dim:#888;--fmuted:#444;--green:#4ade80;--red:#f87171;--yellow:#facc15;--orange:#fb923c;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--fg);min-height:100vh;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
@@ -63,9 +66,9 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
 .msg.err{border-color:var(--red);color:var(--red);background:rgba(248,113,113,.08)}
 .msg.ok{border-color:var(--green);color:var(--green);background:rgba(74,222,128,.08)}
 
-/* SCANNER */
+/* SCANNER / SOC */
 #st-scanner{align-items:flex-start;padding:3rem 1.5rem}
-.scanner-inner{max-width:800px;width:100%;margin:0 auto}
+.scanner-inner{max-width:1000px;width:100%;margin:0 auto}
 .scanner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
 .scanner-title{font-size:1.1rem;font-weight:700;color:var(--green)}
 .scan-limit{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid rgba(74,222,128,.3);color:var(--green);background:rgba(74,222,128,.06)}
@@ -76,15 +79,25 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
 .term-dot{width:10px;height:10px;border-radius:50%}
 .term-title{font-size:.65rem;color:var(--fmuted);letter-spacing:.1em;text-transform:uppercase}
 .term-body{padding:1.5rem;font-size:.75rem;line-height:1.8;color:var(--dim);min-height:300px;max-height:550px;overflow-y:auto}
-.t-g{color:var(--green)}.t-y{color:var(--yellow)}.t-r{color:var(--red)}.t-w{color:var(--fg)}.t-d{color:var(--fmuted)}
+.t-g{color:var(--green)}.t-y{color:var(--yellow)}.t-r{color:var(--red)}.t-w{color:var(--fg)}.t-d{color:var(--fmuted)}.t-o{color:var(--orange)}
 .t-line{animation:fadeIn .2s forwards}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* EXPORT & SOC GRID */
+.export-bar{display:flex;gap:.5rem;margin-top:1rem;justify-content:flex-end}
+.soc-grid{display:grid;grid-template-columns:300px 1fr;gap:2rem;align-items:start;margin-top:2rem}
+@media(max-width:800px){.soc-grid{grid-template-columns:1fr}}
+.risk-badge{display:inline-block;padding:.2rem .5rem;border-radius:2px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#000}
+.risk-high{background:var(--red)}.risk-med{background:var(--orange)}.risk-low{background:var(--green)}
+table{width:100%;text-align:left;font-size:.75rem;border-collapse:collapse;margin-top:1rem}
+th{padding-bottom:.5rem;border-bottom:1px solid var(--border);color:var(--fmuted);font-weight:400;letter-spacing:.1em;text-transform:uppercase}
+td{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.02)}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="/netprobe/" class="nav-brand">NETPROBE<span style="color:var(--dim)">.</span></a>
+  <a href="/netprobe/" class="nav-brand">NETPROBE<span style="color:var(--dim)">.</span>SOC</a>
   <div class="nav-r">
     <span class="nav-user" id="nav-user"></span>
     <button class="nav-out" id="btn-out">Sign Out</button>
@@ -103,7 +116,7 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
     <div class="card-icon">🔐</div>
     <div class="tag">// access required</div>
     <div class="card-title">Request Access</div>
-    <div class="card-sub">You're logged in but haven't requested access yet. Fill in the form below — I'll review and approve manually.</div>
+    <div class="card-sub">You're logged in but haven't requested analyst access yet. Fill in the form below.</div>
     <form id="req-form">
       <div class="field">
         <label>Your Name</label>
@@ -125,7 +138,7 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
     <div class="card-icon">⏳</div>
     <div class="tag">// pending review</div>
     <div class="card-title">Request Submitted</div>
-    <div class="card-sub">Your access request is under review.</div>
+    <div class="card-sub">Your access request is under review by the Administrator.</div>
     <a href="/" class="btn btn-outline">← Portfolio</a>
   </div>
 </div>
@@ -141,13 +154,13 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
   </div>
 </div>
 
-<!-- SCANNER -->
+<!-- SCANNER & SOC DASHBOARD -->
 <div class="state" id="st-scanner">
   <div class="scanner-inner">
     <div class="scanner-header">
       <div>
-        <div class="scanner-title">// NETPROBE RECONNAISSANCE</div>
-        <div style="color:var(--dim);font-size:.7rem;margin-top:.4rem">Authorized access only. All scans are logged.</div>
+        <div class="scanner-title">// NETPROBE RECONNAISSANCE ENGINE</div>
+        <div style="color:var(--dim);font-size:.7rem;margin-top:.4rem">Authorized Analyst Access. All activities logged.</div>
       </div>
       <div class="scan-limit" id="scan-limit">Scans today: - / 5</div>
     </div>
@@ -163,19 +176,57 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
     <div class="msg" id="scan-msg"></div>
 
     <div class="term" id="scan-term" style="display:none">
-      <div class="term-bar">
+      <div class="term-bar" data-html2canvas-ignore>
         <div style="display:flex;gap:.4rem"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--yellow)"></span><span class="term-dot" style="background:var(--green)"></span></div>
         <div class="term-title" id="term-title">waiting...</div>
       </div>
       <div class="term-body" id="term-out"></div>
     </div>
+
+    <!-- Export Actions -->
+    <div class="export-bar" id="export-bar" style="display:none">
+      <button class="btn btn-outline" style="padding:.4rem 1rem;font-size:.65rem" id="btn-json">Export JSON</button>
+      <button class="btn btn-outline" style="padding:.4rem 1rem;font-size:.65rem;border-color:var(--green);color:var(--green)" id="btn-pdf">Export PDF Report</button>
+    </div>
+
+    <!-- Mini SOC Analytics -->
+    <div style="margin-top:4rem;border-top:1px solid var(--border);padding-top:2rem">
+      <div class="scanner-title">// SECURITY OPERATIONS CENTER (SOC)</div>
+      <div style="color:var(--dim);font-size:.7rem;margin-top:.4rem">Scan History & Risk Distribution Analytics</div>
+      
+      <div class="soc-grid">
+        <div class="card" style="padding:1.5rem;max-width:100%">
+          <div class="card-title" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.1em">Risk Metrics</div>
+          <div style="position:relative;height:200px;width:100%;margin-top:1rem">
+            <canvas id="riskChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card" style="padding:1.5rem;max-width:100%;overflow-x:auto">
+          <div class="card-title" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.1em">Activity Log</div>
+          <table id="history-table">
+            <thead>
+              <tr>
+                <th>TARGET</th>
+                <th>TIMESTAMP</th>
+                <th>RISK SCORE</th>
+              </tr>
+            </thead>
+            <tbody id="history-body">
+              <tr><td colspan="3" style="text-align:center;color:var(--dim)">Loading data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-import{getFirestore,doc,getDoc,setDoc,collection,addDoc,query,where,getDocs,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import{getFirestore,doc,getDoc,setDoc,collection,addDoc,query,where,orderBy,limit,getDocs,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const FB={apiKey:"AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",authDomain:"sambit-portfolio.firebaseapp.com",projectId:"sambit-portfolio",storageBucket:"sambit-portfolio.firebasestorage.app",messagingSenderId:"98909249081",appId:"1:98909249081:web:00bdbda2f0ed56a2c177e8"};
 const app=initializeApp(FB);
@@ -186,6 +237,7 @@ let currentUser = null;
 let scansToday = 0;
 const MAX_SCANS = 5;
 const SHODAN_KEY = 'HgQbaZolSnYOJwD3eXulRE1Duu3YVCEY';
+let currentScanData = null; // for export
 
 function show(id){
   document.querySelectorAll('.state').forEach(s=>s.classList.remove('active'));
@@ -194,7 +246,6 @@ function show(id){
 
 async function checkRateLimit(){
   try {
-    // Only query by uid to avoid needing a custom composite index in Firestore
     const q = query(collection(db,'scan_logs'), where('uid','==',currentUser.uid));
     const snap = await getDocs(q);
     
@@ -204,13 +255,9 @@ async function checkRateLimit(){
     scansToday = 0;
     snap.forEach(d => {
       const data = d.data();
-      // check if scan was today
-      if(data.timestamp && data.timestamp.toDate && data.timestamp.toDate() >= startOfDay) {
-        scansToday++;
-      }
+      if(data.timestamp && data.timestamp.toDate && data.timestamp.toDate() >= startOfDay) scansToday++;
     });
     
-    // Bypass limit for Admin
     if(currentUser.email === 'satapathys198@gmail.com') {
       document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ∞ (Admin)`;
       return true;
@@ -218,9 +265,77 @@ async function checkRateLimit(){
     
     document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ${MAX_SCANS}`;
     return scansToday < MAX_SCANS;
+  } catch(e) { return true; }
+}
+
+let riskChartInstance = null;
+
+async function loadSocHistory() {
+  const tbody = document.getElementById('history-body');
+  try {
+    const q = query(collection(db,'scan_logs'), where('uid','==',currentUser.uid));
+    const snap = await getDocs(q);
+    
+    let low=0, med=0, high=0;
+    const rows = [];
+    
+    snap.forEach(d => {
+      const data = d.data();
+      if(data.riskScore === 'HIGH') high++;
+      else if(data.riskScore === 'MEDIUM') med++;
+      else low++;
+      
+      rows.push(data);
+    });
+    
+    // Sort locally by timestamp desc (since we don't have a composite index)
+    rows.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+    
+    tbody.innerHTML = '';
+    if(rows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" style="color:var(--dim)">No scans performed yet.</td></tr>`;
+    } else {
+      rows.slice(0, 10).forEach(r => {
+        const dateStr = r.timestamp ? r.timestamp.toDate().toLocaleString() : 'Just now';
+        const badgeClass = r.riskScore === 'HIGH' ? 'risk-high' : (r.riskScore === 'MEDIUM' ? 'risk-med' : 'risk-low');
+        tbody.innerHTML += `
+          <tr>
+            <td style="color:var(--w)">${r.target}</td>
+            <td style="color:var(--dim)">${dateStr}</td>
+            <td><span class="risk-badge ${badgeClass}">${r.riskScore || 'LOW'}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    // Update Chart
+    const ctx = document.getElementById('riskChart').getContext('2d');
+    if(riskChartInstance) riskChartInstance.destroy();
+    
+    riskChartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['High Risk', 'Medium Risk', 'Low Risk'],
+        datasets: [{
+          data: [high, med, low],
+          backgroundColor: ['#f87171', '#fb923c', '#4ade80'],
+          borderWidth: 0,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#888', font: {family: 'JetBrains Mono'} } }
+        },
+        cutout: '75%'
+      }
+    });
+
   } catch(e) {
-    console.error("Rate limit check failed:", e);
-    return true; // fail open so they aren't completely blocked if DB errors
+    console.error("SOC History Load Error:", e);
+    tbody.innerHTML = `<tr><td colspan="3" style="color:var(--red)">Failed to load analytics.</td></tr>`;
   }
 }
 
@@ -238,6 +353,7 @@ onAuthStateChanged(auth,async user=>{
     if(s==='approved'){
       show('st-scanner');
       checkRateLimit();
+      loadSocHistory();
     }
     else if(s==='pending') show('st-pending');
     else if(s==='rejected') show('st-rejected');
@@ -283,7 +399,6 @@ function printSection(title) {
 
 async function runScan() {
   const target = inpTarget.value.trim().toLowerCase();
-  // Basic domain validation
   if(!target || target.includes('http') || target.includes('/') || target.split('.').length < 2) {
     scanMsg.textContent = '// Please enter a valid domain (e.g. example.com)';
     scanMsg.className = 'msg err show';
@@ -291,7 +406,7 @@ async function runScan() {
   }
   
   if(!await checkRateLimit()) {
-    scanMsg.textContent = '// Rate limit exceeded. You can only run 5 scans per day.';
+    scanMsg.textContent = '// Rate limit exceeded.';
     scanMsg.className = 'msg err show';
     return;
   }
@@ -300,8 +415,16 @@ async function runScan() {
   btnScan.disabled = true;
   btnScan.textContent = 'Scanning...';
   document.getElementById('scan-term').style.display = 'block';
+  document.getElementById('export-bar').style.display = 'none';
   termOut.innerHTML = '';
   termTitle.textContent = `Target: ${target}`;
+
+  currentScanData = {
+    target: target,
+    timestamp: new Date().toISOString(),
+    findings: [],
+    riskPoints: 0
+  };
 
   print(`<span class="t-d">$ netprobe --target ${target}</span>`);
   print(`<span class="t-g">✓ Target acquired. Initiating OSINT modules...</span>`);
@@ -315,17 +438,19 @@ async function runScan() {
     const dnsData = await dnsRes.json();
     if(dnsData.Answer && dnsData.Answer.length > 0) {
       resolvedIP = dnsData.Answer[0].data;
-      dnsData.Answer.forEach(a => print(`  A      → <span class="t-w">${a.data}</span>`));
+      dnsData.Answer.forEach(a => {
+        print(`  A      → <span class="t-w">${a.data}</span>`);
+        currentScanData.findings.push(`DNS A: ${a.data}`);
+      });
     } else {
       print(`  <span class="t-r">No A records found.</span>`);
     }
 
-    // MX
     const mxRes = await fetch(`https://dns.google/resolve?name=${target}&type=MX`);
     const mxData = await mxRes.json();
     if(mxData.Answer) mxData.Answer.forEach(a => print(`  MX     → <span class="t-w">${a.data}</span>`));
 
-    // 2. WHOIS (via RDAP)
+    // 2. WHOIS
     printSection('WHOIS DATA');
     try {
       const whoRes = await fetch(`https://rdap.org/domain/${target}`);
@@ -340,50 +465,16 @@ async function runScan() {
         });
       }
       print(`  Registrar → <span class="t-w">${registrar}</span>`);
-      
-      if(whoData.events) {
-        whoData.events.forEach(e => {
-          if(e.eventAction === 'registration') print(`  Created   → <span class="t-w">${e.eventDate.split('T')[0]}</span>`);
-          if(e.eventAction === 'expiration') print(`  Expires   → <span class="t-w">${e.eventDate.split('T')[0]}</span>`);
-        });
-      }
-    } catch(e) { print(`  <span class="t-r">WHOIS lookup failed or not supported for this TLD.</span>`); }
+      currentScanData.findings.push(`Registrar: ${registrar}`);
+    } catch(e) { print(`  <span class="t-d">WHOIS lookup skipped.</span>`); }
 
-    // 3. SSL
-    printSection('SSL CERTIFICATE (crt.sh)');
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
-      
-      const sslUrl = encodeURIComponent(`https://crt.sh/?q=${target}&output=json`);
-      const sslRes = await fetch(`https://api.allorigins.win/get?url=${sslUrl}`, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      
-      const sslWrap = await sslRes.json();
-      if(sslWrap.contents) {
-        const sslData = JSON.parse(sslWrap.contents);
-        if(sslData && sslData.length > 0) {
-          print(`  Issuer    → <span class="t-w">${sslData[0].issuer_name.split('O=')[1]?.split(',')[0] || 'Unknown'}</span>`);
-          print(`  Not After → <span class="t-w">${sslData[0].not_after.split('T')[0]}</span>`);
-        } else {
-          print(`  <span class="t-d">No certificates found.</span>`);
-        }
-      } else {
-        print(`  <span class="t-r">SSL lookup failed (API error).</span>`);
-      }
-    } catch(e) { 
-      if(e.name === 'AbortError') print(`  <span class="t-r">SSL lookup failed (crt.sh timeout).</span>`);
-      else print(`  <span class="t-r">SSL lookup failed.</span>`);
-    }
-
-    // 4. HTTP Headers
+    // 3. HTTP Headers
     printSection('HTTP SECURITY HEADERS');
     try {
       const hdrsUrl = encodeURIComponent(`https://api.hackertarget.com/httpheaders/?q=${target}`);
       const hdrsRes = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${hdrsUrl}`);
       const text = await hdrsRes.text();
       if(text && !text.includes('error')) {
-        // Only show the last response block (after redirects)
         const lastBlock = text.split('\r\n\r\n').pop() || text.split('\n\n').pop() || text;
         const finalLines = lastBlock.split('\n').filter(l => l.trim().length > 0);
         
@@ -392,18 +483,17 @@ async function runScan() {
         
         const hsts = finalLines.find(l => l.toLowerCase().startsWith('strict-transport-security:'));
         if(hsts) print(`  HSTS   → <span class="t-g">Enabled ✓</span>`);
-        else print(`  HSTS   → <span class="t-r">Missing ✗</span>`);
+        else { print(`  HSTS   → <span class="t-r">Missing ✗</span>`); currentScanData.riskPoints += 2; }
 
         const csp = finalLines.find(l => l.toLowerCase().startsWith('content-security-policy:'));
         if(csp) print(`  CSP    → <span class="t-g">Enabled ✓</span>`);
-        else print(`  CSP    → <span class="t-y">Missing ⚠</span>`);
-        
+        else { print(`  CSP    → <span class="t-y">Missing ⚠</span>`); currentScanData.riskPoints += 1; }
       } else {
         print(`  <span class="t-d">Header scan failed.</span>`);
       }
     } catch(e) { print(`  <span class="t-r">Failed to fetch headers.</span>`); }
 
-    // 5. Geolocation & Shodan
+    // 4. Geolocation & Shodan
     if(resolvedIP) {
       printSection('IP GEOLOCATION');
       try {
@@ -412,37 +502,65 @@ async function runScan() {
         print(`  IP        → <span class="t-w">${resolvedIP}</span>`);
         print(`  Location  → <span class="t-w">${geoData.city}, ${geoData.country_name}</span>`);
         print(`  ISP/ASN   → <span class="t-w">${geoData.org}</span>`);
+        currentScanData.findings.push(`Hosted by: ${geoData.org} in ${geoData.country_name}`);
       } catch(e) { print(`  <span class="t-r">Geolocation failed.</span>`); }
 
-      printSection('OPEN PORTS (SHODAN)');
+      printSection('THREAT INTEL & VULNERABILITIES (SHODAN)');
       try {
         const shodanRes = await fetch(`https://api.shodan.io/shodan/host/${resolvedIP}?key=${SHODAN_KEY}`);
         if(shodanRes.ok) {
           const shodanData = await shodanRes.json();
           if(shodanData.ports && shodanData.ports.length > 0) {
-            shodanData.ports.forEach(p => print(`  Port <span class="t-g">${p}</span>  → OPEN`));
-            if(shodanData.vulns) print(`  <span class="t-r">Vulns     → ${shodanData.vulns.length} CVEs found!</span>`);
+            shodanData.ports.forEach(p => {
+              print(`  Port <span class="t-o">${p}</span>  → OPEN`);
+              currentScanData.findings.push(`Open Port: ${p}`);
+              currentScanData.riskPoints += 1; // 1 risk point per open port
+              if([21,22,23,3389,445].includes(p)) currentScanData.riskPoints += 3; // risky ports
+            });
+            
+            if(shodanData.vulns && shodanData.vulns.length > 0) {
+              print(`  <span class="t-r">CVEs Detected → ${shodanData.vulns.length} Critical Vulnerabilities Found!</span>`);
+              shodanData.vulns.slice(0, 5).forEach(cve => {
+                print(`    <a href="https://nvd.nist.gov/vuln/detail/${cve}" target="_blank" style="color:var(--red);text-decoration:underline">! ${cve}</a>`);
+                currentScanData.findings.push(`Vulnerability: ${cve}`);
+              });
+              if(shodanData.vulns.length > 5) print(`    <span class="t-d">...and ${shodanData.vulns.length - 5} more.</span>`);
+              currentScanData.riskPoints += 10; // massive risk point jump
+            }
           } else {
-            print(`  <span class="t-d">No open ports found.</span>`);
+            print(`  <span class="t-g">No open ports or exposures found.</span>`);
           }
         } else {
-          print(`  <span class="t-d">No Shodan data for this IP.</span>`);
+          print(`  <span class="t-d">No Threat Intel data for this IP.</span>`);
         }
-      } catch(e) { print(`  <span class="t-r">Shodan lookup blocked by browser (use API directly).</span>`); }
+      } catch(e) { print(`  <span class="t-d">Shodan lookup skipped.</span>`); }
     }
 
-    print('<br/><span class="t-d">─────────────────────────────────────</span>');
-    print('<span class="t-g">✓ Scan complete. Results logged to database.</span>');
+    // RISK CALCULATION
+    let finalRisk = 'LOW';
+    let riskColor = 'var(--green)';
+    if(currentScanData.riskPoints >= 8) { finalRisk = 'HIGH'; riskColor = 'var(--red)'; }
+    else if(currentScanData.riskPoints >= 3) { finalRisk = 'MEDIUM'; riskColor = 'var(--orange)'; }
+
+    print('<br/>─────────────────────────────────────');
+    print(`<span style="color:${riskColor};font-weight:700;font-size:1rem">FINAL RISK SCORE: ${finalRisk}</span>`);
+    print('<span class="t-g">✓ Scan complete. Results exported to SOC Analytics.</span>');
+
+    currentScanData.riskScore = finalRisk;
 
     // LOG TO FIRESTORE
     await addDoc(collection(db, 'scan_logs'), {
       uid: currentUser.uid,
       email: currentUser.email,
       target: target,
+      riskScore: finalRisk,
+      points: currentScanData.riskPoints,
       timestamp: serverTimestamp()
     });
     
-    checkRateLimit(); // update UI counter
+    document.getElementById('export-bar').style.display = 'flex';
+    checkRateLimit();
+    loadSocHistory();
 
   } catch (err) {
     print(`<br/><span class="t-r">Fatal Error: ${err.message}</span>`);
@@ -454,6 +572,28 @@ async function runScan() {
 
 btnScan.onclick = runScan;
 inpTarget.onkeypress = e => { if(e.key==='Enter') runScan(); };
+
+// Export Handlers
+document.getElementById('btn-json').onclick = () => {
+  if(!currentScanData) return;
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentScanData, null, 2));
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", `NetProbe_Report_${currentScanData.target}.json`);
+  dlAnchorElem.click();
+};
+
+document.getElementById('btn-pdf').onclick = () => {
+  const element = document.getElementById('scan-term');
+  const opt = {
+    margin:       10,
+    filename:     `NetProbe_Report_${currentScanData.target}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, backgroundColor: '#080808' },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(element).save();
+};
 </script>
 </body>
 </html>
