@@ -115,6 +115,7 @@
     #hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding-top:4rem}
     #matrix{position:absolute;inset:0;opacity:.18}
     .hero-content{position:relative;z-index:2;text-align:center;padding:2rem}
+    .hero-avatar{width:130px;height:130px;border-radius:50%;object-fit:cover;margin:0 auto 1.5rem;border:2px solid var(--green);box-shadow:0 0 30px rgba(74,222,128,.15);display:block;position:relative;z-index:3}
     .hero-tag{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:.6rem}
     .hero-tag::before,.hero-tag::after{content:'';flex:1;max-width:60px;height:1px;background:var(--green);opacity:.4}
     .hero-name{font-family:'JetBrains Mono',monospace;font-size:clamp(4rem,12vw,8rem);font-weight:700;letter-spacing:-.03em;line-height:.9;color:var(--fg)}
@@ -385,6 +386,7 @@
 <section id="hero">
   <canvas id="matrix"></canvas>
   <div class="hero-content">
+    <img src="profile.jpg" alt="Sambit Satapathy" class="hero-avatar" />
     <div class="hero-tag">Cybersecurity Portfolio</div>
     <h1 class="hero-name">Sambit<span class="hn-dot">.</span></h1>
     <p class="hero-sub">Satapathy</p>
