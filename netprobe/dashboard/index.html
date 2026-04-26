@@ -319,35 +319,56 @@ async function runScan() {
     const mxData = await mxRes.json();
     if(mxData.Answer) mxData.Answer.forEach(a => print(`  MX     → <span class="t-w">${a.data}</span>`));
 
-    // 2. WHOIS
+    // 2. WHOIS (via RDAP)
     printSection('WHOIS DATA');
     try {
-      const whoRes = await fetch(`https://who-dat.as93.net/${target}`);
+      const whoRes = await fetch(`https://rdap.org/domain/${target}`);
       const whoData = await whoRes.json();
-      if(whoData.domain) {
-        if(whoData.domain.registrar) print(`  Registrar → <span class="t-w">${whoData.domain.registrar}</span>`);
-        if(whoData.domain.created_date) print(`  Created   → <span class="t-w">${whoData.domain.created_date.split('T')[0]}</span>`);
-        if(whoData.domain.expiration_date) print(`  Expires   → <span class="t-w">${whoData.domain.expiration_date.split('T')[0]}</span>`);
-      } else {
-        print(`  <span class="t-d">No WHOIS data available.</span>`);
+      let registrar = 'Unknown';
+      if(whoData.entities) {
+        whoData.entities.forEach(e => {
+          if(e.roles && e.roles.includes('registrar') && e.vcardArray) {
+            const fnNode = e.vcardArray[1].find(v => v[0] === 'fn');
+            if(fnNode) registrar = fnNode[3];
+          }
+        });
       }
-    } catch(e) { print(`  <span class="t-r">WHOIS lookup failed.</span>`); }
+      print(`  Registrar → <span class="t-w">${registrar}</span>`);
+      
+      if(whoData.events) {
+        whoData.events.forEach(e => {
+          if(e.eventAction === 'registration') print(`  Created   → <span class="t-w">${e.eventDate.split('T')[0]}</span>`);
+          if(e.eventAction === 'expiration') print(`  Expires   → <span class="t-w">${e.eventDate.split('T')[0]}</span>`);
+        });
+      }
+    } catch(e) { print(`  <span class="t-r">WHOIS lookup failed or not supported for this TLD.</span>`); }
 
     // 3. SSL
     printSection('SSL CERTIFICATE (crt.sh)');
     try {
-      // crt.sh doesn't have CORS, use allorigins proxy
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+      
       const sslUrl = encodeURIComponent(`https://crt.sh/?q=${target}&output=json`);
-      const sslRes = await fetch(`https://api.allorigins.win/get?url=${sslUrl}`);
+      const sslRes = await fetch(`https://api.allorigins.win/get?url=${sslUrl}`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
       const sslWrap = await sslRes.json();
-      const sslData = JSON.parse(sslWrap.contents);
-      if(sslData && sslData.length > 0) {
-        print(`  Issuer    → <span class="t-w">${sslData[0].issuer_name.split('O=')[1]?.split(',')[0] || 'Unknown'}</span>`);
-        print(`  Not After → <span class="t-w">${sslData[0].not_after.split('T')[0]}</span>`);
+      if(sslWrap.contents) {
+        const sslData = JSON.parse(sslWrap.contents);
+        if(sslData && sslData.length > 0) {
+          print(`  Issuer    → <span class="t-w">${sslData[0].issuer_name.split('O=')[1]?.split(',')[0] || 'Unknown'}</span>`);
+          print(`  Not After → <span class="t-w">${sslData[0].not_after.split('T')[0]}</span>`);
+        } else {
+          print(`  <span class="t-d">No certificates found.</span>`);
+        }
       } else {
-        print(`  <span class="t-d">No certificates found.</span>`);
+        print(`  <span class="t-r">SSL lookup failed (API error).</span>`);
       }
-    } catch(e) { print(`  <span class="t-r">SSL lookup failed.</span>`); }
+    } catch(e) { 
+      if(e.name === 'AbortError') print(`  <span class="t-r">SSL lookup failed (crt.sh timeout).</span>`);
+      else print(`  <span class="t-r">SSL lookup failed.</span>`);
+    }
 
     // 4. Geolocation & Shodan
     if(resolvedIP) {
