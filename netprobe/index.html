@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>NetProbe — Authenticated Recon Platform | sambit.page</title>
+  <meta name="description" content="NetProbe is a gated, authenticated network reconnaissance platform built by Sambit Satapathy. Access is manually approved."/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#030303;--card:#080808;--muted:#0f0f0f;--border:#1c1c1c;
+      --fg:#f0f0f0;--fg-dim:#888;--fg-muted:#444;
+      --green:#4ade80;--glow:rgba(74,222,128,.12);
+      --red:#f87171;--yellow:#facc15;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;border-bottom:1px solid var(--border);background:rgba(3,3,3,.93);backdrop-filter:blur(14px);padding:.65rem 2rem;display:flex;align-items:center;justify-content:space-between}
+    .nav-brand{font-size:.9rem;font-weight:700;letter-spacing:.06em;color:var(--green)}
+    .nav-right{display:flex;align-items:center;gap:.8rem}
+    .nav-link{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-dim);transition:color .2s}
+    .nav-link:hover{color:var(--green)}
+    .nav-badge{font-size:.62rem;letter-spacing:.1em;padding:.28rem .7rem;border:1px solid rgba(74,222,128,.4);color:var(--green);background:rgba(74,222,128,.06)}
+    @media(max-width:600px){nav{padding:.5rem 1rem}.nav-right .nav-link{display:none}}
+
+    /* HERO */
+    #hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding-top:4rem}
+    #hero-canvas{position:absolute;inset:0;opacity:.13;pointer-events:none}
+    .hero-inner{position:relative;z-index:2;text-align:center;padding:2rem}
+    .hero-eyebrow{font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:1.4rem;display:flex;align-items:center;justify-content:center;gap:.7rem}
+    .hero-eyebrow::before,.hero-eyebrow::after{content:'';width:40px;height:1px;background:var(--green);opacity:.4}
+    .hero-title{font-size:clamp(3.5rem,13vw,8rem);font-weight:700;letter-spacing:-.02em;line-height:.95;color:var(--fg);position:relative;display:inline-block}
+    .hero-title .glitch{position:relative;display:inline-block}
+    .hero-title .glitch::before,.hero-title .glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
+    .hero-title .glitch::before{color:var(--red);animation:glitch1 4s infinite;clip-path:polygon(0 0,100% 0,100% 35%,0 35%)}
+    .hero-title .glitch::after{color:var(--green);animation:glitch2 4s infinite;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%)}
+    @keyframes glitch1{0%,90%,100%{transform:none;opacity:0}92%{transform:translate(-3px,1px);opacity:.7}94%{transform:translate(3px,-1px);opacity:.7}96%{transform:translate(-2px,2px);opacity:.7}98%{transform:none;opacity:0}}
+    @keyframes glitch2{0%,88%,100%{transform:none;opacity:0}90%{transform:translate(3px,-2px);opacity:.6}93%{transform:translate(-3px,1px);opacity:.6}96%{transform:none;opacity:0}}
+    .hero-sub{font-size:clamp(.7rem,2vw,.9rem);letter-spacing:.3em;text-transform:uppercase;color:var(--fg-dim);margin-top:.7rem}
+    .hero-dot{color:var(--green)}
+    .hero-desc{max-width:520px;margin:1.8rem auto 0;font-size:.82rem;color:var(--fg-dim);line-height:1.9}
+    .hero-btns{display:flex;gap:1rem;justify-content:center;margin-top:2.2rem;flex-wrap:wrap}
+    .btn-pri{padding:.7rem 1.8rem;background:var(--green);color:#000;font-family:inherit;font-size:.78rem;font-weight:700;letter-spacing:.08em;border:none;cursor:pointer;transition:opacity .2s,transform .15s;display:inline-flex;align-items:center;gap:.5rem}
+    .btn-pri:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-sec{padding:.7rem 1.5rem;background:transparent;color:var(--fg);font-family:inherit;font-size:.78rem;letter-spacing:.08em;border:1px solid var(--border);cursor:pointer;transition:border-color .2s,background .2s;display:inline-flex;align-items:center;gap:.5rem}
+    .btn-sec:hover{border-color:var(--green);background:var(--glow)}
+    .status-bar{display:inline-flex;align-items:center;gap:.5rem;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:1.2rem}
+    .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.4)}50%{opacity:.6;box-shadow:0 0 0 5px rgba(74,222,128,0)}}
+    .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:.6rem;letter-spacing:.18em;color:var(--fg-muted);text-transform:uppercase;animation:bob 2.5s ease-in-out infinite}
+    @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+    /* SECTIONS */
+    section{padding:5.5rem 2rem}
+    .sec-inner{max-width:1000px;margin:0 auto}
+    .sec-label{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}
+    .sec-title{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:600;letter-spacing:-.01em}
+    .sec-line{width:44px;height:2px;background:var(--green);margin:1rem 0 2.8rem}
+
+    /* FEATURES */
+    #features{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;border:1px solid var(--border)}
+    .feat-card{background:var(--bg);padding:1.6rem 1.3rem;transition:background .2s;position:relative;overflow:hidden}
+    .feat-card:hover{background:var(--muted)}
+    .feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+    .feat-card:hover::before{transform:scaleX(1)}
+    .feat-icon{font-size:1.3rem;margin-bottom:.9rem}
+    .feat-name{font-size:.82rem;font-weight:600;margin-bottom:.4rem}
+    .feat-desc{font-size:.72rem;color:var(--fg-dim);line-height:1.8}
+    .feat-tag{display:inline-block;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(74,222,128,.3);color:var(--green);padding:.1rem .4rem;margin-top:.7rem}
+
+    /* DEMO TERMINAL */
+    #demo{background:var(--bg)}
+    .terminal-wrap{border:1px solid var(--border);background:var(--card);max-width:680px;margin:0 auto}
+    .term-bar{display:flex;align-items:center;gap:.4rem;padding:.5rem .8rem;background:var(--muted);border-bottom:1px solid var(--border)}
+    .term-dot{width:10px;height:10px;border-radius:50%}
+    .term-title{font-size:.62rem;color:var(--fg-muted);margin-left:.4rem;letter-spacing:.06em}
+    .term-body{padding:1.2rem;font-size:.74rem;line-height:1.9;color:var(--fg-dim);min-height:320px;overflow:hidden}
+    .t-green{color:var(--green)}
+    .t-yellow{color:var(--yellow)}
+    .t-red{color:var(--red)}
+    .t-dim{color:var(--fg-muted)}
+    .t-bold{color:var(--fg);font-weight:600}
+    .term-line{display:block;opacity:0;animation:lineIn .1s forwards}
+    @keyframes lineIn{to{opacity:1}}
+
+    /* ACCESS SECTION */
+    #access{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;margin-bottom:2.5rem}
+    .step-card{background:var(--bg);border:1px solid var(--border);padding:1.5rem;position:relative}
+    .step-num{font-size:2.5rem;font-weight:700;color:var(--border);position:absolute;top:.5rem;right:.9rem;line-height:1}
+    .step-title{font-size:.82rem;font-weight:600;margin-bottom:.5rem;color:var(--green)}
+    .step-desc{font-size:.72rem;color:var(--fg-dim);line-height:1.8}
+    .access-cta{text-align:center;padding:2rem;border:1px solid var(--border);background:var(--bg)}
+    .access-cta p{font-size:.78rem;color:var(--fg-dim);margin-bottom:1.4rem;line-height:1.8}
+    .cta-note{display:block;font-size:.65rem;color:var(--fg-muted);margin-top:.8rem;letter-spacing:.06em}
+
+    /* STATS */
+    #stats{background:var(--bg)}
+    .stats-row{display:flex;gap:1px;border:1px solid var(--border);flex-wrap:wrap}
+    .stat-box{flex:1;min-width:140px;background:var(--card);padding:1.5rem;text-align:center}
+    .stat-num{font-size:2rem;font-weight:700;color:var(--green);letter-spacing:-.02em}
+    .stat-label{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-muted);margin-top:.3rem}
+
+    /* FOOTER */
+    footer{text-align:center;padding:2rem;border-top:1px solid var(--border);font-size:.68rem;color:var(--fg-muted);letter-spacing:.06em}
+    footer span{color:var(--green)}
+
+    @media(max-width:700px){section{padding:3.5rem 1rem}.feat-grid{grid-template-columns:1fr 1fr}.steps-grid{grid-template-columns:1fr}}
+    @media(max-width:480px){.feat-grid{grid-template-columns:1fr}.stats-row{flex-direction:column}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">sambit.page</a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">← Portfolio</a>
+    <a href="/netprobe/dashboard/" class="nav-badge">Dashboard →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="status-bar"><span class="status-dot"></span>System Online</div>
+    <div class="hero-eyebrow">Cybersecurity Tool — Sambit.page</div>
+    <h1 class="hero-title">
+      <span class="glitch" data-text="NETPROBE">NETPROBE</span><span class="hero-dot">.</span>
+    </h1>
+    <p class="hero-sub">Authenticated Recon Platform</p>
+    <p class="hero-desc">
+      A gated, web-based network reconnaissance tool. Run passive OSINT-style scans — 
+      DNS records, WHOIS data, security headers, SSL certificates, open ports and IP geolocation. 
+      Built for approved researchers only.
+    </p>
+    <div class="hero-btns">
+      <a href="/netprobe/dashboard/" class="btn-pri">🔐 Request Access</a>
+      <a href="#features" class="btn-sec">↓ See Modules</a>
+    </div>
+  </div>
+  <div class="scroll-hint">↓ scroll</div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="sec-inner">
+    <div class="sec-label">// 01 — modules</div>
+    <h2 class="sec-title">What NetProbe Does</h2>
+    <div class="sec-line"></div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🌐</div>
+        <div class="feat-name">DNS Records</div>
+        <div class="feat-desc">Full DNS enumeration — A, AAAA, MX, NS, TXT, CNAME records via Google DNS-over-HTTPS.</div>
+        <span class="feat-tag">passive</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <div class="feat-name">WHOIS / RDAP</div>
+        <div class="feat-desc">Domain registration data — registrar, creation/expiry date, nameservers, abuse contacts.</div>
+        <span class="feat-tag">passive</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-name">Security Headers</div>
+        <div class="feat-desc">HTTP security header audit via Mozilla Observatory — scores CSP, HSTS, X-Frame-Options and more.</div>
+        <span class="feat-tag">passive</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔒</div>
+        <div class="feat-name">SSL Certificate</div>
+        <div class="feat-desc">TLS/SSL certificate transparency logs via crt.sh — issuer, expiry, SANs, CT log history.</div>
+        <span class="feat-tag">passive</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📍</div>
+        <div class="feat-name">IP Geolocation</div>
+        <div class="feat-desc">Resolve domain to IP, then map to country, ISP, ASN and organisation via ipapi.co.</div>
+        <span class="feat-tag">passive</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔍</div>
+        <div class="feat-name">Open Ports</div>
+        <div class="feat-desc">Shodan-powered open port discovery — exposed services, banners, known CVEs on the host.</div>
+        <span class="feat-tag">Shodan API</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO TERMINAL -->
+<section id="demo">
+  <div class="sec-inner">
+    <div class="sec-label">// 02 — demo</div>
+    <h2 class="sec-title">Sample Scan Output</h2>
+    <div class="sec-line"></div>
+    <div class="terminal-wrap">
+      <div class="term-bar">
+        <span class="term-dot" style="background:#ef4444"></span>
+        <span class="term-dot" style="background:#eab308"></span>
+        <span class="term-dot" style="background:#22c55e"></span>
+        <span class="term-title">netprobe — example.com</span>
+      </div>
+      <div class="term-body" id="demo-term"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS -->
+<section id="access">
+  <div class="sec-inner">
+    <div class="sec-label">// 03 — access</div>
+    <h2 class="sec-title">How to Get Access</h2>
+    <div class="sec-line"></div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title">Create Account</div>
+        <div class="step-desc">Sign up with Google, GitHub or email/password via the secure login portal.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">Submit Request</div>
+        <div class="step-desc">Fill in your name and why you want access. Your request lands directly in my admin panel.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">Await Approval</div>
+        <div class="step-desc">I manually review and approve each request. Approved users get full dashboard access.</div>
+      </div>
+    </div>
+    <div class="access-cta">
+      <p>
+        NetProbe is not a public tool. Access is intentionally restricted.<br/>
+        All scans are logged with timestamp, target and user identity.<br/>
+        <strong style="color:var(--fg)">Only domains may be scanned — no raw IP addresses.</strong>
+      </p>
+      <a href="/netprobe/dashboard/" class="btn-pri">🔐 Sign Up &amp; Request Access</a>
+      <span class="cta-note">// You will be redirected to login, then to the access request form</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="sec-inner">
+    <div class="sec-label">// 04 — platform stats</div>
+    <h2 class="sec-title">By the Numbers</h2>
+    <div class="sec-line"></div>
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num" id="stat-approved">—</div>
+        <div class="stat-label">Approved Users</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="stat-scans">—</div>
+        <div class="stat-label">Total Scans Logged</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Scan Modules</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Scans / Day Limit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="/" style="color:var(--green)">← sambit.page</a> &nbsp;·&nbsp;
+  NetProbe — built by <span>Sambit Satapathy</span> &nbsp;·&nbsp;
+  All scans are logged &amp; monitored
+</footer>
+
+<!-- MATRIX CANVAS -->
+<script>
+const cvs=document.getElementById('hero-canvas');
+const ctx=cvs.getContext('2d');
+function resizeC(){cvs.width=cvs.offsetWidth;cvs.height=cvs.offsetHeight}
+window.addEventListener('resize',resizeC);resizeC();
+const CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>/\\|{}[]';
+const SZ=13;let drops=[];
+function initD(){drops=Array(Math.floor(cvs.width/SZ)).fill(0)}
+initD();window.addEventListener('resize',initD);
+setInterval(()=>{
+  ctx.fillStyle='rgba(3,3,3,0.05)';ctx.fillRect(0,0,cvs.width,cvs.height);
+  ctx.fillStyle='#4ade80';ctx.font=SZ+'px JetBrains Mono';
+  drops.forEach((y,i)=>{
+    ctx.fillText(CH[Math.floor(Math.random()*CH.length)],i*SZ,y*SZ);
+    if(y*SZ>cvs.height&&Math.random()>.97)drops[i]=0;else drops[i]++;
+  });
+},55);
+</script>
+
+<!-- DEMO TERMINAL ANIMATION -->
+<script>
+const lines=[
+  {t:0,   html:'<span class="t-dim">$</span> <span class="t-green">netprobe</span> --target example.com --all-modules'},
+  {t:400, html:'<span class="t-green">✓</span> Target validated — <span class="t-bold">example.com</span>'},
+  {t:700, html:'<span class="t-green">✓</span> Rate limit: 4 / 5 scans today'},
+  {t:1000,html:'<span class="t-dim">─────────────────────────────────────</span>'},
+  {t:1200,html:'<span class="t-yellow">[ DNS ]</span> Querying records...'},
+  {t:1600,html:'  A      → <span class="t-green">93.184.216.34</span>'},
+  {t:1800,html:'  NS     → a.iana-servers.net.'},
+  {t:2000,html:'  NS     → b.iana-servers.net.'},
+  {t:2200,html:'  MX     → (none)'},
+  {t:2500,html:'<span class="t-yellow">[ WHOIS ]</span> Fetching registration...'},
+  {t:2900,html:'  Registrar  → IANA'},
+  {t:3100,html:'  Created    → 1995-08-14'},
+  {t:3300,html:'  Expires    → 2025-08-13'},
+  {t:3600,html:'<span class="t-yellow">[ SSL ]</span> Checking certificate transparency...'},
+  {t:4000,html:'  Issuer     → DigiCert TLS RSA SHA256 2020 CA1'},
+  {t:4200,html:'  Valid To   → 2025-03-01'},
+  {t:4400,html:'  SANs       → example.com, www.example.com'},
+  {t:4700,html:'<span class="t-yellow">[ SECURITY HEADERS ]</span> Mozilla Observatory...'},
+  {t:5100,html:'  Score      → <span class="t-green">B+ (80/100)</span>'},
+  {t:5300,html:'  HSTS       → <span class="t-green">✓ Enabled</span>'},
+  {t:5500,html:'  CSP        → <span class="t-red">✗ Not set</span>'},
+  {t:5800,html:'<span class="t-yellow">[ GEOLOCATION ]</span> Resolving IP...'},
+  {t:6200,html:'  IP         → 93.184.216.34'},
+  {t:6400,html:'  Country    → United States'},
+  {t:6600,html:'  ISP        → Edgecast Inc.'},
+  {t:6900,html:'<span class="t-yellow">[ PORTS ]</span> Shodan host lookup...'},
+  {t:7300,html:'  Port 80    → <span class="t-green">HTTP (Apache)</span>'},
+  {t:7500,html:'  Port 443   → <span class="t-green">HTTPS (TLS 1.3)</span>'},
+  {t:7800,html:'<span class="t-dim">─────────────────────────────────────</span>'},
+  {t:8000,html:'<span class="t-green">✓ Scan complete.</span> All results logged. <span class="t-dim">[ Download Report ]</span>'},
+];
+const term=document.getElementById('demo-term');
+let started=false;
+function startDemo(){
+  if(started)return;started=true;
+  lines.forEach(({t,html})=>{
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.innerHTML=html;el.className='term-line';
+      el.style.animationDelay='0s';
+      term.appendChild(el);
+      term.scrollTop=term.scrollHeight;
+    },t);
+  });
+  // Loop after completion
+  setTimeout(()=>{term.innerHTML='';started=false;setTimeout(startDemo,2000);},10500);
+}
+// Start when section in view
+const observer=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting)startDemo();
+},{threshold:0.3});
+observer.observe(document.getElementById('demo'));
+</script>
+
+<!-- FIREBASE STATS -->
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import{getFirestore,collection,query,where,getCountFromServer}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",authDomain:"sambit-portfolio.firebaseapp.com",projectId:"sambit-portfolio",storageBucket:"sambit-portfolio.firebasestorage.app",messagingSenderId:"98909249081",appId:"1:98909249081:web:00bdbda2f0ed56a2c177e8"});
+const db=getFirestore(app);
+try{
+  const approvedQ=query(collection(db,'users'),where('status','==','approved'));
+  const approvedSnap=await getCountFromServer(approvedQ);
+  document.getElementById('stat-approved').textContent=approvedSnap.data().count;
+  const logsSnap=await getCountFromServer(collection(db,'scan_logs'));
+  document.getElementById('stat-scans').textContent=logsSnap.data().count;
+}catch(e){
+  document.getElementById('stat-approved').textContent='—';
+  document.getElementById('stat-scans').textContent='—';
+}
+</script>
+
+</body>
+</html>
