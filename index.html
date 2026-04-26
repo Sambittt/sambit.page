@@ -283,12 +283,14 @@
   </div>
   <!-- Mobile tool pills: visible only on mobile, sit between brand and hamburger -->
   <div class="nav-tools-mob">
+    <a href="/netprobe/" class="nav-tool-mob">NetProbe ↗</a>
     <a href="/ascii-converter/" class="nav-tool-mob">ASCII ↗</a>
     <a href="/font-animator/" class="nav-tool-mob">Font ↗</a>
     <a href="/resume-builder/" class="nav-tool-mob">Resume ↗</a>
   </div>
   <div class="nav-tools-row">
-    <a href="/ascii-converter/" class="nav-tool">ASCII Studio →</a>
+    <a href="/netprobe/" class="nav-tool">NetProbe →</a>
+    <a href="/ascii-converter/" class="nav-tool" style="margin-left:.4rem">ASCII Studio →</a>
     <a href="/font-animator/" class="nav-tool" style="margin-left:.4rem">Font Animator →</a>
     <a href="/resume-builder/" class="nav-tool" style="margin-left:.4rem">Resume Builder →</a>
   </div>
@@ -336,6 +338,7 @@
   <!-- Tools -->
   <div class="mob-tool-label">— Tools —</div>
   <div class="mob-tools-featured">
+    <a href="/netprobe/" class="tool-link" onclick="closeMob()">NetProbe ↗</a>
     <a href="/ascii-converter/" class="tool-link" onclick="closeMob()">ASCII Studio ↗</a>
     <a href="/font-animator/" class="tool-link" onclick="closeMob()">Font Animator ↗</a>
     <a href="/resume-builder/" class="tool-link" onclick="closeMob()">Resume Builder ↗</a>
@@ -363,6 +366,10 @@
       <div class="welcome-sub" id="welcome-sub">You're now signed in. Here are the tools available on sambit.page:</div>
     </div>
     <div class="welcome-tools">
+      <a href="/netprobe/" class="welcome-tool">
+        <span class="welcome-tool-name">NetProbe <span style="font-size:10px;color:var(--green)">[AUTH REQ]</span></span>
+        <span class="welcome-tool-badge">Live ↗</span>
+      </a>
       <a href="/ascii-converter/" class="welcome-tool">
         <span class="welcome-tool-name">ASCII Art Studio</span>
         <span class="welcome-tool-badge">Live ↗</span>
@@ -528,6 +535,18 @@
     <h2 class="sec-title">Things I've Built</h2>
     <div class="sec-line"></div>
     <div class="projects-grid">
+
+      <div class="proj-card">
+        <span class="proj-badge">Recon Platform · Auth</span>
+        <div class="proj-title">NetProbe</div>
+        <div class="proj-desc">An authenticated network reconnaissance platform. Features DNS enumeration, WHOIS lookups, security header scanning, SSL info, IP geolocation and Shodan open port scanning. Access is manually approved.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">Firestore</span>
+          <span class="proj-tag">Firebase Auth</span>
+          <span class="proj-tag">OSINT APIs</span>
+        </div>
+        <a href="/netprobe/" class="proj-link">Open Tool →</a>
+      </div>
 
       <div class="proj-card">
         <span class="proj-badge">Featured Tool</span>
