@@ -210,6 +210,12 @@ async function checkRateLimit(){
       }
     });
     
+    // Bypass limit for Admin
+    if(currentUser.email === 'satapathys198@gmail.com') {
+      document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ∞ (Admin)`;
+      return true;
+    }
+    
     document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ${MAX_SCANS}`;
     return scansToday < MAX_SCANS;
   } catch(e) {
