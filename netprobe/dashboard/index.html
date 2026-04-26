@@ -370,7 +370,35 @@ async function runScan() {
       else print(`  <span class="t-r">SSL lookup failed.</span>`);
     }
 
-    // 4. Geolocation & Shodan
+    // 4. HTTP Headers
+    printSection('HTTP SECURITY HEADERS');
+    try {
+      const hdrsUrl = encodeURIComponent(`https://api.hackertarget.com/httpheaders/?q=${target}`);
+      const hdrsRes = await fetch(`https://api.allorigins.win/get?url=${hdrsUrl}`);
+      const hdrsWrap = await hdrsRes.json();
+      if(hdrsWrap.contents && !hdrsWrap.contents.includes('error')) {
+        const lines = hdrsWrap.contents.split('\n');
+        // Only show the last response block (after redirects)
+        const lastBlock = hdrsWrap.contents.split('\r\n\r\n').pop() || hdrsWrap.contents.split('\n\n').pop() || hdrsWrap.contents;
+        const finalLines = lastBlock.split('\n').filter(l => l.trim().length > 0);
+        
+        const server = finalLines.find(l => l.toLowerCase().startsWith('server:'));
+        if(server) print(`  Server → <span class="t-w">${server.split(':')[1].trim()}</span>`);
+        
+        const hsts = finalLines.find(l => l.toLowerCase().startsWith('strict-transport-security:'));
+        if(hsts) print(`  HSTS   → <span class="t-g">Enabled ✓</span>`);
+        else print(`  HSTS   → <span class="t-r">Missing ✗</span>`);
+
+        const csp = finalLines.find(l => l.toLowerCase().startsWith('content-security-policy:'));
+        if(csp) print(`  CSP    → <span class="t-g">Enabled ✓</span>`);
+        else print(`  CSP    → <span class="t-y">Missing ⚠</span>`);
+        
+      } else {
+        print(`  <span class="t-d">Header scan failed.</span>`);
+      }
+    } catch(e) { print(`  <span class="t-r">Failed to fetch headers.</span>`); }
+
+    // 5. Geolocation & Shodan
     if(resolvedIP) {
       printSection('IP GEOLOCATION');
       try {
