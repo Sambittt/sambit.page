@@ -374,12 +374,11 @@ async function runScan() {
     printSection('HTTP SECURITY HEADERS');
     try {
       const hdrsUrl = encodeURIComponent(`https://api.hackertarget.com/httpheaders/?q=${target}`);
-      const hdrsRes = await fetch(`https://api.allorigins.win/get?url=${hdrsUrl}`);
-      const hdrsWrap = await hdrsRes.json();
-      if(hdrsWrap.contents && !hdrsWrap.contents.includes('error')) {
-        const lines = hdrsWrap.contents.split('\n');
+      const hdrsRes = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${hdrsUrl}`);
+      const text = await hdrsRes.text();
+      if(text && !text.includes('error')) {
         // Only show the last response block (after redirects)
-        const lastBlock = hdrsWrap.contents.split('\r\n\r\n').pop() || hdrsWrap.contents.split('\n\n').pop() || hdrsWrap.contents;
+        const lastBlock = text.split('\r\n\r\n').pop() || text.split('\n\n').pop() || text;
         const finalLines = lastBlock.split('\n').filter(l => l.trim().length > 0);
         
         const server = finalLines.find(l => l.toLowerCase().startsWith('server:'));
