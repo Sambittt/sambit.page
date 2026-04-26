@@ -193,13 +193,29 @@ function show(id){
 }
 
 async function checkRateLimit(){
-  const startOfDay = new Date();
-  startOfDay.setHours(0,0,0,0);
-  const q = query(collection(db,'scan_logs'), where('uid','==',currentUser.uid), where('timestamp','>=',startOfDay));
-  const snap = await getDocs(q);
-  scansToday = snap.size;
-  document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ${MAX_SCANS}`;
-  return scansToday < MAX_SCANS;
+  try {
+    // Only query by uid to avoid needing a custom composite index in Firestore
+    const q = query(collection(db,'scan_logs'), where('uid','==',currentUser.uid));
+    const snap = await getDocs(q);
+    
+    const startOfDay = new Date();
+    startOfDay.setHours(0,0,0,0);
+    
+    scansToday = 0;
+    snap.forEach(d => {
+      const data = d.data();
+      // check if scan was today
+      if(data.timestamp && data.timestamp.toDate && data.timestamp.toDate() >= startOfDay) {
+        scansToday++;
+      }
+    });
+    
+    document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ${MAX_SCANS}`;
+    return scansToday < MAX_SCANS;
+  } catch(e) {
+    console.error("Rate limit check failed:", e);
+    return true; // fail open so they aren't completely blocked if DB errors
+  }
 }
 
 onAuthStateChanged(auth,async user=>{
