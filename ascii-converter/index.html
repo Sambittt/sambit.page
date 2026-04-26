@@ -364,7 +364,7 @@ body{padding-bottom:52px}
             onfocus="this.style.borderColor='#4ade80'" onblur="this.style.borderColor='#1c1c1c'"/>
           <button onclick="payUPI()" style="padding:.4rem .9rem;background:#4ade80;color:#000;border:none;font-family:inherit;font-size:.75rem;font-weight:600;cursor:pointer">☕ Pay</button>
         </div>
-        <div style="font-size:.65rem;color:#444;margin-top:.4rem">UPI ID: bundi.ka14@upi</div>
+        <div style="font-size:.65rem;color:#444;margin-top:.4rem">UPI ID: sambit22@upi</div>
         <div id="qr-wrap"><div id="qr-box"></div><div class="qr-label">Scan with UPI app</div></div>
       </div>
   </div>
@@ -741,18 +741,18 @@ function showPop(){
   if(popShown)return;popShown=true;
   const pop=document.getElementById('cpop');pop.classList.add('show');
   if(window.QRCode&&document.getElementById('cpop-qr-box')&&!document.getElementById('cpop-qr-box').hasChildNodes()){
-    new QRCode(document.getElementById('cpop-qr-box'),{text:'upi://pay?pa=bundi.ka14@upi&pn=Sambit&cu=INR',width:110,height:110,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+    new QRCode(document.getElementById('cpop-qr-box'),{text:'upi://pay?pa=sambit22@upi&pn=Sambit&cu=INR',width:110,height:110,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
   }
 }
 function closePop(){document.getElementById('cpop').classList.remove('show');}
-function popUPI(){const a=document.getElementById('pop-amt').value;if(!a||a<=0){toast('Enter amount');return;}window.location.href=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${a}&cu=INR&tn=Support+ASCII+Studio`;}
+function popUPI(){const a=document.getElementById('pop-amt').value;if(!a||a<=0){toast('Enter amount');return;}window.location.href=`upi://pay?pa=sambit22@upi&pn=Sambit&am=${a}&cu=INR&tn=Support+ASCII+Studio`;}
 document.getElementById('cpop').addEventListener('click',e=>{if(e.target===document.getElementById('cpop'))closePop();});
 
 // ── UPI Payment ──
 function payUPI(){
   const amt=document.getElementById('upi-amt').value;
   if(!amt||amt<=0){toast('Please enter a valid amount');return;}
-  const link=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${amt}&cu=INR&tn=Support+ASCII+Studio`;
+  const link=`upi://pay?pa=sambit22@upi&pn=Sambit&am=${amt}&cu=INR&tn=Support+ASCII+Studio`;
   window.location.href=link;
   setTimeout(()=>toast('UPI link opened — use a UPI app on mobile for best results'),600);
 }
@@ -761,7 +761,7 @@ function payUPI(){
 window.addEventListener('load',()=>{
   if(window.QRCode&&document.getElementById('qr-box')){
     new QRCode(document.getElementById('qr-box'),{
-      text:'upi://pay?pa=bundi.ka14@upi&pn=Sambit&cu=INR',
+      text:'upi://pay?pa=sambit22@upi&pn=Sambit&cu=INR',
       width:140,height:140,
       colorDark:'#000000',colorLight:'#ffffff',
       correctLevel:QRCode.CorrectLevel.M
