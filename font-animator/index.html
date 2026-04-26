@@ -338,7 +338,7 @@ body{padding-bottom:48px}
           onfocus="this.style.borderColor='#4ade80'" onblur="this.style.borderColor='#1c1c1c'"/>
         <button onclick="doUPI()" style="padding:.35rem .8rem;background:#4ade80;color:#000;border:none;font-family:inherit;font-size:.72rem;font-weight:600;cursor:pointer">☕ Pay</button>
       </div>
-      <div style="font-size:.62rem;color:#444;margin-top:.4rem">bundi.ka14@upi</div>
+      <div style="font-size:.62rem;color:#444;margin-top:.4rem">sambit22@upi</div>
     </div>
   </div>
 </div>
@@ -724,7 +724,7 @@ function toggleCoffee(){
 function doUPI(){
   const amt=document.getElementById('uamt').value;
   if(!amt||amt<=0){alert('Enter a valid amount');return;}
-  window.location.href=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${amt}&cu=INR&tn=Support+Font+Animator`;
+  window.location.href=`upi://pay?pa=sambit22@upi&pn=Sambit&am=${amt}&cu=INR&tn=Support+Font+Animator`;
 }
 
 // Coffee popup
@@ -740,10 +740,10 @@ function showPop(){
 }
 function makeQR(){
   const box=document.getElementById('cpop-qr');
-  if(box&&!box.hasChildNodes())new QRCode(box,{text:'upi://pay?pa=bundi.ka14@upi&pn=Sambit&cu=INR',width:110,height:110,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+  if(box&&!box.hasChildNodes())new QRCode(box,{text:'upi://pay?pa=sambit22@upi&pn=Sambit&cu=INR',width:110,height:110,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
 }
 function closePop(){document.getElementById('cpop').classList.remove('show');}
-function popUPI(){const a=document.getElementById('pop-amt').value;if(!a||a<=0){alert('Enter amount');return;}window.location.href=`upi://pay?pa=bundi.ka14@upi&pn=Sambit&am=${a}&cu=INR&tn=Support+Font+Animator`;}
+function popUPI(){const a=document.getElementById('pop-amt').value;if(!a||a<=0){alert('Enter amount');return;}window.location.href=`upi://pay?pa=sambit22@upi&pn=Sambit&am=${a}&cu=INR&tn=Support+Font+Animator`;}
 document.getElementById('cpop').addEventListener('click',e=>{if(e.target===document.getElementById('cpop'))closePop();});
 
 applyStyles();
