@@ -4,10 +4,10 @@ const COOLDOWN_MS = 2000;
 let lastSentAt = 0;
 
 // System prompt
-const SYSTEM_PROMPT = `You are the AI assistant embedded in Sambit Satapathy's personal portfolio website (sambit.page).
-Your personality: friendly, concise, slightly "dark terminal / hacker" vibe — but always professional.
+const SYSTEM_PROMPT = `You are Sambit Satapathy himself, embedded as an AI in your personal portfolio website (sambit.page).
+Your personality: friendly, concise, slightly "dark terminal / hacker" vibe — but always professional. You give tips and advice to the users, speaking in the first person ("I", "my").
 
-About Sambit:
+About me:
 - BCA student specialising in Cybersecurity, Ethical Hacking, Linux & Network Defence
 - Actively seeking internships in Cybersecurity or Development
 - Contact: GitHub (Sambittt) | Instagram (@sambit.satapathy_) | Email: sambitsatapathy00@gmail.com
@@ -69,7 +69,7 @@ function initChatbot() {
         <button class="ai-close" id="ai-close" aria-label="Close">✕</button>
       </div>
       <div class="ai-body" id="ai-body">
-        <div class="ai-msg bot" id="ai-greeting">Hello! I'm Sambit's AI assistant. Ask me anything about him or the tools on this site!</div>
+        <div class="ai-msg bot" id="ai-greeting">Hello! I'm Sambit. I'm here as an AI to give you tips and advice. Ask me anything about me or my tools!</div>
       </div>
       <div class="ai-options" id="ai-options">
         ${SUGGESTIONS.map(q => `<div class="ai-chip" role="button" tabindex="0">${q}</div>`).join('')}
@@ -108,7 +108,7 @@ function initChatbot() {
     const storedName = sessionStorage.getItem('ai_user_name');
     if (storedName) {
       currentUserName = storedName;
-      greeting.innerHTML = `Hey <b>${storedName}</b>! I'm Sambit's AI assistant. Ask me anything about him or the tools here.`;
+      greeting.innerHTML = `Hey <b>${storedName}</b>! I'm Sambit. I'm here as an AI to give you tips and advice. Ask me anything!`;
     }
   } catch (_) {}
 
@@ -183,6 +183,35 @@ function initChatbot() {
     return await res.text();
   }
 
+  // ── Firebase Logging ───────────────────────────────────────────────────
+  async function logChatToFirebase(sender, text) {
+    try {
+      const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js');
+      const { getFirestore, collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+      
+      const config = {
+        apiKey: "AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",
+        authDomain: "sambit-portfolio.firebaseapp.com",
+        projectId: "sambit-portfolio",
+        storageBucket: "sambit-portfolio.firebasestorage.app",
+        messagingSenderId: "98909249081",
+        appId: "1:98909249081:web:00bdbda2f0ed56a2c177e8"
+      };
+      
+      const app = getApps().length === 0 ? initializeApp(config) : getApps()[0];
+      const db = getFirestore(app);
+      
+      await addDoc(collection(db, 'ai_chats'), {
+        userName: currentUserName || 'Anonymous',
+        sender: sender,
+        message: text,
+        timestamp: new Date().toISOString()
+      });
+    } catch (e) {
+      console.error('Firebase log failed:', e);
+    }
+  }
+
   // ── Send message ───────────────────────────────────────────────────────
   async function sendMessage(rawText) {
     const text = rawText.trim();
@@ -196,6 +225,7 @@ function initChatbot() {
     lastSentAt = Date.now();
 
     appendMessage(text, 'user');
+    logChatToFirebase('user', text);
     input.value = '';
     sendBtn.disabled = true;
 
@@ -219,6 +249,7 @@ function initChatbot() {
 
       if (reply && reply.trim()) {
         appendMessage(reply.trim(), 'bot', true);
+        logChatToFirebase('bot', reply.trim());
         chatHistory.push({ role: 'assistant', content: reply.trim() });
         // Cap history at 10 turns
         if (chatHistory.length > 20) chatHistory.splice(0, 2);
