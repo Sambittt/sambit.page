@@ -1,6 +1,8 @@
 // Portfolio AI Agent — Powered by Gemini
 const API_KEY = "AIzaSyA7IrZii5Y0tUMjdAr0z64jytItj9KwSBY";
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${API_KEY}`;
+const COOLDOWN_MS = 3000; // ms to wait between sends
+let lastSentAt = 0;
 
 // System Prompt
 const SYSTEM_PROMPT = `You are the AI assistant for Sambit Satapathy, a BCA student specialising in Cybersecurity, ethical hacking, Linux, and network defence.
@@ -137,9 +139,39 @@ function initChatbot() {
   }
 
   // ── Main send function ────────────────────────────────────────────────────
+  // ── Cooldown guard ────────────────────────────────────────────────────────
+  function isCoolingDown() {
+    return (Date.now() - lastSentAt) < COOLDOWN_MS;
+  }
+
+  // ── API call with one auto-retry on 429 ──────────────────────────────────
+  async function callAPI(contents, retrying = false) {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents })
+    });
+
+    if (response.status === 429 && !retrying) {
+      // Wait 3 seconds then retry once silently
+      await new Promise(r => setTimeout(r, 3000));
+      return callAPI(contents, true);
+    }
+
+    return response;
+  }
+
   async function sendMessage(text) {
     text = text.trim();
     if (!text) return;
+
+    // Enforce cooldown
+    if (isCoolingDown()) {
+      const remaining = Math.ceil((COOLDOWN_MS - (Date.now() - lastSentAt)) / 1000);
+      appendMessage(`⏳ Please wait ${remaining}s before sending another message.`, 'bot');
+      return;
+    }
+    lastSentAt = Date.now();
 
     appendMessage(text, 'user');
     input.value = '';
@@ -168,28 +200,22 @@ function initChatbot() {
         ];
 
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents })
-      });
+      const response = await callAPI(contents);
 
       body.removeChild(typingEl);
 
       if (!response.ok) {
-        // Surface the real error to the user
         const errData = await response.json().catch(() => ({}));
         const status = response.status;
         let msg = `API error (${status}).`;
 
         if (status === 400) msg = 'Bad request — the message may be too long. Please try again.';
-        else if (status === 403) msg = '🔒 API key is domain-restricted. This chatbot only works on sambit.page. Try visiting the live site!';
-        else if (status === 429) msg = '⏳ Rate limit reached. Please wait a moment and try again.';
+        else if (status === 403) msg = '🔒 API key is domain-restricted. This chatbot only works on sambit.page.';
+        else if (status === 429) msg = '⏳ Still rate-limited after retry. Please wait ~1 minute and try again.';
         else if (status >= 500) msg = '🛠️ Gemini API is temporarily down. Please try again shortly.';
         else if (errData.error && errData.error.message) msg = errData.error.message;
 
         appendMessage(msg, 'bot');
-        // Remove last history entry since it failed
         chatHistory.pop();
       } else {
         const data = await response.json();
