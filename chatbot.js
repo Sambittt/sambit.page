@@ -1,6 +1,6 @@
 // Portfolio AI Agent — Powered by Gemini
 const API_KEY = "AIzaSyA7IrZii5Y0tUMjdAr0z64jytItj9KwSBY";
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
 // System Prompt
 const SYSTEM_PROMPT = `You are the AI assistant for Sambit Satapathy, a BCA student specialising in Cybersecurity, ethical hacking, Linux, and network defence.
