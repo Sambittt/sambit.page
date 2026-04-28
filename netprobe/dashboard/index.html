@@ -472,11 +472,10 @@ async function runScan() {
       currentScanData.findings.push(`Registrar: ${registrar}`);
     } catch(e) { print(`  <span class="t-d">WHOIS lookup skipped.</span>`); }
 
-    // 3. HTTP Headers
+    // 3. HTTP Headers (Via Custom Backend)
     printSection('HTTP SECURITY HEADERS');
     try {
-      const hdrsUrl = encodeURIComponent(`https://api.hackertarget.com/httpheaders/?q=${target}`);
-      const hdrsRes = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${hdrsUrl}`);
+      const hdrsRes = await fetch(`https://netprobe-api.onrender.com/api/scan/headers?target=${target}`);
       const text = await hdrsRes.text();
       if(text && !text.includes('error')) {
         const lastBlock = text.split('\r\n\r\n').pop() || text.split('\n\n').pop() || text;
@@ -511,7 +510,7 @@ async function runScan() {
 
       printSection('THREAT INTEL & VULNERABILITIES (SHODAN)');
       try {
-        const shodanRes = await fetch(`https://api.shodan.io/shodan/host/${resolvedIP}?key=${SHODAN_KEY}`);
+        const shodanRes = await fetch(`https://netprobe-api.onrender.com/api/scan/shodan?ip=${resolvedIP}&key=${SHODAN_KEY}`);
         if(shodanRes.ok) {
           const shodanData = await shodanRes.json();
           if(shodanData.ports && shodanData.ports.length > 0) {
@@ -539,6 +538,28 @@ async function runScan() {
         }
       } catch(e) { print(`  <span class="t-d">Shodan lookup skipped.</span>`); }
     }
+
+    // 5. NMAP PORT SCAN (Via Custom Backend)
+    printSection('NMAP PORT SCAN (Top 100)');
+    try {
+      print(`  <span class="t-d">Initiating remote Nmap scan via api.sambit.page...</span>`);
+      const nmapRes = await fetch(`https://netprobe-api.onrender.com/api/scan/nmap`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target })
+      });
+      const nmapData = await nmapRes.json();
+      
+      if (nmapData.openPorts && nmapData.openPorts.length > 0) {
+        nmapData.openPorts.forEach(port => {
+          print(`  <span class="t-o">${port.port}</span> / ${port.service} → <span class="t-g">${port.state.toUpperCase()}</span>`);
+          currentScanData.findings.push(`Nmap Port: ${port.port} (${port.service})`);
+          currentScanData.riskPoints += 1;
+        });
+      } else {
+        print(`  <span class="t-g">No commonly exposed ports found.</span>`);
+      }
+    } catch(e) { print(`  <span class="t-r">Nmap scan failed or timed out.</span>`); }
 
     // RISK CALCULATION
     let finalRisk = 'LOW';
