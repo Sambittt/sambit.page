@@ -138,7 +138,7 @@ function show(id) {
   document.getElementById('st-pending').style.display = 'none';
   document.getElementById('st-rejected').style.display = 'none';
   document.getElementById('st-app').style.display = 'none';
-  document.getElementById(id).style.display = 'flex';
+  document.getElementById(id).style.display = (id === 'st-app') ? 'block' : 'flex';
 }
 
 onAuthStateChanged(auth, async user => {
