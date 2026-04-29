@@ -299,6 +299,15 @@
     /* ── HERO ── */
     #hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding-top:4rem}
     #matrix{position:absolute;inset:0;opacity:.18}
+    /* Water ripple canvas */
+    #water-canvas{
+      position:absolute;inset:0;
+      z-index:1;
+      pointer-events:none;
+      opacity:0;
+      transition:opacity 1s ease;
+    }
+    #water-canvas.active{opacity:1}
     .hero-content{position:relative;z-index:2;text-align:center;padding:2rem}
     .hero-avatar{width:130px;height:130px;border-radius:50%;object-fit:cover;margin:0 auto 1.5rem;border:2px solid var(--green);box-shadow:0 0 30px rgba(74,222,128,.15);display:block;position:relative;z-index:3}
     .hero-tag{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:.6rem}
@@ -616,6 +625,8 @@
 <!-- HERO -->
 <section id="hero">
   <canvas id="matrix"></canvas>
+  <!-- Water ripple effect canvas -->
+  <canvas id="water-canvas"></canvas></canvas>
   <div class="hero-content">
     <img src="profile.png" alt="Sambit Satapathy" class="hero-avatar" />
     <div class="hero-tag">Cybersecurity Portfolio</div>
@@ -943,6 +954,133 @@ setInterval(()=>{
     if(y*SZ>cvs.height&&Math.random()>.97)drops[i]=0;else drops[i]++;
   });
 },50);
+
+// ── Water Ripple Effect ───────────────────────────────────────────────────
+(function(){
+  const wc = document.getElementById('water-canvas');
+  if (!wc) return;
+  const hero = document.getElementById('hero');
+  const wctx = wc.getContext('2d');
+
+  let W, H, buf0, buf1, imgData, pixels;
+  const DAMP = 0.985;   // wave damping (lower = fades faster)
+  const LIGHT_X = 0.5; // light direction X
+  const LIGHT_Y = 0.5; // light direction Y
+
+  function initWater() {
+    W = hero.offsetWidth;
+    H = hero.offsetHeight;
+    wc.width  = W;
+    wc.height = H;
+    buf0 = new Float32Array(W * H);
+    buf1 = new Float32Array(W * H);
+    imgData = wctx.createImageData(W, H);
+    pixels  = imgData.data;
+  }
+
+  function addDrop(x, y, radius, strength) {
+    x = Math.floor(x); y = Math.floor(y);
+    const r2 = radius * radius;
+    const x0 = Math.max(0, x - radius);
+    const x1 = Math.min(W - 1, x + radius);
+    const y0 = Math.max(0, y - radius);
+    const y1 = Math.min(H - 1, y + radius);
+    for (let j = y0; j <= y1; j++) {
+      for (let i = x0; i <= x1; i++) {
+        const dx = i - x, dy = j - y;
+        const d2 = dx*dx + dy*dy;
+        if (d2 < r2) {
+          buf0[j * W + i] += strength * (1 - d2 / r2);
+        }
+      }
+    }
+  }
+
+  function stepWater() {
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 1; x < W - 1; x++) {
+        const i = y * W + x;
+        buf1[i] = (
+          buf0[i - 1] + buf0[i + 1] +
+          buf0[i - W] + buf0[i + W]
+        ) * 0.5 - buf1[i];
+        buf1[i] *= DAMP;
+      }
+    }
+    // swap buffers
+    const tmp = buf0; buf0 = buf1; buf1 = tmp;
+  }
+
+  function renderWater() {
+    // green theme: r=74 g=222 b=128
+    const GR = 74, GG = 222, GB = 128;
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 1; x < W - 1; x++) {
+        const i = y * W + x;
+        // surface normal from height differences
+        const nx = buf0[i - 1] - buf0[i + 1];
+        const ny = buf0[i - W] - buf0[i + W];
+        // specular dot product with light
+        const dot = Math.max(0, nx * LIGHT_X + ny * LIGHT_Y);
+        const spec = dot * dot * dot; // sharpen highlight
+        const bright = Math.min(255, spec * 280);
+
+        const pi = i * 4;
+        pixels[pi]     = (GR  * bright / 255) | 0;
+        pixels[pi + 1] = (GG  * bright / 255) | 0;
+        pixels[pi + 2] = (GB  * bright / 255) | 0;
+        pixels[pi + 3] = Math.min(255, bright * 1.6) | 0; // alpha from intensity
+      }
+    }
+    wctx.putImageData(imgData, 0, 0);
+  }
+
+  function loopWater() {
+    stepWater();
+    renderWater();
+    requestAnimationFrame(loopWater);
+  }
+
+  // Mouse / touch interaction
+  let lastX = -1, lastY = -1;
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    if (lastX >= 0) {
+      // add drops along the path for smooth trail
+      const dx = x - lastX, dy = y - lastY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const steps = Math.max(1, Math.floor(dist / 8));
+      for (let s = 0; s <= steps; s++) {
+        addDrop(lastX + dx * s / steps, lastY + dy * s / steps, 14, 60);
+      }
+    }
+    lastX = x; lastY = y;
+  });
+
+  hero.addEventListener('mouseleave', () => { lastX = -1; lastY = -1; });
+
+  hero.addEventListener('click', e => {
+    const r = hero.getBoundingClientRect();
+    addDrop(e.clientX - r.left, e.clientY - r.top, 30, 180);
+  });
+
+  // Touch support
+  hero.addEventListener('touchmove', e => {
+    const r = hero.getBoundingClientRect();
+    const t = e.touches[0];
+    addDrop(t.clientX - r.left, t.clientY - r.top, 18, 80);
+  }, { passive: true });
+
+  // Resize handler
+  window.addEventListener('resize', () => { initWater(); });
+
+  // Init & start
+  initWater();
+  setTimeout(() => { wc.classList.add('active'); }, 500);
+  loopWater();
+})();
 
 // ── Typing Animation ──────────────────────────────────────────────────────
 const roles=['Cybersecurity Student','Linux Enthusiast','Network Defender','Ethical Hacking Learner','BCA @ 2026'];
