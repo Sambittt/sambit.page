@@ -452,6 +452,37 @@
     @media(max-width:480px){
       .hero-name{font-size:clamp(2.5rem,18vw,4rem)}
     }
+
+    /* ── Custom Green Cursor ── */
+    @media(pointer:fine){
+      *{cursor:none!important}
+      #cur-dot{
+        position:fixed;top:0;left:0;z-index:99999;pointer-events:none;
+        width:8px;height:8px;border-radius:50%;
+        background:#4ade80;
+        box-shadow:0 0 8px #4ade80,0 0 18px rgba(74,222,128,.5);
+        transform:translate(-50%,-50%);
+        transition:width .15s,height .15s,background .15s;
+        will-change:transform;
+      }
+      #cur-ring{
+        position:fixed;top:0;left:0;z-index:99998;pointer-events:none;
+        width:32px;height:32px;border-radius:50%;
+        border:1.5px solid rgba(74,222,128,.6);
+        box-shadow:0 0 12px rgba(74,222,128,.15);
+        transform:translate(-50%,-50%);
+        transition:width .2s,height .2s,border-color .2s,opacity .2s;
+        will-change:transform;
+      }
+      /* Expand ring on hoverable elements */
+      a:hover ~ #cur-ring,
+      button:hover ~ #cur-ring{
+        width:44px;height:44px;
+      }
+      /* Dot shrinks + ring fills on click */
+      body.cur-click #cur-dot{width:5px;height:5px;background:#fff}
+      body.cur-click #cur-ring{width:20px;height:20px;border-color:#4ade80;background:rgba(74,222,128,.08)}
+    }
   </style>
 
 </head>
@@ -1057,6 +1088,56 @@ document.getElementById('welcome-backdrop').addEventListener('click', e => {
 <!-- Portfolio AI Agent -->
 <link rel="stylesheet" href="/chatbot.css">
 <script defer src="/chatbot.js"></script>
+
+<!-- Custom Green Cursor -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+<script>
+(function(){
+  if(window.matchMedia('(pointer:fine)').matches){
+    const dot=document.getElementById('cur-dot');
+    const ring=document.getElementById('cur-ring');
+    let mx=window.innerWidth/2,my=window.innerHeight/2;
+    let rx=mx,ry=my;
+    let raf;
+
+    document.addEventListener('mousemove',e=>{
+      mx=e.clientX;my=e.clientY;
+      dot.style.transform='translate(calc(-50% + '+mx+'px),calc(-50% + '+my+'px))';
+    });
+
+    function lerp(a,b,t){return a+(b-a)*t}
+    function loop(){
+      rx=lerp(rx,mx,0.12);
+      ry=lerp(ry,my,0.12);
+      ring.style.transform='translate(calc(-50% + '+rx+'px),calc(-50% + '+ry+'px))';
+      raf=requestAnimationFrame(loop);
+    }
+    loop();
+
+    /* Ring expand on links/buttons */
+    document.querySelectorAll('a,button,.btn-pri,.btn-sec,.nav-tool,.proj-card,.skill-card,.contact-card').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{
+        ring.style.width='48px';ring.style.height='48px';
+        ring.style.borderColor='rgba(74,222,128,.9)';
+        ring.style.background='rgba(74,222,128,.06)';
+      });
+      el.addEventListener('mouseleave',()=>{
+        ring.style.width='';ring.style.height='';
+        ring.style.borderColor='';ring.style.background='';
+      });
+    });
+
+    /* Dot feedback on click */
+    document.addEventListener('mousedown',()=>document.body.classList.add('cur-click'));
+    document.addEventListener('mouseup',()=>document.body.classList.remove('cur-click'));
+
+    /* Hide cursor elements when mouse leaves window */
+    document.addEventListener('mouseleave',()=>{dot.style.opacity='0';ring.style.opacity='0';});
+    document.addEventListener('mouseenter',()=>{dot.style.opacity='1';ring.style.opacity='1';});
+  }
+})();
+</script>
 
 </body>
 </html>
