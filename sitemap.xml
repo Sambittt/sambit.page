@@ -1,21 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Homepage — Sambit Satapathy Portfolio -->
   <url>
     <loc>https://sambit.page/</loc>
-    <lastmod>2026-04-24</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- About Sambit Satapathy -->
+  <url>
+    <loc>https://sambit.page/#about</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Sambit Satapathy Skills -->
+  <url>
+    <loc>https://sambit.page/#skills</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Sambit Satapathy Certifications -->
+  <url>
+    <loc>https://sambit.page/#certs</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Sambit Satapathy Projects & Tools -->
+  <url>
+    <loc>https://sambit.page/#projects</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Contact Sambit Satapathy -->
+  <url>
+    <loc>https://sambit.page/#contact</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- NetProbe — Network Reconnaissance Tool by Sambit Satapathy -->
+  <url>
+    <loc>https://sambit.page/netprobe/</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Stego Payload Injector — Steganography Tool by Sambit Satapathy -->
+  <url>
+    <loc>https://sambit.page/stego-payload/</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- ASCII Art Studio — Free Image to ASCII Converter by Sambit Satapathy -->
   <url>
     <loc>https://sambit.page/ascii-converter/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
+  <!-- Font Animator — Free CSS Text Animation Tool by Sambit Satapathy -->
   <url>
     <loc>https://sambit.page/font-animator/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
+  <!-- Resume Builder — Free Online Resume Maker by Sambit Satapathy -->
+  <url>
+    <loc>https://sambit.page/resume-builder/</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Login / Sign Up -->
+  <url>
+    <loc>https://sambit.page/login/</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
 </urlset>
