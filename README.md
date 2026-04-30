@@ -25,6 +25,7 @@ A client-side steganography engine that allows users to securely hide messages o
 - **Usage:** Upload a cover image, enter your secret payload or text, and click inject to download the modified image. To decode, upload the stego-image and click extract.
 - **Screenshot:**
   ![Stego Injector Screenshot](assets/stego-injector-screenshot.png)
+  ![Stego Injector Screenshot](assets/stego-injector-screenshot2.png)
 
 ### 3. ASCII Art Studio
 A browser-based creative tool that converts videos, images, and animated GIFs into customizable ASCII art.
