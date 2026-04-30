@@ -15,6 +15,9 @@ An authenticated network reconnaissance platform designed for cybersecurity anal
 - **Usage:** Requires manual approval/login via Firebase Auth. Once logged in, enter a target domain or IP address to gather comprehensive OSINT and vulnerability data.
 - **Screenshot:**
   ![NetProbe Screenshot](assets/netprobe-screenshot.png)
+  ![NetProbe Screenshot](assets/netprobe-screenshot2.png)
+  ![NetProbe Screenshot](assets/netprobe-screenshot3.png)
+
 
 ### 2. Stego Payload Injector
 A client-side steganography engine that allows users to securely hide messages or payloads within images.
