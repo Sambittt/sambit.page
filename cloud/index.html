@@ -336,7 +336,7 @@
       <h1 class="page-title">Cloud<span class="accent">Share</span></h1>
       <p class="page-desc">
         Share images with anyone — <span>no account needed</span> to view.
-        Images auto-delete after <span>24 hours</span>. Max <span>100 MB</span> per upload.
+        Images auto-delete after <span>60 minutes</span>. Max <span>100 MB</span> per upload.
       </p>
     </div>
 
@@ -350,7 +350,7 @@
       </div>
       <div class="upload-title">Drop images here to share</div>
       <div class="upload-hint">or <span id="browse-btn">browse files</span></div>
-      <div class="upload-limit">IMAGES ONLY · MAX 100 MB · 24H AUTO-DELETE</div>
+      <div class="upload-limit">IMAGES ONLY · MAX 100 MB · 60 MIN AUTO-DELETE</div>
     </div>
 
     <!-- UPLOAD PROGRESS -->
@@ -395,7 +395,7 @@
     </div>
 
     <div class="cloud-footer">
-      © 2026 <span>sambit.page</span> — CloudShare · Files are auto-deleted after 24 hours
+      © 2026 <span>sambit.page</span> — CloudShare · Files are auto-deleted after 60 minutes
     </div>
   </div>
 
@@ -426,7 +426,7 @@
     const storage = getStorage(fbApp);
 
     const MAX_SIZE = 100 * 1024 * 1024; // 100 MB
-    const EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
+    const EXPIRY_MS = 60 * 60 * 1000; // 60 minutes (tmpfiles.org temporary window)
 
     // ── DOM refs ──
     const $authLoading = document.getElementById('auth-loading');
