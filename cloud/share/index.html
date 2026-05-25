@@ -659,38 +659,65 @@
     }
 
     // ── Download ──
-    window.downloadFile = function(url, name) {
+    window.downloadFile = async function(url, name) {
       if (!shareData) return;
 
-      if (!url) {
-        if (shareData.files && shareData.files.length > 1) {
-          // Download all files sequentially
-          shareData.files.forEach((file, index) => {
-            setTimeout(() => {
-              const a = document.createElement('a');
-              a.href = file.downloadURL;
-              a.download = file.fileName;
-              a.target = '_blank';
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-            }, index * 400);
-          });
-          return;
-        } else {
-          url = shareData.downloadURL;
-          name = shareData.fileName;
-        }
-      }
+      const btn = document.getElementById('btn-download');
+      const originalText = btn.innerHTML;
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = name;
-      a.target = '_blank';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      try {
+        if (!url) {
+          if (shareData.files && shareData.files.length > 1) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="loading-spinner" style="width:14px;height:14px;margin:0 .5rem 0 0;display:inline-block;vertical-align:middle"></span> DOWNLOADING...`;
+            
+            // Download all files sequentially with a stagger delay
+            for (let i = 0; i < shareData.files.length; i++) {
+              const file = shareData.files[i];
+              await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
+              await forceDownload(file.downloadURL, file.fileName);
+            }
+            return;
+          } else {
+            url = shareData.downloadURL;
+            name = shareData.fileName;
+          }
+        }
+
+        await forceDownload(url, name);
+      } catch (err) {
+        console.error('Download error:', err);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
     };
+
+    async function forceDownload(url, filename) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Response status ' + response.status);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename || 'image.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      } catch (err) {
+        console.warn('CORS/Direct download failed. Falling back to open in new tab:', err);
+        // Fallback to cross-origin link click in a new window/tab
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    }
 
     // ── Fullscreen ──
     window.openFullscreen = function() {
