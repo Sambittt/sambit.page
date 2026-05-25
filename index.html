@@ -734,14 +734,15 @@
       height: 140px;
       border-radius: 50%;
       object-fit: cover;
-      margin: 0 auto 1.5rem;
       border: 2px solid var(--green);
-      display: block;
-      position: relative;
-      z-index: 3;
+      position: absolute;
+      bottom: calc(100% + 15px);
+      left: 50%;
+      z-index: 10;
+      pointer-events: none;
       opacity: 0;
       visibility: hidden;
-      transform: scale(0.6) translateY(15px) rotate(-8deg);
+      transform: translate(-50%, 20px) scale(0.6) rotate(-8deg);
       transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
                   transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
                   visibility 0.5s;
@@ -750,16 +751,25 @@
     .hero-avatar.visible {
       opacity: 1;
       visibility: visible;
-      transform: scale(1) translateY(0) rotate(0deg);
+      transform: translate(-50%, 0) scale(1) rotate(0deg);
       animation: avatarPulse 3s ease-in-out infinite;
     }
 
     .name-trigger {
       display: inline-block;
+      position: relative;
       cursor: pointer;
       pointer-events: auto;
       user-select: none;
-      transition: transform 0.2s ease;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .name-trigger:hover {
+      transform: scale(1.03);
+    }
+
+    .name-trigger:active {
+      transform: scale(0.97);
     }
 
     .name-trigger:hover .hero-name {
@@ -2353,7 +2363,8 @@
       });
       nameTrigger.addEventListener('click', () => {
         avatarPinned = !avatarPinned;
-        heroAvatar.classList.toggle('visible', avatarPinned);
+        // Keep visible if pinned, otherwise keep visible since mouse is still hovering
+        heroAvatar.classList.add('visible');
       });
     }
   </script>
