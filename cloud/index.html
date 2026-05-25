@@ -546,10 +546,10 @@
     });
 
     // ── Client-side Image Compression Helper ──
-    function compressImage(file, maxDimension = 3840, quality = 0.88) {
+    function compressImage(file, maxDimension = 2560, quality = 0.82) {
       return new Promise((resolve, reject) => {
-        // Skip compression for small images (< 1.5 MB) to preserve 100% original quality
-        if (file.size <= 1.5 * 1024 * 1024) {
+        // Skip compression for small images (< 1.0 MB) to preserve 100% original quality
+        if (file.size <= 1.0 * 1024 * 1024) {
           resolve(file);
           return;
         }
@@ -699,36 +699,51 @@
           ? `${formatSize(totalCompressedSize)} (optimized from ${formatSize(totalSize)})`
           : formatSize(totalSize);
 
-        // Step 2: Upload all optimized images in parallel
+        // Step 2: Upload all optimized images using a concurrency-controlled worker queue (limit 3)
         const fileProgress = Array(files.length).fill(0);
         $uploadStatus.textContent = `// uploading images in parallel... 0%`;
 
-        const uploadPromises = optimizedFiles.map(async ({ original, optimized, index }) => {
-          const downloadURL = await uploadSingleFile(optimized, pct => {
-            fileProgress[index] = pct;
-            const totalProgress = fileProgress.reduce((sum, curr) => sum + curr, 0) / files.length;
-            $progressBarFill.style.width = totalProgress + '%';
-            $uploadStatus.textContent = `// uploading images in parallel... ${Math.round(totalProgress)}%`;
-            
+        const uploadedFiles = [];
+        const concurrencyLimit = Math.min(3, optimizedFiles.length);
+        let nextIndex = 0;
+
+        const uploadWorker = async () => {
+          while (nextIndex < optimizedFiles.length) {
+            const currentIdx = nextIndex++;
+            const { original, optimized, index } = optimizedFiles[currentIdx];
+
+            const downloadURL = await uploadSingleFile(optimized, pct => {
+              fileProgress[index] = pct;
+              const totalProgress = fileProgress.reduce((sum, curr) => sum + curr, 0) / files.length;
+              $progressBarFill.style.width = totalProgress + '%';
+              $uploadStatus.textContent = `// uploading images in parallel... ${Math.round(totalProgress)}%`;
+
+              const $rowStatus = document.getElementById(`p-status-${index}`);
+              if ($rowStatus) $rowStatus.textContent = `${Math.round(pct)}%`;
+            });
+
             const $rowStatus = document.getElementById(`p-status-${index}`);
-            if ($rowStatus) $rowStatus.textContent = `${Math.round(pct)}%`;
-          });
+            if ($rowStatus) {
+              $rowStatus.className = 'progress-file-status success';
+              $rowStatus.textContent = '✓ Done';
+            }
 
-          const $rowStatus = document.getElementById(`p-status-${index}`);
-          if ($rowStatus) {
-            $rowStatus.className = 'progress-file-status success';
-            $rowStatus.textContent = '✓ Done';
+            uploadedFiles.push({
+              fileName: original.name,
+              fileSize: optimized.size,
+              fileType: optimized.type,
+              downloadURL,
+              index
+            });
           }
+        };
 
-          return {
-            fileName: original.name,
-            fileSize: optimized.size,
-            fileType: optimized.type,
-            downloadURL
-          };
-        });
+        // Spawn parallel upload workers
+        const workers = Array(concurrencyLimit).fill(null).map(() => uploadWorker());
+        await Promise.all(workers);
 
-        const uploadedFiles = await Promise.all(uploadPromises);
+        // Sort uploads back to the user's original selection order
+        uploadedFiles.sort((a, b) => a.index - b.index);
 
         $uploadStatus.textContent = '// generating secure bundle link...';
         const shareId = generateId();
