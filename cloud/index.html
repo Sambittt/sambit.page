@@ -490,7 +490,105 @@
       if ($fileInput.files.length) handleFiles($fileInput.files);
     });
 
-    // ── Handle file upload ──
+    // ── Client-side Image Compression Helper ──
+    function compressImage(file, maxDimension = 1920, quality = 0.8) {
+      return new Promise((resolve, reject) => {
+        // Skip compression for small images (< 800 KB)
+        if (file.size <= 800 * 1024) {
+          resolve(file);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = event => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            // Resize if dimensions exceed threshold
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(blob => {
+              if (blob) {
+                // Wrap back in a File object to retain fileName
+                const compressedFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(file); // Fallback to original
+              }
+            }, 'image/jpeg', quality);
+          };
+          img.onerror = () => resolve(file);
+        };
+        reader.onerror = () => resolve(file);
+      });
+    }
+
+    // ── Single File ImgBB Uploader with progress ──
+    function uploadSingleFile(file, onProgress) {
+      return new Promise((resolve, reject) => {
+        const imgbbKey = typeof getImgbbKey === 'function' ? getImgbbKey() : '';
+        if (!imgbbKey || imgbbKey === 'YOUR_IMGBB_API_KEY') {
+          reject(new Error('ImgBB API Key is missing. Open <code>config.js</code> and paste your free key from <a href="https://api.imgbb.com/" target="_blank" style="color:var(--green);text-decoration:underline">api.imgbb.com</a>.'));
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `https://api.imgbb.com/1/upload?key=${imgbbKey}&expiration=86400`);
+
+        xhr.upload.addEventListener('progress', e => {
+          if (e.lengthComputable) {
+            const pct = (e.loaded / e.total) * 100;
+            if (onProgress) onProgress(pct);
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const res = JSON.parse(xhr.responseText);
+              if (res.success && res.data && res.data.url) {
+                resolve(res.data.url);
+              } else {
+                reject(new Error(res.error?.message || 'Upload failed'));
+              }
+            } catch (e) {
+              reject(new Error('Invalid response format'));
+            }
+          } else {
+            reject(new Error(`Server status ${xhr.status}`));
+          }
+        });
+
+        xhr.addEventListener('error', () => reject(new Error('Network error')));
+        xhr.send(formData);
+      });
+    }
+
+    // ── Handle file upload bundle ──
     async function handleFiles(files) {
       // Calculate total size
       let totalSize = 0;
@@ -509,82 +607,64 @@
         }
       }
 
-      // Upload images one at a time
-      for (const file of files) {
-        await uploadFile(file);
-      }
-    }
-
-    async function uploadFile(file) {
-      // Show progress
+      // Show upload progress UI for the bundle
       $uploadZone.style.display = 'none';
       $shareResult.classList.remove('active');
       $uploadProgress.classList.add('active');
-      $uploadFileName.textContent = file.name;
-      $uploadFileSize.textContent = formatSize(file.size);
       $progressBarFill.style.width = '0%';
-      $uploadStatus.textContent = '// uploading to cloud...';
+      $uploadFileName.textContent = files.length > 1 ? `Uploading ${files.length} images...` : files[0].name;
+      $uploadFileSize.textContent = formatSize(totalSize);
+      $uploadStatus.textContent = `// optimizing images...`;
 
       try {
-        // Retrieve ImgBB API Key
-        const imgbbKey = typeof getImgbbKey === 'function' ? getImgbbKey() : '';
-        if (!imgbbKey || imgbbKey === 'YOUR_IMGBB_API_KEY') {
-          throw new Error('ImgBB API Key is missing. Please open <code>config.js</code> and paste your free key from <a href="https://api.imgbb.com/" target="_blank" style="color:var(--green);text-decoration:underline">api.imgbb.com</a>.');
-        }
+        // Step 1: Client-side compression in parallel
+        const optimizedFiles = await Promise.all(
+          Array.from(files).map(async (file, index) => {
+            const optimized = await compressImage(file);
+            return { original: file, optimized, index };
+          })
+        );
 
-        // Generate share ID
-        const shareId = generateId();
+        let totalCompressedSize = 0;
+        optimizedFiles.forEach(item => totalCompressedSize += item.optimized.size);
+        $uploadFileSize.textContent = `${formatSize(totalCompressedSize)} (optimized from ${formatSize(totalSize)})`;
 
-        // Create FormData for ImgBB API (24h temporary file hosting with native CORS support)
-        const formData = new FormData();
-        formData.append('image', file);
+        // Step 2: Upload all optimized images in parallel
+        const fileProgress = Array(files.length).fill(0);
+        $uploadStatus.textContent = `// uploading images in parallel... 0%`;
 
-        // Upload using XHR to track precise upload progress
-        const downloadURL = await new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', `https://api.imgbb.com/1/upload?key=${imgbbKey}&expiration=86400`);
-
-          xhr.upload.addEventListener('progress', e => {
-            if (e.lengthComputable) {
-              const pct = (e.loaded / e.total) * 100;
-              $progressBarFill.style.width = pct + '%';
-              $uploadStatus.textContent = `// uploading... ${Math.round(pct)}%`;
-            }
+        const uploadPromises = optimizedFiles.map(async ({ original, optimized, index }) => {
+          const downloadURL = await uploadSingleFile(optimized, pct => {
+            fileProgress[index] = pct;
+            const totalProgress = fileProgress.reduce((sum, curr) => sum + curr, 0) / files.length;
+            $progressBarFill.style.width = totalProgress + '%';
+            $uploadStatus.textContent = `// uploading images in parallel... ${Math.round(totalProgress)}%`;
           });
 
-          xhr.addEventListener('load', () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                const res = JSON.parse(xhr.responseText);
-                if (res.success && res.data && res.data.url) {
-                  resolve(res.data.url); // The public direct download URL!
-                } else {
-                  reject(new Error(res.error?.message || 'Failed to parse upload response'));
-                }
-              } catch (e) {
-                reject(new Error('Invalid JSON response from server'));
-              }
-            } else {
-              reject(new Error(`Server returned status ${xhr.status}`));
-            }
-          });
-
-          xhr.addEventListener('error', () => reject(new Error('Network error during upload')));
-          xhr.send(formData);
+          return {
+            fileName: original.name,
+            fileSize: optimized.size,
+            fileType: optimized.type,
+            downloadURL
+          };
         });
 
-        $uploadStatus.textContent = '// generating share link...';
+        const uploadedFiles = await Promise.all(uploadPromises);
 
-        // Save metadata to Firestore (Firebase Storage is bypassed)
+        $uploadStatus.textContent = '// generating secure bundle link...';
+        const shareId = generateId();
+
+        // Save metadata bundle to Firestore
         const expiresAt = Timestamp.fromDate(new Date(Date.now() + EXPIRY_MS));
         await addDoc(collection(db, 'cloud-shares'), {
           shareId,
           uid: currentUser.uid,
-          fileName: file.name,
-          fileSize: file.size,
-          fileType: file.type || 'application/octet-stream',
-          storagePath: '', // No Firebase Storage binary
-          downloadURL,
+          fileName: files.length > 1 ? `Bundle (${files.length} images)` : files[0].name,
+          fileSize: totalCompressedSize,
+          fileType: files.length > 1 ? 'application/bundle' : files[0].type,
+          storagePath: '',
+          downloadURL: uploadedFiles[0].downloadURL, // Fallback direct link
+          files: uploadedFiles,
           expiresAt,
           createdAt: serverTimestamp()
         });
@@ -594,9 +674,9 @@
         $uploadProgress.classList.remove('active');
         $shareResult.classList.add('active');
         $shareLinkInput.value = shareLink;
-        $shareExpiry.innerHTML = `Expires in <span>24 hours</span> · ${formatSize(file.size)}`;
+        $shareExpiry.innerHTML = `Expires in <span>24 hours</span> · ${files.length} images · ${formatSize(totalCompressedSize)}`;
 
-        showToast('File uploaded successfully!');
+        showToast('Images uploaded successfully!');
       } catch (err) {
         console.error('Upload failed:', err);
         $uploadStatus.innerHTML = `// upload failed: ${err.message}`;

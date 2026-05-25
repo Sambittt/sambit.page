@@ -119,6 +119,72 @@
     }
     .preview-zoom:hover { border-color: var(--green); color: var(--green) }
 
+    /* ── BUNDLE GALLERY ── */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: .8rem;
+      padding: 1.5rem;
+      background: #050505;
+      border-bottom: 1px solid var(--border);
+      max-height: 50vh;
+      overflow-y: auto;
+      width: 100%;
+    }
+    .gallery-item {
+      position: relative;
+      aspect-ratio: 1;
+      border: 1px solid var(--border);
+      background: #0a0a0a;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .gallery-item:hover {
+      border-color: var(--green);
+      transform: scale(1.02);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gallery-item-hover {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .gallery-item:hover .gallery-item-hover {
+      opacity: 1;
+    }
+    .gallery-item-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #000;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+    .gallery-item-btn:hover {
+      transform: scale(1.1);
+    }
+    .gallery-item-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: #000;
+    }
+
     /* ── FILE INFO BAR ── */
     .file-info {
       padding: 1.2rem 1.5rem;
@@ -260,24 +326,50 @@
     /* ── FULLSCREEN OVERLAY ── */
     .fullscreen-overlay {
       position: fixed; inset: 0; z-index: 500;
-      background: rgba(0, 0, 0, .95);
+      background: rgba(0, 0, 0, .96);
       display: none; align-items: center; justify-content: center;
       cursor: zoom-out; padding: 1rem;
     }
     .fullscreen-overlay.open { display: flex }
     .fullscreen-overlay img {
-      max-width: 100%; max-height: 100%;
+      max-width: 90%; max-height: 85vh;
       object-fit: contain;
+      box-shadow: 0 10px 40px rgba(0,0,0,.8);
+      border: 1px solid var(--border);
     }
     .fullscreen-close {
-      position: absolute; top: 1rem; right: 1.5rem;
-      width: 36px; height: 36px; background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.2); color: #fff;
-      font-size: 1.1rem; cursor: pointer;
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      width: 44px; height: 44px; background: rgba(3,3,3,.8);
+      border: 1px solid var(--border); color: #fff;
+      font-size: 1.2rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: all .2s;
+      z-index: 510;
     }
-    .fullscreen-close:hover { background: rgba(255,255,255,.2) }
+    .fullscreen-close:hover { border-color: var(--green); color: var(--green) }
+
+    .nav-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 50px; height: 80px; background: rgba(3,3,3,.6);
+      border: 1px solid var(--border); color: var(--fg-dim);
+      font-size: 2.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+      z-index: 510;
+      font-family: sans-serif;
+    }
+    .nav-btn:hover { border-color: var(--green); color: var(--green); background: rgba(3,3,3,.9) }
+    .prev-btn { left: 1.5rem }
+    .next-btn { right: 1.5rem }
+
+    .fullscreen-counter {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      background: rgba(3,3,3,.8); border: 1px solid var(--border);
+      color: var(--green); font-family: inherit; font-size: .75rem;
+      padding: .5rem 1.2rem; letter-spacing: .05em;
+      z-index: 510;
+      text-align: center;
+    }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
@@ -318,6 +410,7 @@
         <img id="preview-img" alt="Shared image"/>
         <button class="preview-zoom" id="btn-zoom" onclick="openFullscreen()">⛶ View Full</button>
       </div>
+      <div class="gallery-grid" id="gallery-wrap" style="display:none"></div>
       <div class="file-info">
         <div class="file-icon">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -387,9 +480,12 @@
   </div>
 
   <!-- FULLSCREEN OVERLAY -->
-  <div class="fullscreen-overlay" id="fullscreen-overlay" onclick="closeFullscreen()">
-    <button class="fullscreen-close" onclick="closeFullscreen()">✕</button>
-    <img id="fullscreen-img" alt="Full size preview"/>
+  <div class="fullscreen-overlay" id="fullscreen-overlay" onclick="closeFullscreen(event)">
+    <button class="fullscreen-close" onclick="closeFullscreen(event)">✕</button>
+    <button class="nav-btn prev-btn" id="fs-prev-btn" onclick="navigateFullscreen(-1, event)">‹</button>
+    <img id="fullscreen-img" alt="Full size preview" onclick="event.stopPropagation()"/>
+    <button class="nav-btn next-btn" id="fs-next-btn" onclick="navigateFullscreen(1, event)">›</button>
+    <div class="fullscreen-counter" id="fs-counter"></div>
   </div>
 
   <!-- MATRIX RAIN -->
@@ -440,6 +536,7 @@
     const $error = document.getElementById('state-error');
 
     let shareData = null;
+    let currentFullscreenIndex = 0;
 
     // ── Get share ID from URL ──
     const params = new URLSearchParams(window.location.search);
@@ -471,11 +568,41 @@
         }
 
         // ── Populate share card ──
-        document.getElementById('preview-img').src = shareData.downloadURL;
-        document.getElementById('fullscreen-img').src = shareData.downloadURL;
         document.getElementById('file-name').textContent = shareData.fileName;
         document.getElementById('file-size').textContent = formatSize(shareData.fileSize);
         document.getElementById('file-type').textContent = shareData.fileType;
+
+        // Render preview single image or bundle gallery grid
+        if (shareData.files && shareData.files.length > 1) {
+          document.getElementById('preview-wrap').style.display = 'none';
+          const $gallery = document.getElementById('gallery-wrap');
+          $gallery.style.display = 'grid';
+          $gallery.innerHTML = shareData.files.map((file, idx) => `
+            <div class="gallery-item" onclick="openFullscreenAtIndex(${idx})">
+              <img src="${file.downloadURL}" alt="${escapeHtml(file.fileName)}"/>
+              <div class="gallery-item-hover">
+                <button class="gallery-item-btn" onclick="event.stopPropagation(); window.downloadFile('${file.downloadURL}', '${escapeHtml(file.fileName)}')">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `).join('');
+
+          // Update main download button text
+          document.getElementById('btn-download').innerHTML = `
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+            DOWNLOAD ALL (${shareData.files.length})
+          `;
+        } else {
+          document.getElementById('preview-wrap').style.display = 'flex';
+          document.getElementById('gallery-wrap').style.display = 'none';
+          document.getElementById('preview-img').src = shareData.downloadURL;
+          document.getElementById('fullscreen-img').src = shareData.downloadURL;
+        }
 
         // Update page title
         document.title = `${shareData.fileName} — CloudShare | sambit.page`;
@@ -532,31 +659,108 @@
     }
 
     // ── Download ──
-    window.downloadFile = function() {
+    window.downloadFile = function(url, name) {
       if (!shareData) return;
 
-      const link = document.createElement('a');
-      link.href = shareData.downloadURL;
-      link.download = shareData.fileName;
-      link.target = '_blank';
+      if (!url) {
+        if (shareData.files && shareData.files.length > 1) {
+          // Download all files sequentially
+          shareData.files.forEach((file, index) => {
+            setTimeout(() => {
+              const a = document.createElement('a');
+              a.href = file.downloadURL;
+              a.download = file.fileName;
+              a.target = '_blank';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }, index * 400);
+          });
+          return;
+        } else {
+          url = shareData.downloadURL;
+          name = shareData.fileName;
+        }
+      }
 
-      // For cross-origin, open in new tab (Firebase Storage CORS)
-      window.open(shareData.downloadURL, '_blank');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     };
 
     // ── Fullscreen ──
     window.openFullscreen = function() {
+      openFullscreenAtIndex(0);
+    };
+
+    window.openFullscreenAtIndex = function(idx) {
+      if (!shareData) return;
+      currentFullscreenIndex = idx;
+      updateFullscreenImage();
       document.getElementById('fullscreen-overlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     };
-    window.closeFullscreen = function() {
+
+    window.closeFullscreen = function(event) {
+      if (event) event.stopPropagation();
       document.getElementById('fullscreen-overlay').classList.remove('open');
       document.body.style.overflow = '';
     };
 
-    // ESC to close fullscreen
+    window.navigateFullscreen = function(direction, event) {
+      if (event) event.stopPropagation();
+      if (!shareData) return;
+
+      const files = shareData.files && shareData.files.length > 1 ? shareData.files : [shareData];
+      currentFullscreenIndex += direction;
+      if (currentFullscreenIndex < 0) {
+        currentFullscreenIndex = files.length - 1;
+      } else if (currentFullscreenIndex >= files.length) {
+        currentFullscreenIndex = 0;
+      }
+
+      updateFullscreenImage();
+    };
+
+    function updateFullscreenImage() {
+      if (!shareData) return;
+
+      const $fsImg = document.getElementById('fullscreen-img');
+      const $fsCounter = document.getElementById('fs-counter');
+      const $prevBtn = document.getElementById('fs-prev-btn');
+      const $nextBtn = document.getElementById('fs-next-btn');
+
+      if (shareData.files && shareData.files.length > 1) {
+        const file = shareData.files[currentFullscreenIndex];
+        $fsImg.src = file.downloadURL;
+        $fsCounter.style.display = 'block';
+        $fsCounter.textContent = `${currentFullscreenIndex + 1} / ${shareData.files.length} - ${file.fileName}`;
+        $prevBtn.style.display = 'block';
+        $nextBtn.style.display = 'block';
+      } else {
+        $fsImg.src = shareData.downloadURL;
+        $fsCounter.style.display = 'none';
+        $prevBtn.style.display = 'none';
+        $nextBtn.style.display = 'none';
+      }
+    }
+
+    // Keyboard support
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeFullscreen();
+      const overlayOpen = document.getElementById('fullscreen-overlay').classList.contains('open');
+      if (overlayOpen) {
+        if (e.key === 'Escape') {
+          closeFullscreen();
+        } else if (e.key === 'ArrowLeft') {
+          navigateFullscreen(-1);
+        } else if (e.key === 'ArrowRight') {
+          navigateFullscreen(1);
+        }
+      }
     });
 
     // ── Helpers ──
@@ -565,6 +769,12 @@
       if (bytes < 1024) return bytes + ' B';
       if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
       return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
     }
 
     // ── Visitor IP logging ──
