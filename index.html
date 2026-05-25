@@ -1565,7 +1565,13 @@
     .contact-icon img {
       width: 22px;
       height: 22px;
-      display: block
+      display: block;
+      transition: filter .2s ease;
+      filter: opacity(0.5);
+    }
+
+    .contact-card:hover .contact-icon img {
+      filter: opacity(1) brightness(0) invert(1);
     }
 
     .contact-icon svg {
@@ -2464,6 +2470,13 @@
           <div>
             <div class="contact-label">Email</div>
             <div class="contact-val">sambitsatapathy22@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://tryhackme.com/p/Sambittt" target="_blank" class="contact-card">
+          <div class="contact-icon"><img src="https://cdn.simpleicons.org/tryhackme/888888" alt="TryHackMe" /></div>
+          <div>
+            <div class="contact-label">TryHackMe</div>
+            <div class="contact-val">tryhackme.com/p/Sambittt</div>
           </div>
         </a>
       </div>
