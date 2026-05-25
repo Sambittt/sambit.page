@@ -729,56 +729,250 @@
       padding: 2rem
     }
 
-    .hero-avatar {
-      width: 140px;
-      height: 140px;
+    .hero-avatar-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.8rem;
+    }
+
+    .hero-avatar-container {
+      width: 145px;
+      height: 145px;
       border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--green);
-      position: absolute;
-      bottom: calc(100% + 15px);
-      left: 50%;
-      z-index: 10;
-      pointer-events: none;
-      opacity: 0;
-      visibility: hidden;
-      transform: translate(-50%, 20px) scale(0.6) rotate(-8deg);
-      transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                  transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                  visibility 0.5s;
-    }
-
-    .hero-avatar.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translate(-50%, 0) scale(1) rotate(0deg);
-      animation: avatarPulse 3s ease-in-out infinite;
-    }
-
-    .name-trigger {
-      display: inline-block;
+      border: 2.5px solid var(--green);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
       cursor: pointer;
-      pointer-events: auto;
-      user-select: none;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.15);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  box-shadow 0.4s ease,
+                  border-color 0.4s ease;
+      z-index: 12;
+      background: #0a0f1d;
     }
 
-    .name-trigger:hover {
-      transform: scale(1.03);
+    .hero-avatar-container:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(74, 222, 128, 0.4);
+      border-color: #5eff8e;
     }
 
-    .name-trigger:active {
-      transform: scale(0.97);
+    .hero-avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.35) translateY(-2%);
+      transform-origin: center;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .name-trigger:hover .hero-name {
-      text-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+    .hero-avatar-container:hover .hero-avatar {
+      transform: scale(1.45) translateY(-2%);
     }
 
-    @keyframes avatarPulse {
-      0%,100% { box-shadow: 0 0 20px rgba(74,222,128,.2), 0 0 0 0 rgba(74,222,128,.15) }
-      50%      { box-shadow: 0 0 40px rgba(74,222,128,.35), 0 0 0 8px rgba(74,222,128,0) }
+    .ai-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: var(--green);
+      color: #000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      border: 1px solid rgba(0,0,0,0.1);
+      z-index: 13;
+      pointer-events: none;
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 8px var(--green); }
+    }
+
+    .fact-bubble {
+      position: absolute;
+      left: 100%;
+      margin-left: 20px;
+      width: 280px;
+      background: rgba(10, 15, 30, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(74, 222, 128, 0.1);
+      border-radius: 16px;
+      padding: 1rem;
+      text-align: left;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-30px) scale(0.85);
+      transform-origin: left center;
+      transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  visibility 0.4s;
+      z-index: 11;
+    }
+
+    .fact-bubble::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 8px;
+      border-style: solid;
+      border-color: transparent rgba(74, 222, 128, 0.35) transparent transparent;
+    }
+    
+    .fact-bubble::after {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 7px;
+      border-style: solid;
+      border-color: transparent rgba(10, 15, 30, 0.9) transparent transparent;
+      margin-right: -1px;
+    }
+
+    .fact-bubble.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0) scale(1);
+    }
+
+    .fact-bubble-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .fact-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(74, 222, 128, 0.25);
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .fact-icon {
+      font-size: 1rem;
+      animation: pulseFactIcon 1.5s infinite ease-in-out;
+    }
+    
+    @keyframes pulseFactIcon {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .fact-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 1px;
+      flex-grow: 1;
+    }
+
+    .fact-close {
+      cursor: pointer;
+      color: rgba(255,255,255,0.4);
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: color 0.2s ease;
+      padding: 0 4px;
+    }
+    
+    .fact-close:hover {
+      color: var(--green);
+    }
+
+    .fact-content {
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .fact-text {
+      opacity: 0;
+      transform: translateX(-10px);
+      animation: revealText 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes revealText {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .fact-loading {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.5rem 0;
+    }
+
+    .fact-loading .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: bounceDot 1.4s infinite ease-in-out both;
+    }
+
+    .fact-loading .dot:nth-child(1) { animation-delay: -0.32s; }
+    .fact-loading .dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes bounceDot {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    @media (max-width: 600px) {
+      .fact-bubble {
+        position: absolute;
+        left: 50% !important;
+        right: auto !important;
+        top: 100%;
+        margin-left: 0 !important;
+        margin-top: 15px;
+        transform: translateX(-50%) translateY(-20px) scale(0.85) !important;
+        transform-origin: top center !important;
+        width: 300px;
+        max-width: 90vw;
+      }
+      .fact-bubble::before {
+        right: auto !important;
+        left: 50% !important;
+        bottom: 100% !important;
+        top: auto !important;
+        transform: translateX(-50%) !important;
+        border-color: transparent transparent rgba(74, 222, 128, 0.35) transparent !important;
+      }
+      .fact-bubble::after {
+        right: auto !important;
+        left: 50% !important;
+        bottom: 100% !important;
+        top: auto !important;
+        transform: translateX(-50%) !important;
+        border-color: transparent transparent rgba(10, 15, 30, 0.9) transparent !important;
+        margin-top: -1px;
+      }
+      .fact-bubble.visible {
+        transform: translateX(-50%) translateY(0) scale(1) !important;
+      }
     }
 
     .hero-tag {
@@ -1905,10 +2099,31 @@
     <canvas id="matrix"></canvas>
     <div class="hero-content">
       <div class="hero-tag">Cybersecurity Portfolio</div>
-      <div class="name-trigger" id="nameTrigger">
-        <img src="profile.png" alt="Sambit K. Satapathy" class="hero-avatar" id="heroAvatar" />
-        <h1 class="hero-name">Samb!t<span class="hn-dot">.</span></h1>
+      <!-- Permanent profile picture and cyber fact container -->
+      <div class="hero-avatar-wrapper">
+        <div class="hero-avatar-container" id="heroAvatarContainer">
+          <img src="profile.png" alt="Sambit K. Satapathy" class="hero-avatar" id="heroAvatar" />
+          <div class="ai-badge">AI</div>
+        </div>
+        
+        <!-- Interactive Fact Bubble -->
+        <div class="fact-bubble" id="factBubble">
+          <div class="fact-bubble-inner">
+            <div class="fact-header">
+              <span class="fact-icon">🛡️</span>
+              <span class="fact-title">CYBER FACT AI</span>
+              <span class="fact-close" id="factClose">&times;</span>
+            </div>
+            <div class="fact-content" id="factContent">
+              <div class="fact-loading">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <h1 class="hero-name">Samb!t<span class="hn-dot">.</span></h1>
       <p class="hero-sub">K. Satapathy</p>
       <div id="typed"><span class="cursor"></span></div>
       <p class="hero-desc">Fresh BCA graduate diving deep into cybersecurity and ethical hacking.</p>
@@ -2349,22 +2564,148 @@
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
     revealEls.forEach(el => revealObs.observe(el));
 
-    // ── Avatar reveal on name hover / click ───────────────────────────────────
-    const nameTrigger = document.getElementById('nameTrigger');
-    const heroAvatar  = document.getElementById('heroAvatar');
-    let avatarPinned  = false;
+    // ── Cybersecurity Fact Reveal using AI ──────────────────────────────────
+    const avatarContainer = document.getElementById('heroAvatarContainer');
+    const factBubble      = document.getElementById('factBubble');
+    const factContent     = document.getElementById('factContent');
+    const factClose       = document.getElementById('factClose');
+    
+    let factPinned = false;
+    let isLoadingFact = false;
+    let lastFactTime = 0;
+    let activeFact = "";
 
-    if (nameTrigger && heroAvatar) {
-      nameTrigger.addEventListener('mouseenter', () => {
-        heroAvatar.classList.add('visible');
+    const factCache = [];
+
+    async function fetchCyberFact() {
+      if (isLoadingFact) return;
+      isLoadingFact = true;
+      factContent.innerHTML = `
+        <div class="fact-loading">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--green); margin-left:5px;">DECRYPTING INTEL...</span>
+        </div>
+      `;
+
+      try {
+        const apiKey = typeof window.getAiKey === 'function' ? window.getAiKey() : '';
+        if (!apiKey) throw new Error("No API Key available");
+
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            messages: [
+              { 
+                role: 'system', 
+                content: 'You are an elite cybersecurity specialist and ethical hacker. Provide one short, extremely surprising, mind-blowing, or educational "Did you know?" cybersecurity fact (maximum 2 sentences). The tone should be punchy, mysterious, and technical. Begin directly with "Did you know..." without any other filler, greetings, markdown bold, or intro.' 
+              },
+              { 
+                role: 'user', 
+                content: 'Give me one unique, mind-blowing cybersecurity fact.' 
+              }
+            ],
+            model: 'llama-3.3-70b-versatile',
+            temperature: 0.85,
+            max_tokens: 150
+          })
+        });
+
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        
+        const data = await res.json();
+        let fact = data.choices[0].message.content.trim();
+        
+        if (fact.startsWith('"') && fact.endsWith('"')) {
+          fact = fact.substring(1, fact.length - 1);
+        }
+        
+        activeFact = fact;
+        factCache.push(fact);
+        renderFact(fact);
+      } catch (err) {
+        console.error("Failed to fetch cybersecurity fact from AI:", err);
+        
+        const fallbacks = [
+          "Did you know? The first computer virus, 'Creeper', was created in 1971 as a harmless experiment. It simply displayed the message: 'I'M THE CREEPER: CATCH ME IF YOU CAN!'",
+          "Did you know? In 1999, the Melissa virus was so destructive that it forced tech giants like Microsoft, Intel, and Lockheed Martin to shut down their entire email systems to contain it.",
+          "Did you know? The most expensive cyber attack in history was the 2017 NotPetya malware. It targeted Ukraine but spread globally, causing over $10 billion in damage across shipping and healthcare.",
+          "Did you know? CAPTCHA was invented in 2003. It wasn't just built to stop bots, but was later used to help Google digitize old books that computer text recognition (OCR) couldn't read.",
+          "Did you know? Ethical hacking is one of the highest-paying digital skills. Top white-hat hackers on bug bounty platforms like HackerOne have earned over $1,000,000 in legally rewarded bounties.",
+          "Did you know? In 2010, the Stuxnet worm physically destroyed Iranian nuclear centrifuges by silently altering their rotation speeds. It is widely considered the first cyber weapon.",
+          "Did you know? Over 90% of all successful cyber attacks start with a simple phishing email. Human error remains the largest vulnerability in any secure network infrastructure."
+        ];
+        
+        let randomFact = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        while (randomFact === activeFact && fallbacks.length > 1) {
+          randomFact = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        }
+        
+        activeFact = randomFact;
+        renderFact(randomFact);
+      } finally {
+        isLoadingFact = false;
+        lastFactTime = Date.now();
+      }
+    }
+
+    function renderFact(text) {
+      factContent.innerHTML = `<div class="fact-text">${text}</div>`;
+    }
+
+    function showFactBubble() {
+      factBubble.classList.add('visible');
+      if (!activeFact || (Date.now() - lastFactTime > 15000)) {
+        fetchCyberFact();
+      }
+    }
+
+    function hideFactBubble() {
+      if (!factPinned) {
+        factBubble.classList.remove('visible');
+      }
+    }
+
+    if (avatarContainer && factBubble) {
+      avatarContainer.addEventListener('mouseenter', showFactBubble);
+      avatarContainer.addEventListener('mouseleave', hideFactBubble);
+      
+      avatarContainer.addEventListener('click', (e) => {
+        e.stopPropagation();
+        factPinned = !factPinned;
+        if (factPinned) {
+          showFactBubble();
+          avatarContainer.style.borderColor = 'var(--green)';
+          avatarContainer.style.boxShadow = '0 0 30px rgba(74, 222, 128, 0.6)';
+        } else {
+          hideFactBubble();
+          avatarContainer.style.borderColor = '';
+          avatarContainer.style.boxShadow = '';
+        }
       });
-      nameTrigger.addEventListener('mouseleave', () => {
-        if (!avatarPinned) heroAvatar.classList.remove('visible');
-      });
-      nameTrigger.addEventListener('click', () => {
-        avatarPinned = !avatarPinned;
-        // Keep visible if pinned, otherwise keep visible since mouse is still hovering
-        heroAvatar.classList.add('visible');
+
+      if (factClose) {
+        factClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          factPinned = false;
+          factBubble.classList.remove('visible');
+          avatarContainer.style.borderColor = '';
+          avatarContainer.style.boxShadow = '';
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (factPinned && !factBubble.contains(e.target) && !avatarContainer.contains(e.target)) {
+          factPinned = false;
+          factBubble.classList.remove('visible');
+          avatarContainer.style.borderColor = '';
+          avatarContainer.style.boxShadow = '';
+        }
       });
     }
   </script>
