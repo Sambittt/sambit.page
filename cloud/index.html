@@ -546,10 +546,19 @@
     });
 
     // ── Client-side Image Compression Helper ──
-    function compressImage(file, maxDimension = 2560, quality = 0.82) {
+    function compressImage(file, maxDimension = 4096, quality = 0.92) {
       return new Promise((resolve, reject) => {
-        // Skip compression for small images (< 1.0 MB) to preserve 100% original quality
-        if (file.size <= 1.0 * 1024 * 1024) {
+        // Skip compression for small images (< 1.5 MB) to preserve 100% original quality
+        if (file.size <= 1.5 * 1024 * 1024) {
+          resolve(file);
+          return;
+        }
+
+        const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
+        const isGif = file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif');
+        
+        // Never compress GIFs (preserves animations) or small PNGs
+        if (isGif) {
           resolve(file);
           return;
         }
@@ -564,7 +573,7 @@
             let width = img.width;
             let height = img.height;
 
-            // Resize if dimensions exceed threshold
+            // Resize if dimensions exceed 4K threshold
             if (width > maxDimension || height > maxDimension) {
               if (width > height) {
                 height = Math.round((height * maxDimension) / width);
@@ -573,25 +582,37 @@
                 width = Math.round((width * maxDimension) / height);
                 height = maxDimension;
               }
+            } else if (isPng) {
+              // If already under 4K dimensions, bypass canvas compression for PNGs to ensure absolute lossless screenshots/logos
+              resolve(file);
+              return;
             }
 
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
+            
+            if (isPng) {
+              ctx.clearRect(0, 0, width, height); // Preserve alpha channel
+            } else {
+              ctx.fillStyle = '#FFFFFF'; // Recover background solid white for JPEGs
+              ctx.fillRect(0, 0, width, height);
+            }
+
             ctx.drawImage(img, 0, 0, width, height);
 
+            const outputType = isPng ? 'image/png' : 'image/jpeg';
             canvas.toBlob(blob => {
               if (blob) {
-                // Wrap back in a File object to retain fileName
                 const compressedFile = new File([blob], file.name, {
-                  type: 'image/jpeg',
+                  type: outputType,
                   lastModified: Date.now()
                 });
                 resolve(compressedFile);
               } else {
-                resolve(file); // Fallback to original
+                resolve(file);
               }
-            }, 'image/jpeg', quality);
+            }, outputType, isPng ? undefined : quality);
           };
           img.onerror = () => resolve(file);
         };
