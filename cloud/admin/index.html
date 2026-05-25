@@ -577,12 +577,14 @@
     window.deleteShare = async function(docId, storagePath) {
       if (!confirm('Revoke this share? This will permanently delete the file and invalidate the link.')) return;
       try {
-        // Delete Storage binary
-        try {
-          const storageRef = ref(storage, storagePath);
-          await deleteObject(storageRef);
-        } catch (e) {
-          console.warn('Storage resource deletion bypassed:', e);
+        // Delete Storage binary (if applicable)
+        if (storagePath) {
+          try {
+            const storageRef = ref(storage, storagePath);
+            await deleteObject(storageRef);
+          } catch (e) {
+            console.warn('Storage resource deletion bypassed:', e);
+          }
         }
         // Delete metadata
         await deleteDoc(doc(db, 'cloud-shares', docId));

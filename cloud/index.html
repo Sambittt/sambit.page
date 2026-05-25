@@ -527,28 +527,46 @@
       try {
         // Generate share ID
         const shareId = generateId();
-        const storagePath = `cloud-shares/${currentUser.uid}/${shareId}/${file.name}`;
-        const storageRef = ref(storage, storagePath);
 
-        // Upload with progress
-        const uploadTask = uploadBytesResumable(storageRef, file);
+        // Create FormData for Litterbox API (24h temporary file hosting)
+        const formData = new FormData();
+        formData.append('reqtype', 'fileupload');
+        formData.append('time', '24h');
+        formData.append('fileToUpload', file);
 
-        await new Promise((resolve, reject) => {
-          uploadTask.on('state_changed',
-            snapshot => {
-              const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        // Upload using XHR to track precise upload progress
+        const downloadURL = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://litterbox.catbox.moe/resources/internals/api.php');
+
+          xhr.upload.addEventListener('progress', e => {
+            if (e.lengthComputable) {
+              const pct = (e.loaded / e.total) * 100;
               $progressBarFill.style.width = pct + '%';
               $uploadStatus.textContent = `// uploading... ${Math.round(pct)}%`;
-            },
-            error => reject(error),
-            () => resolve()
-          );
+            }
+          });
+
+          xhr.addEventListener('load', () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const res = xhr.responseText.trim();
+              if (res.startsWith('Error:')) {
+                reject(new Error(res));
+              } else {
+                resolve(res); // The public direct download URL!
+              }
+            } else {
+              reject(new Error(`Server returned status ${xhr.status}`));
+            }
+          });
+
+          xhr.addEventListener('error', () => reject(new Error('Network error during upload')));
+          xhr.send(formData);
         });
 
         $uploadStatus.textContent = '// generating share link...';
-        const downloadURL = await getDownloadURL(storageRef);
 
-        // Save metadata to Firestore
+        // Save metadata to Firestore (Firebase Storage is bypassed)
         const expiresAt = Timestamp.fromDate(new Date(Date.now() + EXPIRY_MS));
         await addDoc(collection(db, 'cloud-shares'), {
           shareId,
@@ -556,7 +574,7 @@
           fileName: file.name,
           fileSize: file.size,
           fileType: file.type || 'application/octet-stream',
-          storagePath,
+          storagePath: '', // No Firebase Storage binary
           downloadURL,
           expiresAt,
           createdAt: serverTimestamp()
@@ -655,12 +673,14 @@
     window._deleteShare = async function(docId, storagePath) {
       if (!confirm('Delete this share? The file will be permanently removed.')) return;
       try {
-        // Delete from Storage
-        try {
-          const storageRef = ref(storage, storagePath);
-          await deleteObject(storageRef);
-        } catch (e) {
-          console.warn('Storage delete failed (may already be gone):', e);
+        // Delete from Storage (if applicable)
+        if (storagePath) {
+          try {
+            const storageRef = ref(storage, storagePath);
+            await deleteObject(storageRef);
+          } catch (e) {
+            console.warn('Storage delete failed (may already be gone):', e);
+          }
         }
         // Delete from Firestore
         await deleteDoc(doc(db, 'cloud-shares', docId));
