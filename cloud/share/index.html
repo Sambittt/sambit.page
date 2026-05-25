@@ -371,6 +371,20 @@
       text-align: center;
     }
 
+    .fullscreen-thumbnails {
+      position: absolute; bottom: 5rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: .5rem; z-index: 510;
+      max-width: 90%; overflow-x: auto; padding: .5rem;
+      scrollbar-width: none;
+    }
+    .fullscreen-thumbnails::-webkit-scrollbar { display: none }
+    .fs-thumb {
+      width: 44px; height: 44px; border: 1px solid var(--border);
+      cursor: pointer; opacity: .4; transition: all .2s;
+      object-fit: cover; background: #000;
+    }
+    .fs-thumb:hover, .fs-thumb.active { opacity: 1; border-color: var(--green); transform: scale(1.08) }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       .top-bar { padding: .5rem 1rem }
@@ -485,6 +499,7 @@
     <button class="nav-btn prev-btn" id="fs-prev-btn" onclick="navigateFullscreen(-1, event)">‹</button>
     <img id="fullscreen-img" alt="Full size preview" onclick="event.stopPropagation()"/>
     <button class="nav-btn next-btn" id="fs-next-btn" onclick="navigateFullscreen(1, event)">›</button>
+    <div class="fullscreen-thumbnails" id="fs-thumbnails" onclick="event.stopPropagation()"></div>
     <div class="fullscreen-counter" id="fs-counter"></div>
   </div>
 
@@ -736,6 +751,9 @@
       if (event) event.stopPropagation();
       document.getElementById('fullscreen-overlay').classList.remove('open');
       document.body.style.overflow = '';
+      
+      // Clear thumbnails innerHTML so they re-render correctly next time
+      document.getElementById('fs-thumbnails').innerHTML = '';
     };
 
     window.navigateFullscreen = function(direction, event) {
@@ -760,6 +778,7 @@
       const $fsCounter = document.getElementById('fs-counter');
       const $prevBtn = document.getElementById('fs-prev-btn');
       const $nextBtn = document.getElementById('fs-next-btn');
+      const $fsThumbs = document.getElementById('fs-thumbnails');
 
       if (shareData.files && shareData.files.length > 1) {
         const file = shareData.files[currentFullscreenIndex];
@@ -768,11 +787,30 @@
         $fsCounter.textContent = `${currentFullscreenIndex + 1} / ${shareData.files.length} - ${file.fileName}`;
         $prevBtn.style.display = 'block';
         $nextBtn.style.display = 'block';
+        $fsThumbs.style.display = 'flex';
+
+        // Render thumbnails if not already rendered
+        if ($fsThumbs.children.length === 0) {
+          $fsThumbs.innerHTML = shareData.files.map((f, idx) => `
+            <img class="fs-thumb" src="${f.downloadURL}" onclick="openFullscreenAtIndex(${idx})" data-idx="${idx}"/>
+          `).join('');
+        }
+
+        // Highlight active thumbnail and scroll into view smoothly
+        Array.from($fsThumbs.children).forEach((thumb, idx) => {
+          if (idx === currentFullscreenIndex) {
+            thumb.classList.add('active');
+            thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          } else {
+            thumb.classList.remove('active');
+          }
+        });
       } else {
         $fsImg.src = shareData.downloadURL;
         $fsCounter.style.display = 'none';
         $prevBtn.style.display = 'none';
         $nextBtn.style.display = 'none';
+        $fsThumbs.style.display = 'none';
       }
     }
 
