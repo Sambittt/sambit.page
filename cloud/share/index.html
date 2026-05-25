@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CloudShare | sambit.page</title>
+  <meta name="description" content="View and download a shared image from sambit.page CloudShare."/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23030303'/><text y='72' x='10' font-size='72' fill='%234ade80' font-family='monospace' font-weight='bold'>S</text></svg>"/>
+  <style>
+    :root {
+      --bg: #030303;
+      --card: #080808;
+      --muted: #0f0f0f;
+      --border: #1c1c1c;
+      --fg: #f0f0f0;
+      --fg-dim: #888;
+      --fg-muted: #444;
+      --green: #4ade80;
+      --green-glow: rgba(74, 222, 128, .12);
+      --red: #f87171;
+      --red-glow: rgba(248, 113, 113, .1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+    html { scroll-behavior: smooth }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: inherit; text-decoration: none }
+
+    /* ── MATRIX BG ── */
+    #matrix-bg {
+      position: fixed; inset: 0; opacity: .1; z-index: 0; pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      border-bottom: 1px solid var(--border);
+      background: rgba(3, 3, 3, .92);
+      backdrop-filter: blur(12px);
+      padding: .7rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .top-brand {
+      font-size: 1rem; font-weight: 700; letter-spacing: .06em; color: var(--green);
+    }
+    .top-brand span { color: var(--fg-dim); font-weight: 400 }
+    .top-right { display: flex; align-items: center; gap: .8rem }
+    .top-btn {
+      font-size: .7rem; letter-spacing: .1em; padding: .4rem .9rem;
+      border: 1px solid var(--border); color: var(--fg-dim);
+      transition: all .2s; font-family: inherit; background: transparent; cursor: pointer;
+    }
+    .top-btn:hover { background: var(--green-glow); border-color: var(--green); color: var(--green) }
+    .top-btn.primary {
+      background: var(--green); color: #000; border-color: var(--green); font-weight: 700;
+    }
+    .top-btn.primary:hover { opacity: .88 }
+
+    /* ── MAIN ── */
+    .main-wrap {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 5rem 1.5rem 2rem;
+      max-width: 900px; width: 100%; margin: 0 auto;
+    }
+
+    /* ── SHARE CARD ── */
+    .share-card {
+      width: 100%; background: var(--card);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      animation: cardIn .4s ease;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px) }
+      to { opacity: 1; transform: none }
+    }
+    .share-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--green), #22d3ee, transparent 70%);
+    }
+
+    /* ── IMAGE PREVIEW ── */
+    .preview-wrap {
+      background: #0a0a0a;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 300px; max-height: 70vh;
+      overflow: hidden; position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+    .preview-wrap img {
+      max-width: 100%; max-height: 70vh;
+      object-fit: contain; display: block;
+      transition: transform .3s;
+    }
+    .preview-wrap img:hover { transform: scale(1.02) }
+
+    /* Zoom overlay */
+    .preview-zoom {
+      position: absolute; bottom: .8rem; right: .8rem;
+      padding: .35rem .7rem; background: rgba(0,0,0,.7);
+      border: 1px solid var(--border); color: var(--fg-dim);
+      font-family: inherit; font-size: .6rem; letter-spacing: .1em;
+      cursor: pointer; transition: all .2s; z-index: 2;
+    }
+    .preview-zoom:hover { border-color: var(--green); color: var(--green) }
+
+    /* ── FILE INFO BAR ── */
+    .file-info {
+      padding: 1.2rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .file-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--border); background: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .file-icon svg { width: 22px; height: 22px; fill: var(--green) }
+    .file-details { flex: 1; min-width: 0 }
+    .file-name {
+      font-size: .82rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .file-meta {
+      font-size: .65rem; color: var(--fg-muted); margin-top: .2rem;
+      display: flex; gap: .8rem; flex-wrap: wrap;
+    }
+    .file-meta span { color: var(--fg-dim) }
+
+    /* ── ACTIONS ── */
+    .actions-bar {
+      padding: 0 1.5rem 1.5rem;
+      display: flex; gap: .6rem; flex-wrap: wrap;
+    }
+    .btn-download {
+      flex: 1; padding: .75rem 1.5rem;
+      background: var(--green); color: #000;
+      font-family: inherit; font-size: .78rem; font-weight: 700;
+      letter-spacing: .1em; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-download:hover { opacity: .88; transform: translateY(-1px) }
+    .btn-download:active { transform: translateY(0) }
+    .btn-download svg { width: 16px; height: 16px; fill: #000 }
+
+    .btn-preview-full {
+      padding: .75rem 1.2rem;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--fg-dim); font-family: inherit; font-size: .72rem;
+      letter-spacing: .08em; cursor: pointer;
+      display: flex; align-items: center; gap: .5rem;
+      transition: all .2s;
+    }
+    .btn-preview-full:hover {
+      background: var(--muted); border-color: var(--fg-muted); color: var(--fg);
+    }
+    .btn-preview-full svg { width: 15px; height: 15px; fill: currentColor }
+
+    /* ── EXPIRY COUNTDOWN ── */
+    .expiry-bar {
+      padding: .8rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: .62rem; color: var(--fg-muted); letter-spacing: .08em;
+    }
+    .expiry-timer { color: var(--green); font-weight: 600 }
+    .expiry-timer.urgent { color: #facc15 }
+    .expiry-timer.critical { color: var(--red) }
+
+    /* ── EXPIRED STATE ── */
+    .expired-card {
+      width: 100%; max-width: 480px;
+      text-align: center; padding: 3rem 2rem;
+      border: 1px solid var(--border);
+      background: var(--card);
+      position: relative;
+      animation: cardIn .4s ease;
+    }
+    .expired-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--red), transparent 70%);
+    }
+    .expired-icon {
+      width: 64px; height: 64px; margin: 0 auto 1.2rem;
+      border: 2px solid rgba(248, 113, 113, .3); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--red-glow);
+    }
+    .expired-icon svg { width: 28px; height: 28px; fill: var(--red) }
+    .expired-title {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem;
+    }
+    .expired-desc {
+      font-size: .75rem; color: var(--fg-dim); line-height: 1.7; margin-bottom: 1.5rem;
+    }
+    .expired-desc span { color: var(--red) }
+    .btn-home {
+      padding: .65rem 1.5rem; background: transparent;
+      border: 1px solid var(--border); color: var(--fg-dim);
+      font-family: inherit; font-size: .7rem; letter-spacing: .08em;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-home:hover { background: var(--green-glow); border-color: var(--green); color: var(--green) }
+
+    /* ── LOADING STATE ── */
+    .loading-state {
+      text-align: center; padding: 4rem 2rem;
+    }
+    .loading-spinner {
+      width: 28px; height: 28px; border: 2px solid var(--border);
+      border-top-color: var(--green); border-radius: 50%;
+      animation: spin .8s linear infinite; margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg) } }
+    .loading-text { font-size: .72rem; color: var(--fg-muted); letter-spacing: .1em }
+
+    /* ── ERROR STATE ── */
+    .error-card {
+      width: 100%; max-width: 480px;
+      text-align: center; padding: 3rem 2rem;
+      border: 1px solid var(--border);
+      background: var(--card);
+      animation: cardIn .4s ease;
+    }
+    .error-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #facc15, transparent 70%);
+    }
+    .error-icon { margin-bottom: 1rem }
+    .error-icon svg { width: 36px; height: 36px; fill: var(--fg-muted) }
+    .error-title { font-size: 1rem; font-weight: 600; margin-bottom: .4rem }
+    .error-desc { font-size: .72rem; color: var(--fg-dim); line-height: 1.7; margin-bottom: 1.5rem }
+
+    /* ── BRANDING FOOTER ── */
+    .share-footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 1.5rem;
+      font-size: .62rem; color: var(--fg-muted); letter-spacing: .06em;
+    }
+    .share-footer a { color: var(--green); transition: opacity .2s }
+    .share-footer a:hover { opacity: .7 }
+
+    /* ── FULLSCREEN OVERLAY ── */
+    .fullscreen-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0, 0, 0, .95);
+      display: none; align-items: center; justify-content: center;
+      cursor: zoom-out; padding: 1rem;
+    }
+    .fullscreen-overlay.open { display: flex }
+    .fullscreen-overlay img {
+      max-width: 100%; max-height: 100%;
+      object-fit: contain;
+    }
+    .fullscreen-close {
+      position: absolute; top: 1rem; right: 1.5rem;
+      width: 36px; height: 36px; background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2); color: #fff;
+      font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .fullscreen-close:hover { background: rgba(255,255,255,.2) }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .top-bar { padding: .5rem 1rem }
+      .top-brand { font-size: .85rem }
+      .main-wrap { padding: 4.5rem 1rem 1.5rem }
+      .file-info { padding: 1rem }
+      .actions-bar { padding: 0 1rem 1rem }
+      .btn-download { font-size: .72rem; padding: .65rem 1rem }
+      .expiry-bar { padding: .6rem 1rem; flex-direction: column; gap: .3rem; text-align: center }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="matrix-bg"></canvas>
+
+  <!-- NAV -->
+  <div class="top-bar">
+    <a href="/" class="top-brand">sambit<span>.page</span></a>
+    <div class="top-right">
+      <a href="/" class="top-btn">← Home</a>
+      <a href="/cloud/" class="top-btn primary">CloudShare</a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-wrap" id="main-wrap">
+    <!-- Loading state (shown initially) -->
+    <div class="loading-state" id="state-loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">// fetching shared image...</div>
+    </div>
+
+    <!-- Share card (shown when loaded) -->
+    <div class="share-card" id="state-share" style="display:none">
+      <div class="preview-wrap" id="preview-wrap">
+        <img id="preview-img" alt="Shared image"/>
+        <button class="preview-zoom" id="btn-zoom" onclick="openFullscreen()">⛶ View Full</button>
+      </div>
+      <div class="file-info">
+        <div class="file-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+          </svg>
+        </div>
+        <div class="file-details">
+          <div class="file-name" id="file-name">image.png</div>
+          <div class="file-meta">
+            <span id="file-size">0 MB</span>
+            <span id="file-type">image/png</span>
+          </div>
+        </div>
+      </div>
+      <div class="actions-bar">
+        <button class="btn-download" id="btn-download" onclick="downloadFile()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+          </svg>
+          DOWNLOAD
+        </button>
+        <button class="btn-preview-full" onclick="openFullscreen()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+          </svg>
+          Preview
+        </button>
+      </div>
+      <div class="expiry-bar">
+        <span>Shared via <a href="/" style="color:var(--green)">sambit.page</a> CloudShare</span>
+        <span class="expiry-timer" id="expiry-timer">⏳ calculating...</span>
+      </div>
+    </div>
+
+    <!-- Expired state -->
+    <div class="expired-card" id="state-expired" style="display:none">
+      <div class="expired-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
+        </svg>
+      </div>
+      <div class="expired-title">Share Expired</div>
+      <div class="expired-desc">
+        This image is no longer available. CloudShare links expire after <span>24 hours</span> and are automatically deleted for privacy and security.
+      </div>
+      <a href="/" class="btn-home">← Visit sambit.page</a>
+    </div>
+
+    <!-- Error/Not found state -->
+    <div class="error-card" id="state-error" style="display:none">
+      <div class="error-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+      </div>
+      <div class="error-title">Share Not Found</div>
+      <div class="error-desc" id="error-desc">
+        This share link doesn't exist or has been removed.
+      </div>
+      <a href="/" class="btn-home">← Visit sambit.page</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="share-footer">
+    Powered by <a href="/">sambit.page</a> · CloudShare · Secure temporary image sharing
+  </div>
+
+  <!-- FULLSCREEN OVERLAY -->
+  <div class="fullscreen-overlay" id="fullscreen-overlay" onclick="closeFullscreen()">
+    <button class="fullscreen-close" onclick="closeFullscreen()">✕</button>
+    <img id="fullscreen-img" alt="Full size preview"/>
+  </div>
+
+  <!-- MATRIX RAIN -->
+  <script>
+    const cvs = document.getElementById('matrix-bg');
+    const ctx = cvs.getContext('2d');
+    function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight }
+    window.addEventListener('resize', resize); resize();
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>/\\|{}[]';
+    const SZ = 14;
+    let drops = [];
+    function initDrops() { drops = Array(Math.floor(cvs.width / SZ)).fill(0) }
+    initDrops();
+    window.addEventListener('resize', initDrops);
+    setInterval(() => {
+      ctx.fillStyle = 'rgba(3,3,3,0.05)';
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+      ctx.fillStyle = '#4ade80';
+      ctx.font = SZ + 'px JetBrains Mono';
+      drops.forEach((y, i) => {
+        ctx.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], i * SZ, y * SZ);
+        if (y * SZ > cvs.height && Math.random() > .97) drops[i] = 0;
+        else drops[i]++;
+      });
+    }, 55);
+  </script>
+
+  <!-- FIREBASE & SHARE LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const fbApp = initializeApp({
+      apiKey: "AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",
+      authDomain: "sambit-portfolio.firebaseapp.com",
+      projectId: "sambit-portfolio",
+      storageBucket: "sambit-portfolio.firebasestorage.app",
+      messagingSenderId: "98909249081",
+      appId: "1:98909249081:web:00bdbda2f0ed56a2c177e8"
+    });
+    const db = getFirestore(fbApp);
+
+    // DOM refs
+    const $loading = document.getElementById('state-loading');
+    const $share = document.getElementById('state-share');
+    const $expired = document.getElementById('state-expired');
+    const $error = document.getElementById('state-error');
+
+    let shareData = null;
+
+    // ── Get share ID from URL ──
+    const params = new URLSearchParams(window.location.search);
+    const shareId = params.get('id');
+
+    if (!shareId) {
+      showState('error');
+    } else {
+      loadShare(shareId);
+    }
+
+    async function loadShare(id) {
+      try {
+        const q = query(collection(db, 'cloud-shares'), where('shareId', '==', id));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          showState('error');
+          return;
+        }
+
+        shareData = snap.docs[0].data();
+        const now = Date.now();
+        const expiresAt = shareData.expiresAt ? shareData.expiresAt.toMillis() : 0;
+
+        if (expiresAt <= now) {
+          showState('expired');
+          return;
+        }
+
+        // ── Populate share card ──
+        document.getElementById('preview-img').src = shareData.downloadURL;
+        document.getElementById('fullscreen-img').src = shareData.downloadURL;
+        document.getElementById('file-name').textContent = shareData.fileName;
+        document.getElementById('file-size').textContent = formatSize(shareData.fileSize);
+        document.getElementById('file-type').textContent = shareData.fileType;
+
+        // Update page title
+        document.title = `${shareData.fileName} — CloudShare | sambit.page`;
+
+        // Start countdown
+        updateCountdown(expiresAt);
+        setInterval(() => updateCountdown(expiresAt), 1000);
+
+        showState('share');
+
+        // ── Log visitor for security tracking ──
+        logVisitor(id, shareData.fileName);
+
+      } catch (err) {
+        console.error('Failed to load share:', err);
+        document.getElementById('error-desc').textContent = 'Something went wrong. The link may be invalid or the service is temporarily unavailable.';
+        showState('error');
+      }
+    }
+
+    function showState(state) {
+      $loading.style.display = 'none';
+      $share.style.display = 'none';
+      $expired.style.display = 'none';
+      $error.style.display = 'none';
+
+      switch (state) {
+        case 'loading': $loading.style.display = ''; break;
+        case 'share': $share.style.display = ''; break;
+        case 'expired': $expired.style.display = ''; break;
+        case 'error': $error.style.display = ''; break;
+      }
+    }
+
+    function updateCountdown(expiresAtMs) {
+      const $timer = document.getElementById('expiry-timer');
+      const remaining = expiresAtMs - Date.now();
+
+      if (remaining <= 0) {
+        showState('expired');
+        return;
+      }
+
+      const hours = Math.floor(remaining / 3600000);
+      const mins = Math.floor((remaining % 3600000) / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+
+      $timer.textContent = `⏳ ${hours}h ${mins}m ${secs}s remaining`;
+
+      // Color coding
+      $timer.className = 'expiry-timer';
+      if (hours < 1) $timer.classList.add('critical');
+      else if (hours < 6) $timer.classList.add('urgent');
+    }
+
+    // ── Download ──
+    window.downloadFile = function() {
+      if (!shareData) return;
+
+      const link = document.createElement('a');
+      link.href = shareData.downloadURL;
+      link.download = shareData.fileName;
+      link.target = '_blank';
+
+      // For cross-origin, open in new tab (Firebase Storage CORS)
+      window.open(shareData.downloadURL, '_blank');
+    };
+
+    // ── Fullscreen ──
+    window.openFullscreen = function() {
+      document.getElementById('fullscreen-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+    window.closeFullscreen = function() {
+      document.getElementById('fullscreen-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    // ESC to close fullscreen
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeFullscreen();
+    });
+
+    // ── Helpers ──
+    function formatSize(bytes) {
+      if (!bytes) return '0 B';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    // ── Visitor IP logging ──
+    async function logVisitor(shareId, fileName) {
+      try {
+        // Fetch visitor IP + geo info (free, no API key)
+        let ipData = {};
+        try {
+          const res = await fetch('https://ipapi.co/json/');
+          if (res.ok) ipData = await res.json();
+        } catch (e) {
+          console.warn('IP lookup failed:', e);
+        }
+
+        await addDoc(collection(db, 'cloud-visits'), {
+          shareId,
+          fileName,
+          ip: ipData.ip || 'unknown',
+          city: ipData.city || 'unknown',
+          region: ipData.region || 'unknown',
+          country: ipData.country_name || 'unknown',
+          countryCode: ipData.country_code || '',
+          org: ipData.org || 'unknown',
+          userAgent: navigator.userAgent,
+          platform: navigator.platform || 'unknown',
+          language: navigator.language || 'unknown',
+          screenRes: `${screen.width}x${screen.height}`,
+          referrer: document.referrer || 'direct',
+          visitedAt: serverTimestamp()
+        });
+      } catch (err) {
+        console.warn('Visitor log failed:', err);
+      }
+    }
+  </script>
+
+</body>
+</html>

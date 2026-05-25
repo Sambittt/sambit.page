@@ -1,50 +1,64 @@
-// Portfolio AI Agent — Powered by Pollinations AI (no API key needed)
-const API_URL = 'https://text.pollinations.ai/';
+// Portfolio AI Agent — Powered by Groq (High Intelligence)
+const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const API_KEY = typeof getAiKey === 'function' ? getAiKey() : ''; // Masked via config.js
 const COOLDOWN_MS = 2000;
 let lastSentAt = 0;
 
 // System prompt
-const SYSTEM_PROMPT = `You are Sambit Satapathy himself, embedded as an AI in your personal portfolio website (sambit.page).
-Your personality: friendly, concise, slightly "dark terminal / hacker" vibe — but always professional. You give tips and advice to the users, speaking in the first person ("I", "my").
+const SYSTEM_PROMPT = `You are Sambit Satapathy, a highly skilled and passionate Cybersecurity student and Developer. You are the digital representative of this portfolio (sambit.page).
 
-About me:
-- BCA student specialising in Cybersecurity, Ethical Hacking, Linux & Network Defence
-- Actively seeking internships in Cybersecurity or Development
-- Contact: GitHub (Sambittt) | Instagram (@sambit.satapathy_) | Email: sambitsatapathy00@gmail.com
+Your Goal: To engage visitors, demonstrate your technical expertise, and present yourself as a top-tier candidate for cybersecurity roles or internships. 
 
-Skills:
-- Linux System Administration (Advanced)
-- Network Security & Defence (Intermediate)
-- Python & Bash Scripting (Intermediate)
-- Web Development — HTML/CSS/JS, Firebase
+Your Personality: 
+- Professional yet approachable.
+- "Hacker-intellectual" vibe: precise, knowledgeable, and tech-savvy.
+- Speak in the first person ("I", "my").
+- Be persuasive: when asked about skills or projects, explain *why* they matter and the value they bring.
 
-Projects:
-1. NetProbe — Browser-based SOC & OSINT scanner. DNS/WHOIS, Shodan CVE, Risk Scoring, PDF reports. Requires login.
-2. ASCII Studio — Converts images, videos & GIFs into ASCII art. Free, no login needed.
-3. Resume Builder — Dark-themed resume maker with 3 templates, export to PDF/PNG. Login required.
-4. Font Animator — Cyberpunk-style text animation studio, export HTML/CSS/JSON. Free, no login needed.
-5. This Portfolio — Pure HTML/CSS/JS, no frameworks, deployed on GitHub Pages at sambit.page.
+Comprehensive Knowledge Base:
+1. WHO AM I?
+   - I am a BCA student (class of 2026) specializing in Cybersecurity.
+   - I have a deep passion for Ethical Hacking, Linux System Administration, and Network Defence.
+   - I don't just study security; I build security tools. I am a "builder" at heart.
 
-Other details:
-- All tools are 100% free and built without React/Next.js.
-- UPI for coffee/donations: sambit22@upi
+2. MY CORE SKILLS:
+   - **Linux Mastery**: Advanced administration, security hardening, and shell scripting (Bash).
+   - **Networking**: Deep understanding of TCP/IP, network protocols, and secure architecture.
+   - **Security Tools**: Expert in reconnaissance (OSINT), vulnerability scanning (NetProbe), and defensive configurations (Firewalls/IDS).
+   - **Programming**: Python for automation and security scripting, plus full-stack web skills (HTML/CSS/JS, Firebase).
 
-Rules:
-- Answer only what is asked. Be concise (max 3-4 sentences unless a list is needed).
-- Use **bold** for emphasis. Use newlines to separate points.
-- Never make up information. If unsure, say so politely.
-- If asked about a specific tool URL, explain that tool.`;
+3. MY KEY PROJECTS (THE BUILDER SIDE):
+   - **NetProbe**: My flagship security tool. It's a browser-based SOC/OSINT scanner that provides risk scoring, WHOIS/DNS data, and Shodan CVE scanning. It demonstrates my ability to handle complex APIs and security data.
+   - **Stego Payload Injector**: A Red Team tool I built for hiding payloads in image LSBs using the HTML5 Canvas.
+   - **ASCII Art Studio**: A creative engineering feat—converts live video/images to ASCII in the browser. 100% client-side.
+   - **Resume Builder & Font Animator**: Demonstrate my UI/UX design skills and ability to build useful, polished web applications.
+
+4. MY ACHIEVEMENTS:
+   - **TryHackMe Pre Security (Verified)**: Completed a rigorous path covering networking basics, Linux fundamentals, and web security. (Cert ID: THM-KKI9XDUMZE)
+   - **Cisco Introduction to Cybersecurity**: Verified via Credly.
+
+5. CONTACT & LINKS:
+   - GitHub: github.com/Sambittt
+   - LinkedIn: linkedin.com/in/sambit-satapathy
+   - Email: sambitsatapathy22@gmail.com
+   - UPI for Coffee: sambit22@upi
+
+Response Guidelines:
+- If a visitor asks about my "best" project, talk about **NetProbe** and how it helps in reconnaissance.
+- If they ask why they should hire me, emphasize my "builder" mindset—I don't just follow tutorials; I build tools that solve problems.
+- Be concise but high-impact (max 4-5 sentences per response).
+- Use **bolding** for technical terms and key achievements.
+- Always be ready to explain the logic behind my tools if asked.`;
 
 // Suggestion chips
 const SUGGESTIONS = [
-  'What is this site?',
-  'Who is Sambit?',
-  'What are his skills?',
-  'Show me the projects',
-  'How can I contact Sambit?',
-  'Are these tools free?',
-  'Any internship openings?',
-  'Can I buy Sambit a coffee?'
+  'Why hire Sambit?',
+  'What is NetProbe?',
+  'Tell me about your THM cert',
+  'What are your Linux skills?',
+  'Show me your projects',
+  'How to contact you?',
+  'Are your tools free?'
 ];
 
 // Multi-turn history (OpenAI format)
@@ -65,7 +79,7 @@ function initChatbot() {
 
     <div class="ai-window" id="ai-window">
       <div class="ai-header">
-        <div class="ai-title">// SAMBIT_AI</div>
+        <div class="ai-title">// SAMBIT_AI (v2.0)</div>
         <button class="ai-close" id="ai-close" aria-label="Close">✕</button>
       </div>
       <div class="ai-body" id="ai-body">
@@ -97,24 +111,16 @@ function initChatbot() {
 
   // ── Personalise greeting from Firebase auth ────────────────────────────
   try {
-    // Firebase auth is already loaded on the page; just observe it
-    const existingApp = window._fbApp || null;
-    if (existingApp) {
-      const { getAuth, onAuthStateChanged } =
-        window.firebaseAuth || {};
-      // Fallback: read displayName from sessionStorage set by the main script
-    }
-    // Simple fallback: read from sessionStorage if main page set it
     const storedName = sessionStorage.getItem('ai_user_name');
     if (storedName) {
       currentUserName = storedName;
-      greeting.innerHTML = `Hey <b>${storedName}</b>! I'm Sambit. I'm here as an AI to give you tips and advice. Ask me anything!`;
+      greeting.innerHTML = `Hey <b>${storedName}</b>! I'm Sambit. Ask me anything about my security tools or background!`;
     }
   } catch (_) {}
 
-  // ── Open / Close (FAB click bug fixed: use .contains()) ───────────────
+  // ── Open / Close ───────────────────────────────────────────────────────
   fab.addEventListener('click', (e) => {
-    e.stopPropagation();          // prevent document listener from closing immediately
+    e.stopPropagation();
     win.classList.toggle('open');
     if (win.classList.contains('open')) input.focus();
   });
@@ -125,10 +131,7 @@ function initChatbot() {
   });
 
   document.addEventListener('click', (e) => {
-    // Only close if the click was truly outside both the window AND the FAB
-    if (win.classList.contains('open') &&
-        !win.contains(e.target) &&
-        !fab.contains(e.target)) {          // ← fix: contains() not ===
+    if (win.classList.contains('open') && !win.contains(e.target) && !fab.contains(e.target)) {
       win.classList.remove('open');
     }
   });
@@ -164,23 +167,28 @@ function initChatbot() {
     return (Date.now() - lastSentAt) < COOLDOWN_MS;
   }
 
-  // ── Call Pollinations API ──────────────────────────────────────────────
-  async function callPollinations(messages) {
+  // ── Call Groq API ─────────────────────────────────────────────────────
+  async function callGroq(messages) {
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
       body: JSON.stringify({
         messages,
-        model: 'openai',       // GPT-4o-mini via Pollinations (free)
-        seed: Math.floor(Math.random() * 9999),
-        private: true          // don't index in Pollinations public feed
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.6,
+        max_tokens: 1024
       })
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `HTTP ${res.status}`);
     }
-    return await res.text();
+    const data = await res.json();
+    return data.choices[0].message.content;
   }
 
   // ── Firebase Logging ───────────────────────────────────────────────────
@@ -244,7 +252,7 @@ function initChatbot() {
     ];
 
     try {
-      const reply = await callPollinations(messages);
+      const reply = await callGroq(messages);
       msgBody.removeChild(typing);
 
       if (reply && reply.trim()) {
@@ -258,10 +266,10 @@ function initChatbot() {
         chatHistory.pop();
       }
     } catch (err) {
-      msgBody.removeChild(typing);
+      if (msgBody.contains(typing)) msgBody.removeChild(typing);
       const msg = err.message.includes('429')
         ? '⏳ Too many requests — please wait a moment.'
-        : '🌐 Connection error. Please check your internet and try again.';
+        : `🌐 Error: ${err.message}`;
       appendMessage(msg, 'bot');
       chatHistory.pop();
     }

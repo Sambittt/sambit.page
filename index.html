@@ -736,10 +736,16 @@
       object-fit: cover;
       margin: 0 auto 1.5rem;
       border: 2px solid var(--green);
-      box-shadow: 0 0 30px rgba(74, 222, 128, .15);
+      box-shadow: 0 0 0 0 rgba(74,222,128,.4);
       display: block;
       position: relative;
-      z-index: 3
+      z-index: 3;
+      animation: avatarPulse 3s ease-in-out infinite
+    }
+
+    @keyframes avatarPulse {
+      0%,100% { box-shadow: 0 0 20px rgba(74,222,128,.2), 0 0 0 0 rgba(74,222,128,.15) }
+      50%      { box-shadow: 0 0 40px rgba(74,222,128,.35), 0 0 0 8px rgba(74,222,128,0) }
     }
 
     .hero-tag {
@@ -856,16 +862,18 @@
       color: #000;
       font-family: inherit;
       font-size: .78rem;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: .08em;
       border: none;
       cursor: pointer;
-      transition: opacity .2s, transform .15s
+      transition: opacity .2s, transform .2s, box-shadow .2s;
+      box-shadow: 0 0 0 0 rgba(74,222,128,0)
     }
 
     .btn-pri:hover {
-      opacity: .88;
-      transform: translateY(-1px)
+      opacity: .92;
+      transform: translateY(-2px);
+      box-shadow: 0 0 18px rgba(74,222,128,.45), 0 4px 20px rgba(74,222,128,.2)
     }
 
     .btn-sec {
@@ -878,12 +886,13 @@
       letter-spacing: .08em;
       border: 1px solid var(--border);
       cursor: pointer;
-      transition: border-color .2s, background .2s
+      transition: border-color .25s, background .25s, transform .2s
     }
 
     .btn-sec:hover {
       border-color: var(--green);
-      background: var(--green-glow)
+      background: var(--green-glow);
+      transform: translateY(-2px)
     }
 
     .scroll-hint {
@@ -1667,6 +1676,42 @@
         background: rgba(74, 222, 128, .08)
       }
     }
+
+    /* ── Scroll-reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none
+    }
+
+    /* ── Nav scrolled ── */
+    nav.scrolled {
+      background: rgba(3,3,3,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: rgba(74,222,128,.12)
+    }
+
+    /* ── Skill level badge ── */
+    .skill-level {
+      display: inline-block;
+      font-size: .58rem;
+      letter-spacing: .1em;
+      color: #000;
+      background: var(--green);
+      padding: .1rem .45rem;
+      margin-bottom: .5rem;
+      font-weight: 700
+    }
+    .skill-level.dim {
+      background: transparent;
+      color: var(--green);
+      border: 1px solid rgba(74,222,128,.35)
+    }
   </style>
 
 </head>
@@ -1685,6 +1730,7 @@
     </div>
     <!-- Mobile tool pills: visible only on mobile, sit between brand and hamburger -->
     <div class="nav-tools-mob">
+      <a href="/cloud/" class="nav-tool-mob">Cloud ↗</a>
       <a href="/netprobe/" class="nav-tool-mob">NetProbe ↗</a>
       <a href="/stego-payload/" class="nav-tool-mob">Stego ↗</a>
       <a href="/ascii-converter/" class="nav-tool-mob">ASCII ↗</a>
@@ -1692,7 +1738,8 @@
       <a href="/resume-builder/" class="nav-tool-mob">Resume ↗</a>
     </div>
     <div class="nav-tools-row">
-      <a href="/netprobe/" class="nav-tool">NetProbe →</a>
+      <a href="/cloud/" class="nav-tool" style="border-color:rgba(74,222,128,.4)">☁ Cloud →</a>
+      <a href="/netprobe/" class="nav-tool" style="margin-left:.4rem">NetProbe →</a>
       <a href="/stego-payload/" class="nav-tool" style="margin-left:.4rem">Stego Injector →</a>
       <a href="/ascii-converter/" class="nav-tool" style="margin-left:.4rem">ASCII Studio →</a>
       <a href="/font-animator/" class="nav-tool" style="margin-left:.4rem">Font Animator →</a>
@@ -1717,6 +1764,12 @@
           <div class="avatar-drop-email" id="drop-email">—</div>
         </div>
         <div class="avatar-drop-divider"></div>
+        <a href="/cloud/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+          </svg>
+          CloudShare
+        </a>
         <a href="/resume-builder/" class="avatar-drop-item">
           <svg viewBox="0 0 24 24">
             <path
@@ -1751,6 +1804,7 @@
     <!-- Tools -->
     <div class="mob-tool-label">— Tools —</div>
     <div class="mob-tools-featured">
+      <a href="/cloud/" class="tool-link" onclick="closeMob()" style="border-color:rgba(74,222,128,.5);background:rgba(74,222,128,.1)">☁ CloudShare ↗</a>
       <a href="/netprobe/" class="tool-link" onclick="closeMob()">NetProbe ↗</a>
       <a href="/stego-payload/" class="tool-link" onclick="closeMob()">Stego Injector ↗</a>
       <a href="/ascii-converter/" class="tool-link" onclick="closeMob()">ASCII Studio ↗</a>
@@ -1781,6 +1835,10 @@
         </div>
       </div>
       <div class="welcome-tools">
+        <a href="/cloud/" class="welcome-tool" style="border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.06)">
+          <span class="welcome-tool-name">☁ CloudShare <span style="font-size:10px;color:var(--green)">[NEW]</span></span>
+          <span class="welcome-tool-badge">Live ↗</span>
+        </a>
         <a href="/netprobe/" class="welcome-tool">
           <span class="welcome-tool-name">NetProbe <span style="font-size:10px;color:var(--green)">[AUTH
               REQ]</span></span>
@@ -2051,6 +2109,18 @@
       <div class="projects-grid">
 
         <div class="proj-card">
+          <span class="proj-badge">New · Auth</span>
+          <div class="proj-title">CloudShare</div>
+          <div class="proj-desc">Share images with anyone via temporary links that auto-expire in 24 hours. Samsung Quick Share-inspired — upload, generate a link, share. No account needed to view.</div>
+          <div class="proj-tags">
+            <span class="proj-tag">Firebase Storage</span>
+            <span class="proj-tag">Firestore</span>
+            <span class="proj-tag">24h Expiry</span>
+          </div>
+          <a href="/cloud/" class="proj-link">Open Tool →</a>
+        </div>
+
+        <div class="proj-card">
           <span class="proj-badge">Recon Platform · Auth</span>
           <div class="proj-title">NetProbe</div>
           <div class="proj-desc">An authenticated network reconnaissance platform. Features DNS enumeration, WHOIS
@@ -2242,16 +2312,29 @@
     }
     uptime(); setInterval(uptime, 1000);
 
-    // ── Nav active highlight on scroll ───────────────────────────────────────
+    // ── Nav active highlight + backdrop blur on scroll ────────────────────────
     const sections = document.querySelectorAll('section[id]');
     const navAs = document.querySelectorAll('.nav-links a');
+    const navEl = document.querySelector('nav');
     window.addEventListener('scroll', () => {
       let cur = '';
       sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id });
       navAs.forEach(a => {
         a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--green)' : 'var(--fg-dim)';
       });
+      // Nav blur when scrolled
+      if (navEl) navEl.classList.toggle('scrolled', window.scrollY > 40);
     }, { passive: true });
+
+    // ── Scroll-reveal ─────────────────────────────────────────────────────────
+    const revealEls = document.querySelectorAll('.sec-inner, .cert-card, .proj-card, .skill-card, .contact-card');
+    revealEls.forEach(el => el.classList.add('reveal'));
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => revealObs.observe(el));
   </script>
   <script type="module">
     // ── Firebase Auth — homepage awareness ───────────────────────────────────────
@@ -2358,6 +2441,7 @@
 
   <!-- Portfolio AI Agent -->
   <link rel="stylesheet" href="/chatbot.css">
+  <script defer src="/config.js"></script>
   <script defer src="/chatbot.js"></script>
 
   <!-- Custom Green Cursor -->
