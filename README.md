@@ -1,6 +1,6 @@
-# Sambit Satapathy - Cybersecurity Portfolio & Web Tools
+# Sambit K. Satapathy - Cybersecurity Portfolio & Web Tools
 
-A cyberpunk/terminal-themed personal portfolio and collection of free web tools created by Sambit Satapathy. Built entirely with Vanilla HTML, CSS, and JavaScript (no frameworks) to ensure maximum performance and a deeply customized aesthetic.
+A cyberpunk/terminal-themed personal portfolio and collection of free web tools created by Sambit K. Satapathy. Built entirely with Vanilla HTML, CSS, and JavaScript (no frameworks) to ensure maximum performance and a deeply customized aesthetic.
 
 ## 🌐 Live Website
 **[sambit.page](https://sambit.page)**
@@ -73,4 +73,4 @@ A free online resume maker featuring a sleek, professional interface.
 - **Email:** sambitsatapathy22@gmail.com
 
 ---
-*Developed by Sambit Satapathy*
+*Developed by Sambit K. Satapathy*
