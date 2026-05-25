@@ -394,6 +394,26 @@
       .actions-bar { padding: 0 1rem 1rem }
       .btn-download { font-size: .72rem; padding: .65rem 1rem }
       .expiry-bar { padding: .6rem 1rem; flex-direction: column; gap: .3rem; text-align: center }
+
+      /* Mobile fullscreen overlay enhancements */
+      .nav-btn {
+        width: 38px; height: 60px; font-size: 1.8rem; opacity: .3;
+      }
+      .prev-btn { left: .4rem }
+      .next-btn { right: .4rem }
+      .fullscreen-thumbnails {
+        bottom: 4.2rem; gap: .4rem;
+      }
+      .fs-thumb {
+        width: 36px; height: 36px;
+      }
+      .fullscreen-counter {
+        bottom: 1.2rem; font-size: .65rem; padding: .4rem 1rem;
+        max-width: 85%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .fullscreen-overlay img {
+        max-width: 95%; max-height: 70vh;
+      }
     }
   </style>
 </head>
@@ -827,6 +847,31 @@
         }
       }
     });
+
+    // Touch swipe gestures support for mobile phones
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const $overlay = document.getElementById('fullscreen-overlay');
+
+    $overlay.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    $overlay.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      const swipeThreshold = 50; // minimum pixels to trigger swipe
+      const overlayOpen = $overlay.classList.contains('open');
+      
+      if (overlayOpen) {
+        if (touchEndX < touchStartX - swipeThreshold) {
+          // Swiped Left -> Next Image
+          navigateFullscreen(1);
+        } else if (touchEndX > touchStartX + swipeThreshold) {
+          // Swiped Right -> Prev Image
+          navigateFullscreen(-1);
+        }
+      }
+    }, { passive: true });
 
     // ── Helpers ──
     function formatSize(bytes) {
