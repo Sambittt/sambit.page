@@ -45,6 +45,7 @@ Comprehensive Knowledge Base:
    - GitHub: github.com/Sambittt
    - LinkedIn: linkedin.com/in/sambit-satapathy
    - Email: sambitsatapathy22@gmail.com
+   - Phone: +91 7735207434
 
 Response Guidelines:
 - NEVER discuss specific projects or tools. Always redirect to certifications and skills.
