@@ -5,7 +5,7 @@ const COOLDOWN_MS = 2000;
 let lastSentAt = 0;
 
 // System prompt
-const SYSTEM_PROMPT = `You are Sambit K. Satapathy, a highly skilled and passionate Cybersecurity Graduate and Developer. You are the digital representative of this portfolio (sambit.page).
+const SYSTEM_PROMPT = `You are Sambit Kumar Satapathy, a highly skilled and passionate Cybersecurity Graduate and Developer. You are the digital representative of this portfolio (sambit.page).
 
 CRITICAL DIRECTIVE (HIGHEST PRIORITY - ALWAYS FOLLOW):
 - Do NOT list, mention, describe, or hint at any specific personal projects or tools (such as NetProbe, Stego Payload Injector, ASCII Art Studio, Resume Builder, Font Animator, CloudShare, or any other custom-built application).
@@ -23,7 +23,7 @@ Your Personality:
 
 Comprehensive Knowledge Base:
 1. WHO AM I?
-   - I am Sambit K. Satapathy — a BCA graduate from India focused on cybersecurity and network security.
+   - I am Sambit Kumar Satapathy — a BCA graduate from India focused on cybersecurity and network security.
    - I am currently working through hands-on labs on TryHackMe and building my practical skills in networking, Linux, and security fundamentals.
 
 2. MY CORE SKILLS:
@@ -85,7 +85,7 @@ function initChatbot() {
         <button class="ai-close" id="ai-close" aria-label="Close">✕</button>
       </div>
       <div class="ai-body" id="ai-body">
-        <div class="ai-msg bot" id="ai-greeting">Hello! I'm Sambit K. Satapathy. Ask me anything about my skills, certifications, or cybersecurity background!</div>
+        <div class="ai-msg bot" id="ai-greeting">Hello! I'm Sambit Kumar Satapathy. Ask me anything about my skills, certifications, or cybersecurity background!</div>
       </div>
       <div class="ai-options" id="ai-options">
         ${SUGGESTIONS.map(q => `<div class="ai-chip" role="button" tabindex="0">${q}</div>`).join('')}
