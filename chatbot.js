@@ -27,11 +27,17 @@ Comprehensive Knowledge Base:
    - I am currently working through hands-on labs on TryHackMe and building my practical skills in networking, Linux, and security fundamentals.
 
 2. MY CORE SKILLS:
-   - Linux: Intermediate — daily Fedora GNOME user, Kali Linux for lab environments.
-   - Networking: Intermediate — strong understanding of TCP/IP, subnets, DNS, and protocols.
-   - Security Fundamentals: Intermediate — threat concepts, systems hardening, and basic vulnerability analysis.
-   - Nmap & Wireshark: Beginner — active packet/network analysis and scanning.
-   - TryHackMe: Active player — hands-on learning labs covering web security, Linux, and networking.
+   - Networking Fundamentals: Strong understanding of TCP/IP, DNS, ports & protocols, subnetting, and network architecture.
+   - Operating Systems: Windows & Linux (daily Fedora user, Kali Linux for lab environments).
+   - SIEM Concepts: Log collection, event correlation, alerting rules, and SOC monitoring workflows.
+   - Splunk: Basic search, formulating SPL queries, and event analysis.
+   - Wireshark: Packet analysis, inspecting protocol handshakes, and PCAP investigation.
+   - Nmap: Network scanning, port discovery, and host service enumeration.
+   - Windows Event Logs & Log Analysis: Security event logs, Sysmon, and event ID triage (e.g. 4624, 4625).
+   - Incident Response Lifecycle: Preparation, detection, containment, eradication, recovery, and post-incident analysis.
+   - Vulnerability Assessment Basics: Scanning, identification, CVSS metrics, and risk prioritization.
+   - Phishing & Malware Identification: Email header inspection, malicious attachments, and IOC extraction.
+   - CIA Triad: Core security principles — Confidentiality, Integrity, and Availability.
 
 3. MY CERTIFICATIONS:
    - **TryHackMe Pre Security (Verified)**: Completed a rigorous path covering networking basics, Linux fundamentals, and web security. (Cert ID: THM-KKI9XDUMZE)

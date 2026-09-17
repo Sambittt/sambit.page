@@ -71,7 +71,7 @@
     "image": "https://sambit.page/profile.png",
     "jobTitle": "Cybersecurity Student & Developer",
     "description": "BCA student specialising in cybersecurity, Linux administration and network security defence.",
-    "knowsAbout": ["Cybersecurity", "Linux", "Network Security", "Python", "Bash Scripting", "OSINT", "Web Development"],
+    "knowsAbout": ["Cybersecurity", "Networking Fundamentals", "Operating Systems", "SIEM Concepts", "Splunk", "Wireshark", "Nmap", "Windows Event Logs", "Incident Response Lifecycle", "Vulnerability Assessment", "Phishing & Malware Identification", "CIA Triad", "Linux", "Network Security"],
     "nationality": {"@type": "Country", "name": "India"},
     "alumniOf": {"@type": "EducationalOrganization", "name": "BCA Program"},
     "sameAs": [
@@ -1270,27 +1270,37 @@
 
     .skills-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
       gap: 1px;
-      border: 1px solid var(--border)
+      border: 1px solid var(--border);
+      background: var(--border)
     }
 
     .skill-card {
       background: var(--bg);
-      padding: 1.5rem 1.2rem;
+      padding: 1.6rem 1.3rem;
       border: none;
-      transition: background .2s
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 165px;
+      transition: background .2s ease, transform .2s ease
     }
 
     .skill-card:hover {
       background: var(--muted)
     }
 
+    .skill-top {
+      display: flex;
+      flex-direction: column
+    }
+
     .skill-icon {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      margin-bottom: .8rem;
+      margin-bottom: .85rem;
       height: 28px
     }
 
@@ -1308,27 +1318,33 @@
     }
 
     .skill-name {
-      font-size: .8rem;
+      font-size: .84rem;
       font-weight: 600;
-      letter-spacing: .05em;
-      margin-bottom: .4rem
+      letter-spacing: .04em;
+      color: var(--fg);
+      line-height: 1.35;
+      margin-bottom: .45rem
     }
 
     .skill-level {
       font-size: .68rem;
       color: var(--green);
-      letter-spacing: .08em
+      letter-spacing: .05em;
+      line-height: 1.5;
+      opacity: .9
     }
 
     .skill-bar {
-      margin-top: .6rem;
+      margin-top: .9rem;
       height: 2px;
-      background: var(--border)
+      background: var(--border);
+      overflow: hidden
     }
 
     .skill-bar-fill {
       height: 100%;
-      background: var(--green)
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(74, 222, 128, .4)
     }
 
     /* ── PROJECTS ── */
@@ -2215,60 +2231,169 @@
       <h2 class="sec-title">Sambit Kumar Satapathy — Technical Skills</h2>
       <div class="sec-line"></div>
       <div class="skills-grid">
+        <!-- 1. Networking Fundamentals -->
         <div class="skill-card">
-          <div class="skill-icon"><img src="https://cdn.simpleicons.org/linux/4ade80" alt="Linux" /></div>
-          <div class="skill-name">Linux</div>
-          <div class="skill-level">Intermediate</div>
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+              </svg>
+            </div>
+            <div class="skill-name">Networking Fundamentals</div>
+            <div class="skill-level">TCP/IP, DNS, ports &amp; protocols</div>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:85%"></div>
+          </div>
+        </div>
+
+        <!-- 2. Operating Systems -->
+        <div class="skill-card">
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 4h16V5H4v2zm0 12h16V9H4v10zm3-7h2v2H7v-2zm4 0h6v2h-6v-2z"/>
+              </svg>
+            </div>
+            <div class="skill-name">Operating Systems</div>
+            <div class="skill-level">Windows &amp; Linux</div>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:85%"></div>
+          </div>
+        </div>
+
+        <!-- 3. SIEM Concepts -->
+        <div class="skill-card">
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/>
+              </svg>
+            </div>
+            <div class="skill-name">SIEM Concepts</div>
+            <div class="skill-level">Log collection, correlation, alerting</div>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:80%"></div>
+          </div>
+        </div>
+
+        <!-- 4. Splunk -->
+        <div class="skill-card">
+          <div class="skill-top">
+            <div class="skill-icon"><img src="https://cdn.simpleicons.org/splunk/4ade80" alt="Splunk" /></div>
+            <div class="skill-name">Splunk</div>
+            <div class="skill-level">Basic search/SPL</div>
+          </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:75%"></div>
           </div>
         </div>
+
+        <!-- 5. Wireshark -->
         <div class="skill-card">
-          <div class="skill-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-            </svg></div>
-          <div class="skill-name">Networking</div>
-          <div class="skill-level">Intermediate</div>
+          <div class="skill-top">
+            <div class="skill-icon"><img src="https://cdn.simpleicons.org/wireshark/4ade80" alt="Wireshark" /></div>
+            <div class="skill-name">Wireshark</div>
+            <div class="skill-level">Packet analysis</div>
+          </div>
           <div class="skill-bar">
-            <div class="skill-bar-fill" style="width:70%"></div>
+            <div class="skill-bar-fill" style="width:80%"></div>
           </div>
         </div>
+
+        <!-- 6. Nmap -->
         <div class="skill-card">
-          <div class="skill-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z" />
-            </svg></div>
-          <div class="skill-name">Security Fundamentals</div>
-          <div class="skill-level">Intermediate</div>
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93h2c0 2.76 2.24 5 5 5 2.76 0 5-2.24 5-5s-2.24-5-5-5v2L8 8l4-4v2c4.42 0 8 3.58 8 8 0 4.08-3.05 7.44-7 7.93z"/>
+              </svg>
+            </div>
+            <div class="skill-name">Nmap</div>
+            <div class="skill-level">Network scanning</div>
+          </div>
           <div class="skill-bar">
-            <div class="skill-bar-fill" style="width:72%"></div>
+            <div class="skill-bar-fill" style="width:82%"></div>
           </div>
         </div>
+
+        <!-- 7. Windows Event Logs & Log Analysis -->
         <div class="skill-card">
-          <div class="skill-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93h2c0 2.76 2.24 5 5 5 2.76 0 5-2.24 5-5s-2.24-5-5-5v2L8 8l4-4v2c4.42 0 8 3.58 8 8 0 4.08-3.05 7.44-7 7.93z"/>
-            </svg></div>
-          <div class="skill-name">Nmap</div>
-          <div class="skill-level">Beginner</div>
-          <div class="skill-bar">
-            <div class="skill-bar-fill" style="width:45%"></div>
+          <div class="skill-top">
+            <div class="skill-icon"><img src="https://cdn.simpleicons.org/windows/4ade80" alt="Windows Event Logs" /></div>
+            <div class="skill-name">Windows Event Logs &amp; Log Analysis</div>
+            <div class="skill-level">Event Viewer, Sysmon &amp; audit analysis</div>
           </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-icon"><img src="https://cdn.simpleicons.org/wireshark/4ade80" alt="Wireshark" /></div>
-          <div class="skill-name">Wireshark</div>
-          <div class="skill-level">Beginner</div>
-          <div class="skill-bar">
-            <div class="skill-bar-fill" style="width:40%"></div>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-icon"><img src="https://cdn.simpleicons.org/tryhackme/4ade80" alt="TryHackMe" /></div>
-          <div class="skill-name">TryHackMe</div>
-          <div class="skill-level">Active</div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:85%"></div>
+          </div>
+        </div>
+
+        <!-- 8. Incident Response Lifecycle -->
+        <div class="skill-card">
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v5h-2V7zm0 7h2v2h-2v-2z"/>
+              </svg>
+            </div>
+            <div class="skill-name">Incident Response Lifecycle</div>
+            <div class="skill-level">Preparation, containment &amp; remediation</div>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:80%"></div>
+          </div>
+        </div>
+
+        <!-- 9. Vulnerability Assessment Basics -->
+        <div class="skill-card">
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/>
+              </svg>
+            </div>
+            <div class="skill-name">Vulnerability Assessment Basics</div>
+            <div class="skill-level">Scanning, identification &amp; mitigation</div>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:78%"></div>
+          </div>
+        </div>
+
+        <!-- 10. Phishing & Malware Identification -->
+        <div class="skill-card">
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 8h-2.81a5.985 5.985 0 0 0-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.98 6.57 7.37 7.23 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/>
+              </svg>
+            </div>
+            <div class="skill-name">Phishing &amp; Malware Identification</div>
+            <div class="skill-level">Email headers, IOCs &amp; threat triage</div>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:82%"></div>
+          </div>
+        </div>
+
+        <!-- 11. CIA Triad -->
+        <div class="skill-card">
+          <div class="skill-top">
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z" />
+              </svg>
+            </div>
+            <div class="skill-name">CIA Triad</div>
+            <div class="skill-level">Confidentiality, Integrity, Availability</div>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:92%"></div>
           </div>
         </div>
       </div>
