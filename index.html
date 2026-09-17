@@ -1263,32 +1263,34 @@
 
     /* ── SKILLS ── */
     #skills {
-      background: var(--card);
+      background: var(--bg);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border)
     }
 
     .skills-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 1px;
-      border: 1px solid var(--border);
-      background: var(--border)
+      grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+      gap: 1.1rem;
+      background: transparent;
+      border: none
     }
 
     .skill-card {
-      background: var(--bg);
-      padding: 1.6rem 1.3rem;
-      border: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 1.5rem 1.25rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       min-height: 165px;
-      transition: background .2s ease, transform .2s ease
+      transition: background .2s ease, border-color .25s ease, transform .2s ease
     }
 
     .skill-card:hover {
-      background: var(--muted)
+      background: var(--muted);
+      border-color: rgba(74, 222, 128, .4);
+      transform: translateY(-2px)
     }
 
     .skill-top {
@@ -1326,16 +1328,16 @@
       margin-bottom: .45rem
     }
 
-    .skill-level {
+    .skill-desc {
       font-size: .68rem;
       color: var(--green);
-      letter-spacing: .05em;
+      letter-spacing: .04em;
       line-height: 1.5;
-      opacity: .9
+      opacity: .95
     }
 
     .skill-bar {
-      margin-top: .9rem;
+      margin-top: 1rem;
       height: 2px;
       background: var(--border);
       overflow: hidden
@@ -1946,22 +1948,7 @@
       border-bottom-color: rgba(74,222,128,.12)
     }
 
-    /* ── Skill level badge ── */
-    .skill-level {
-      display: inline-block;
-      font-size: .58rem;
-      letter-spacing: .1em;
-      color: #000;
-      background: var(--green);
-      padding: .1rem .45rem;
-      margin-bottom: .5rem;
-      font-weight: 700
-    }
-    .skill-level.dim {
-      background: transparent;
-      color: var(--green);
-      border: 1px solid rgba(74,222,128,.35)
-    }
+
   </style>
 
 </head>
@@ -2241,7 +2228,7 @@
               </svg>
             </div>
             <div class="skill-name">Networking Fundamentals</div>
-            <div class="skill-level">TCP/IP, DNS, ports &amp; protocols</div>
+            <div class="skill-desc">TCP/IP, DNS, ports &amp; protocols</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:85%"></div>
@@ -2257,7 +2244,7 @@
               </svg>
             </div>
             <div class="skill-name">Operating Systems</div>
-            <div class="skill-level">Windows &amp; Linux</div>
+            <div class="skill-desc">Windows &amp; Linux</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:85%"></div>
@@ -2273,7 +2260,7 @@
               </svg>
             </div>
             <div class="skill-name">SIEM Concepts</div>
-            <div class="skill-level">Log collection, correlation, alerting</div>
+            <div class="skill-desc">Log collection, correlation, alerting</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:80%"></div>
@@ -2283,9 +2270,13 @@
         <!-- 4. Splunk -->
         <div class="skill-card">
           <div class="skill-top">
-            <div class="skill-icon"><img src="https://cdn.simpleicons.org/splunk/4ade80" alt="Splunk" /></div>
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.5 4.5L13.5 12L4.5 19.5V16L9.5 12L4.5 8V4.5ZM13.5 17H20V20H13.5V17Z" />
+              </svg>
+            </div>
             <div class="skill-name">Splunk</div>
-            <div class="skill-level">Basic search/SPL</div>
+            <div class="skill-desc">Basic search/SPL</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:75%"></div>
@@ -2297,7 +2288,7 @@
           <div class="skill-top">
             <div class="skill-icon"><img src="https://cdn.simpleicons.org/wireshark/4ade80" alt="Wireshark" /></div>
             <div class="skill-name">Wireshark</div>
-            <div class="skill-level">Packet analysis</div>
+            <div class="skill-desc">Packet analysis</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:80%"></div>
@@ -2313,7 +2304,7 @@
               </svg>
             </div>
             <div class="skill-name">Nmap</div>
-            <div class="skill-level">Network scanning</div>
+            <div class="skill-desc">Network scanning</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:82%"></div>
@@ -2323,9 +2314,13 @@
         <!-- 7. Windows Event Logs & Log Analysis -->
         <div class="skill-card">
           <div class="skill-top">
-            <div class="skill-icon"><img src="https://cdn.simpleicons.org/windows/4ade80" alt="Windows Event Logs" /></div>
+            <div class="skill-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801" />
+              </svg>
+            </div>
             <div class="skill-name">Windows Event Logs &amp; Log Analysis</div>
-            <div class="skill-level">Event Viewer, Sysmon &amp; audit analysis</div>
+            <div class="skill-desc">Event Viewer, Sysmon &amp; audit analysis</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:85%"></div>
@@ -2341,7 +2336,7 @@
               </svg>
             </div>
             <div class="skill-name">Incident Response Lifecycle</div>
-            <div class="skill-level">Preparation, containment &amp; remediation</div>
+            <div class="skill-desc">Preparation, containment &amp; remediation</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:80%"></div>
@@ -2357,7 +2352,7 @@
               </svg>
             </div>
             <div class="skill-name">Vulnerability Assessment Basics</div>
-            <div class="skill-level">Scanning, identification &amp; mitigation</div>
+            <div class="skill-desc">Scanning, identification &amp; mitigation</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:78%"></div>
@@ -2373,7 +2368,7 @@
               </svg>
             </div>
             <div class="skill-name">Phishing &amp; Malware Identification</div>
-            <div class="skill-level">Email headers, IOCs &amp; threat triage</div>
+            <div class="skill-desc">Email headers, IOCs &amp; threat triage</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:82%"></div>
@@ -2390,7 +2385,7 @@
               </svg>
             </div>
             <div class="skill-name">CIA Triad</div>
-            <div class="skill-level">Confidentiality, Integrity, Availability</div>
+            <div class="skill-desc">Confidentiality, Integrity, Availability</div>
           </div>
           <div class="skill-bar">
             <div class="skill-bar-fill" style="width:92%"></div>
@@ -2607,13 +2602,7 @@
             <div class="contact-val">+91 7735207434</div>
           </div>
         </a>
-        <a href="https://tryhackme.com/p/Sambittt" target="_blank" class="contact-card">
-          <div class="contact-icon"><img src="https://cdn.simpleicons.org/tryhackme/888888" alt="TryHackMe" /></div>
-          <div>
-            <div class="contact-label">TryHackMe</div>
-            <div class="contact-val">tryhackme.com/p/Sambittt</div>
-          </div>
-        </a>
+
       </div>
     </div>
   </section>

@@ -177,27 +177,41 @@ function initChatbot() {
   }
 
   // ── Call Groq API ─────────────────────────────────────────────────────
-  async function callGroq(messages) {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`
-      },
-      body: JSON.stringify({
-        messages,
-        model: 'llama-3.3-70b-versatile',
-        temperature: 0.6,
-        max_tokens: 1024
-      })
-    });
+  const AI_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'groq/compound'];
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error?.message || `HTTP ${res.status}`);
+  async function callGroq(messages) {
+    let lastError = null;
+
+    for (const model of AI_MODELS) {
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            messages,
+            model: model,
+            temperature: 0.6,
+            max_tokens: 1024
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.choices && data.choices[0] && data.choices[0].message) {
+            return data.choices[0].message.content;
+          }
+        }
+        const errData = await res.json().catch(() => ({}));
+        lastError = new Error(errData.error?.message || `HTTP ${res.status}`);
+      } catch (e) {
+        lastError = e;
+      }
     }
-    const data = await res.json();
-    return data.choices[0].message.content;
+
+    throw lastError || new Error('All AI models failed to respond');
   }
 
   // ── Firebase Logging ───────────────────────────────────────────────────
