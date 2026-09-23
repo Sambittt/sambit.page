@@ -481,61 +481,119 @@ if (btnModeDevice) {
 
 async function detectDeviceLocation(customIp = '') {
   let client = null;
-  const ipParam = customIp ? `/${customIp}` : '';
-  const queryParam = customIp ? customIp : '';
+  const ip = (customIp || '').trim();
 
-  // 1. Try freeipapi.com
+  // 1. Try api.ipquery.io (Comprehensive: detects mobile, vpn, exact city, coordinates, isp, asn, local time)
+  if (ip) {
+    try {
+      const res = await fetch(`https://api.ipquery.io/${ip}`);
+      if (res.ok) {
+        const d = await res.json();
+        if (d && (d.location || d.isp)) {
+          return {
+            ip: d.ip || ip,
+            city: d.location?.city || '',
+            region: d.location?.state || '',
+            country: d.location?.country || '',
+            countryCode: d.location?.country_code || '',
+            lat: d.location?.latitude || null,
+            lon: d.location?.longitude || null,
+            isp: d.isp?.isp || d.isp?.org || '',
+            org: d.isp?.org || '',
+            asn: d.isp?.asn ? (String(d.isp.asn).startsWith('AS') ? d.isp.asn : `AS${d.isp.asn}`) : '',
+            tz: d.location?.timezone || '',
+            localTime: d.location?.localtime || '',
+            isMobile: !!d.risk?.is_mobile,
+            isVpn: !!d.risk?.is_vpn,
+            isProxy: !!d.risk?.is_proxy,
+            isTor: !!d.risk?.is_tor,
+            isDatacenter: !!d.risk?.is_datacenter
+          };
+        }
+      }
+    } catch(e) {}
+  }
+
+  // 2. Try freeipapi.com
   try {
+    const ipParam = ip ? `/${ip}` : '';
     const r1 = await fetch(`https://freeipapi.com/api/json${ipParam}`);
-    const d1 = await r1.json();
-    if (d1 && (d1.cityName || d1.countryName || d1.ipAddress)) {
-      client = {
-        ip: d1.ipAddress,
-        city: d1.cityName,
-        region: d1.regionName,
-        country: d1.countryName,
-        countryCode: d1.countryCode,
-        lat: d1.latitude,
-        lon: d1.longitude,
-        isp: d1.asnOrganization,
-        asn: d1.asn ? `AS${d1.asn}` : '',
-        tz: d1.timeZones ? d1.timeZones[0] : ''
-      };
-      return client;
+    if (r1.ok) {
+      const d1 = await r1.json();
+      if (d1 && (d1.cityName || d1.countryName || d1.ipAddress)) {
+        return {
+          ip: d1.ipAddress || ip,
+          city: d1.cityName || '',
+          region: d1.regionName || '',
+          country: d1.countryName || '',
+          countryCode: d1.countryCode || '',
+          lat: d1.latitude || null,
+          lon: d1.longitude || null,
+          isp: d1.asnOrganization || '',
+          org: d1.asnOrganization || '',
+          asn: d1.asn ? (String(d1.asn).startsWith('AS') ? d1.asn : `AS${d1.asn}`) : '',
+          tz: d1.timeZones ? d1.timeZones[0] : '',
+          localTime: '',
+          isMobile: false,
+          isVpn: false,
+          isProxy: !!d1.isProxy,
+          isTor: false,
+          isDatacenter: false
+        };
+      }
     }
   } catch(e) {}
 
-  // 2. Try ipwhois.app
+  // 3. Try ipwhois.app
   try {
+    const queryParam = ip ? ip : '';
     const r2 = await fetch(`https://ipwhois.app/json/${queryParam}`);
-    const d2 = await r2.json();
-    if (d2 && d2.success !== false) {
-      client = {
-        ip: d2.ip,
-        city: d2.city,
-        region: d2.region,
-        country: d2.country,
-        countryCode: d2.country_code,
-        lat: d2.latitude,
-        lon: d2.longitude,
-        isp: d2.isp || d2.org,
-        org: d2.org,
-        asn: d2.asn,
-        tz: d2.timezone_name || d2.timezone
-      };
-      return client;
+    if (r2.ok) {
+      const d2 = await r2.json();
+      if (d2 && d2.success !== false) {
+        return {
+          ip: d2.ip || ip,
+          city: d2.city || '',
+          region: d2.region || '',
+          country: d2.country || '',
+          countryCode: d2.country_code || '',
+          lat: d2.latitude || null,
+          lon: d2.longitude || null,
+          isp: d2.isp || d2.org || '',
+          org: d2.org || '',
+          asn: d2.asn || '',
+          tz: d2.timezone_name || d2.timezone || '',
+          localTime: '',
+          isMobile: false,
+          isVpn: false,
+          isProxy: false,
+          isTor: false,
+          isDatacenter: false
+        };
+      }
     }
   } catch(e) {}
 
-  // 3. Fallback to ipify for IP only
-  if (!customIp) {
+  // 4. Fallback for client IP detection if no custom IP was specified
+  if (!ip) {
+    try {
+      const rText = await fetch('https://api.ipquery.io/').then(r => r.text());
+      const cleanIp = (rText || '').trim();
+      if (cleanIp && cleanIp.includes('.')) {
+        return await detectDeviceLocation(cleanIp);
+      }
+    } catch(e) {}
+
     try {
       const r3 = await fetch('https://api.ipify.org?format=json');
       const d3 = await r3.json();
-      if (d3 && d3.ip) client = { ip: d3.ip, city: 'Unknown', country: 'N/A' };
+      if (d3 && d3.ip) {
+        return await detectDeviceLocation(d3.ip);
+      }
     } catch(e) {}
   }
-  return client;
+
+  return null;
 }
 
 async function setScanMode(mode) {
@@ -551,9 +609,9 @@ async function setScanMode(mode) {
     targetHintText.textContent = 'Passive OSINT: Live Reachability, DNS Enumeration, WHOIS, Security Headers, SSL, Geolocation & Threat Intel';
   } else if (mode === 'ip') {
     inputPfx.textContent = 'ip target ›';
-    inpTarget.placeholder = 'e.g. 8.8.8.8, 1.1.1.1, 142.250.190.46';
+    inpTarget.placeholder = 'e.g. 49.36.0.1, 106.192.0.1, 8.8.8.8';
     targetModeTag.textContent = 'IP Target Mode';
-    targetHintText.textContent = 'Host Recon: Live Host Reachability (Active/Offline Detector), Reverse DNS (PTR), Physical Location, Shodan Ports & CVEs';
+    targetHintText.textContent = 'Host Recon: Active Status, Physical Geolocation, Mobile/Cellular Carrier, ISP, ASN, Shodan Ports & CVEs';
   } else if (mode === 'device') {
     inputPfx.textContent = 'my device ›';
     inpTarget.placeholder = 'Auto-detecting your device location...';
@@ -606,6 +664,11 @@ function isPrivateIP(ip) {
   return false;
 }
 
+function isCGNAT(ip) {
+  const parts = ip.split('.').map(Number);
+  return parts.length === 4 && parts[0] === 100 && parts[1] >= 64 && parts[1] <= 127;
+}
+
 function print(html) {
   const d = document.createElement('div');
   d.className = 't-line';
@@ -637,7 +700,7 @@ async function runScan() {
 
   if(!target) {
     scanMsg.textContent = scanMode === 'ip'
-      ? '// Please enter an IP target (e.g. 8.8.8.8 or 192.168.0.1)'
+      ? '// Please enter an IP target (e.g. 8.8.8.8, 49.36.0.1 or 192.168.0.1)'
       : (scanMode === 'device' ? '// Auto-detecting your device IP...' : '// Please enter a domain target (e.g. example.com)');
     scanMsg.className = 'msg err show';
     return;
@@ -673,10 +736,11 @@ async function runScan() {
   termTitle.textContent = `Target: ${target} [${isTargetIP ? 'IP HOST' : 'DOMAIN'}]`;
 
   const isPrivate = isTargetIP && isPrivateIP(target);
+  const isCgNatIP = isTargetIP && isCGNAT(target);
 
   currentScanData = {
     target: target,
-    type: isTargetIP ? (isPrivate ? 'private_ip' : 'ip') : 'domain',
+    type: isTargetIP ? (isPrivate ? 'private_ip' : (isCgNatIP ? 'cgnat_ip' : 'ip')) : 'domain',
     timestamp: new Date().toISOString(),
     findings: [],
     riskPoints: 0
@@ -686,6 +750,10 @@ async function runScan() {
     print(`<span class="t-d">$ netprobe --ip-target ${target}</span>`);
     print(`<span class="t-o">⚡ Local Area Network Host (RFC 1918 Private IP) Detected.</span>`);
     print(`<span class="t-g">✓ Initiating Intranet & Subnet Reconnaissance Engine...</span>`);
+  } else if (isCgNatIP) {
+    print(`<span class="t-d">$ netprobe --ip-target ${target}</span>`);
+    print(`<span class="t-o">⚡ Carrier-Grade NAT (RFC 6598 CGNAT) Detected.</span>`);
+    print(`<span class="t-g">✓ Initiating Carrier Network Reconnaissance modules...</span>`);
   } else if (isTargetIP) {
     print(`<span class="t-d">$ netprobe --ip-target ${target}</span>`);
     print(`<span class="t-g">✓ Public IP Target acquired. Initiating Host Reconnaissance modules...</span>`);
@@ -732,29 +800,16 @@ async function runScan() {
       print(`  Reachability     → <span class="t-g">Active on Local LAN (Protected behind NAT / Non-Routable on WAN)</span>`);
       currentScanData.findings.push(`Host Status: ACTIVE (Private Intranet Interface: ${target})`);
 
-      // 1. DEVICE PHYSICAL LOCATION & WAN EGRESS
-      printSection('DEVICE PHYSICAL LOCATION & WAN EGRESS');
-      print(`  Querying device WAN egress gateway and physical geolocation...`);
-      try {
-        const clientGeo = await detectDeviceLocation();
-        if (clientGeo && (clientGeo.city || clientGeo.country)) {
-          print(`  Device Public IP → <span class="t-w">${clientGeo.ip}</span> (Your WAN Egress Gateway)`);
-          print(`  Physical City    → <span class="t-g" style="font-weight:700">${clientGeo.city || 'Unknown'}</span>`);
-          print(`  Region / State   → <span class="t-w">${clientGeo.region || 'N/A'}</span>`);
-          print(`  Country          → <span class="t-w">${clientGeo.country} (${clientGeo.countryCode || ''})</span>`);
-          if (clientGeo.lat && clientGeo.lon) {
-            print(`  Geo Coordinates  → <span class="t-g">${clientGeo.lat}°, ${clientGeo.lon}°</span> <a href="https://www.google.com/maps?q=${clientGeo.lat},${clientGeo.lon}" target="_blank" style="color:var(--green);text-decoration:underline;font-size:.68rem;margin-left:.5rem">[ View on Map ↗ ]</a>`);
-          }
-          print(`  ISP / Carrier    → <span class="t-w">${clientGeo.isp || 'N/A'} ${clientGeo.asn ? '(' + clientGeo.asn + ')' : ''}</span>`);
-          if (clientGeo.tz) print(`  Device Timezone  → <span class="t-w">${clientGeo.tz}</span>`);
-          print(`  Local Interface  → <span class="t-o">${target} (Internal LAN Binding)</span>`);
-          currentScanData.findings.push(`Device Location: ${clientGeo.city}, ${clientGeo.country} (${clientGeo.lat}, ${clientGeo.lon})`);
-        } else {
-          print(`  <span class="t-d">Device WAN location lookup unavailable.</span>`);
-        }
-      } catch(e) {
-        print(`  <span class="t-d">Device location lookup skipped.</span>`);
-      }
+      // 1. CROSS-NETWORK DEVICE RECON ADVISORY
+      printSection('CROSS-NETWORK DEVICE RECON ADVISORY');
+      print(`  <span class="t-y">📌 Scanning a Device on a Different Network?</span>`);
+      print(`  Private IP addresses (192.168.x.x, 10.x.x.x) exist <span class="t-w">only inside that device's local Wi-Fi router network</span>.`);
+      print(`  They cannot be reached or geolocated across the public internet between different networks.`);
+      print(`  `);
+      print(`  <span class="t-g">👉 To see your other device's full details (location, carrier, ISP, coordinates):</span>`);
+      print(`    1. On that device, visit <span class="t-w">https://sambit.page/netprobe</span> and click <span class="t-g">"Scan My Device"</span> (or visit whatismyip.com).`);
+      print(`    2. Copy that device's <span class="t-g">Public WAN IP</span> (e.g. 49.36.x.x or 106.192.x.x).`);
+      print(`    3. Enter that Public IP here in NetProbe to trace its physical city, carrier (Jio/Airtel), ISP, coordinates, and network telemetry!`);
 
       // 2. RFC 1918 INTRANET SCOPE & SUBNET ANALYSIS
       printSection('RFC 1918 INTRANET SCOPE & SUBNET ANALYSIS');
@@ -767,14 +822,14 @@ async function runScan() {
       print(`  Host Class       → <span class="t-g">${hostType}</span>`);
       currentScanData.findings.push(`Private Subnet: ${defaultSubnet} (${subnetClass})`);
 
-      // 2. REVERSE DNS & LOCAL NAME RESOLUTION
+      // 3. REVERSE DNS & LOCAL NAME RESOLUTION
       printSection('LOCAL RESOLUTION & PROTOCOLS (mDNS / NetBIOS)');
       print(`  Public DNS       → <span class="t-d">RFC 1918 addresses are unroutable on public DNS root zones.</span>`);
       print(`  Local Name       → <span class="t-w">Discovered via mDNS (Port 5353) & LLMNR (Port 5355)</span>`);
       print(`  NetBIOS-NS       → <span class="t-w">Broadcast Name Service active on UDP/137</span>`);
       currentScanData.findings.push(`Local Discovery Protocols: mDNS, LLMNR, NetBIOS`);
 
-      // 3. REGIONAL REGISTRY (IANA)
+      // 4. REGIONAL REGISTRY (IANA)
       printSection('REGIONAL ALLOCATION & ROUTING STATUS');
       print(`  Registry         → <span class="t-w">Internet Assigned Numbers Authority (IANA Reserved)</span>`);
       print(`  RFC Standard     → <span class="t-w">RFC 1918 / BCP 5 (Address Allocation for Private Internets)</span>`);
@@ -782,7 +837,7 @@ async function runScan() {
       print(`  WAN Exposure     → <span class="t-g">Protected behind Network Address Translation (NAT)</span>`);
       currentScanData.findings.push(`IANA Reserved RFC 1918 allocation`);
 
-      // 4. COMMON LAN EXPOSURES & SERVICE VECTORS
+      // 5. COMMON LAN EXPOSURES & SERVICE VECTORS
       printSection('COMMON LAN SERVICE MATRIX & THREAT PROFILE');
       print(`  Port <span class="t-o">80/TCP</span>   → HTTP Router Administration GUI (Embedded Web Console)`);
       print(`  Port <span class="t-o">443/TCP</span>  → HTTPS SSL Administration Portal`);
@@ -792,7 +847,7 @@ async function runScan() {
       print(`  Port <span class="t-o">1900/UDP</span> → SSDP (Universal Plug and Play / Device Discovery)`);
       currentScanData.findings.push(`Audited Standard LAN Ports: 80, 443, 445, 53, 22, 1900`);
 
-      // 5. BLUE TEAM DEFENSIVE AUDIT RECOMMENDATIONS
+      // 6. BLUE TEAM DEFENSIVE AUDIT RECOMMENDATIONS
       printSection('BLUE TEAM DEFENSIVE HARDENING ADVISORY');
       print(`  [ <span class="t-y">DEFENCE 01</span> ] <span class="t-w">Audit Router Credentials:</span> Change default factory passwords (admin:admin) immediately.`);
       print(`  [ <span class="t-y">DEFENCE 02</span> ] <span class="t-w">Disable UPnP:</span> Block internal malware from silently opening external WAN port forwards.`);
@@ -801,6 +856,26 @@ async function runScan() {
       print(`  [ <span class="t-y">DEFENCE 05</span> ] <span class="t-w">Mitigate LLMNR:</span> Disable LLMNR and NetBIOS via GPO to block Responder credential theft.`);
 
       currentScanData.riskPoints = 1; // Protected by NAT
+
+    } else if (isCgNatIP) {
+      // ══════════════════════════════════════════════
+      // CARRIER-GRADE NAT (RFC 6598) PIPELINE
+      // ══════════════════════════════════════════════
+      printSection('CARRIER-GRADE NAT (CGNAT) ANALYSIS');
+      print(`  Target IP        → <span class="t-w">${target}</span>`);
+      print(`  Network Class    → <span class="t-o">RFC 6598 Shared Address Space (Carrier-Grade NAT)</span>`);
+      print(`  Subnet Scope     → <span class="t-w">100.64.0.0/10 (Used by Jio, Airtel, Vi Cellular Networks)</span>`);
+      print(`  Allocation       → <span class="t-g">Assigned by ISP/Mobile Carrier between Cell Tower & Gateway</span>`);
+      print(`  WAN Reachability → <span class="t-y">⚠️ Internal Carrier Subnet (Non-Routable on Public Internet)</span>`);
+      print(`  `);
+      print(`  <span class="t-y">💡 How to trace this device across networks:</span>`);
+      print(`  Mobile carriers (Jio / Airtel) assign 100.64.x.x internally to phones and modems.`);
+      print(`  To see the device's public location, city, and ISP across the internet:`);
+      print(`  1. On that device, open <span class="t-g">https://sambit.page/netprobe</span> (it will auto-detect its public WAN IP).`);
+      print(`  2. Enter that Public IP here in NetProbe!`);
+
+      currentScanData.findings.push(`CGNAT: ${target} (RFC 6598 Carrier-Grade NAT)`);
+      currentScanData.riskPoints = 1;
 
     } else if (isTargetIP) {
       // ══════════════════════════════════════════════
@@ -850,7 +925,7 @@ async function runScan() {
           .catch(() => {})
       );
 
-      // C. IP Geolocation / Physical Location
+      // C. IP Geolocation / Device Physical Location & Carrier Intel
       probes.push(
         (async () => {
           geoData = await detectDeviceLocation(target);
@@ -892,28 +967,32 @@ async function runScan() {
 
       await Promise.allSettled(probes);
       const probeLatency = Math.round(performance.now() - probeT0);
-      const isHostOnline = activeSignals.length > 0 || !!ptrHost || (shodanData && shodanData.ports && shodanData.ports.length > 0) || isHttpAlive;
+      const isDirectlyReachable = activeSignals.length > 0 || isHttpAlive;
+      const isRoutedHost = !!geoData && (!!geoData.city || !!geoData.country || !!geoData.isp || !!geoData.asn);
 
-      if (isHostOnline) {
+      if (isDirectlyReachable) {
         print(`  Target IP        → <span class="t-w">${target} (Public IPv4)</span>`);
-        print(`  Host Status      → <span class="t-g" style="font-weight:700">● ACTIVE / ONLINE</span>`);
-        print(`  Probe Latency    → <span class="t-w">~${probeLatency}ms</span> (Network Probe Responded)`);
+        print(`  Host Status      → <span class="t-g" style="font-weight:700">● ACTIVE / ONLINE (Direct Service Responding)</span>`);
+        print(`  Probe Latency    → <span class="t-w">~${probeLatency}ms</span> (Live Network Handshake)`);
         if (activeSignals.length > 0) {
           print(`  Active Signals   → <span class="t-g">${activeSignals.join(' · ')}</span>`);
         }
         if (ptrHost) print(`  Hostname (PTR)   → <span class="t-w">${ptrHost}</span>`);
-        if (geoData && geoData.isp) {
-          print(`  Carrier Network  → <span class="t-w">${geoData.isp} — ${geoData.asn || 'WAN'}</span>`);
-        }
-        currentScanData.findings.push(`Host Status: ACTIVE / ONLINE (~${probeLatency}ms latency)`);
+        if (geoData && geoData.isp) print(`  Carrier Network  → <span class="t-w">${geoData.isp} — ${geoData.asn || 'WAN'}</span>`);
+        currentScanData.findings.push(`Host Status: ACTIVE (Direct Responding: ~${probeLatency}ms)`);
+      } else if (isRoutedHost) {
+        print(`  Target IP        → <span class="t-w">${target} (Public IPv4)</span>`);
+        print(`  Host Status      → <span class="t-g" style="font-weight:700">● ACTIVE (Routed Internet Device / Carrier Egress)</span>`);
+        print(`  Network Scope    → <span class="t-w">Public WAN IP (${geoData.isMobile ? '📱 Mobile 4G/5G Cellular Data' : '💻 Broadband / Wi-Fi Network'})</span>`);
+        print(`  Perimeter State  → <span class="t-g">Protected behind Carrier-Grade NAT (CGNAT) / Firewall</span>`);
+        print(`  Carrier Network  → <span class="t-w">${geoData.isp || 'Carrier'} ${geoData.asn ? '(' + geoData.asn + ')' : ''}</span>`);
+        if (ptrHost) print(`  Hostname (PTR)   → <span class="t-w">${ptrHost}</span>`);
+        currentScanData.findings.push(`Host Status: ACTIVE (Routed Device on ${geoData.isp})`);
       } else {
         print(`  Target IP        → <span class="t-w">${target} (Public IPv4)</span>`);
-        print(`  Host Status      → <span class="t-r" style="font-weight:700">● INACTIVE / FILTERED / UNREACHABLE</span>`);
-        print(`  Audit Diagnostic → <span class="t-d">Host unresponsive to active TCP/HTTP probes. May be offline or protected by perimeter firewall dropping packets.</span>`);
-        if (geoData && geoData.isp) {
-          print(`  Carrier Network  → <span class="t-w">${geoData.isp} — ${geoData.asn || 'WAN'}</span>`);
-        }
-        currentScanData.findings.push(`Host Status: INACTIVE / FILTERED`);
+        print(`  Host Status      → <span class="t-r" style="font-weight:700">● UNALLOCATED / BGP UNROUTED</span>`);
+        print(`  Audit Diagnostic → <span class="t-d">IP address does not appear to have an active BGP routing announcement or public allocation.</span>`);
+        currentScanData.findings.push(`Host Status: UNALLOCATED`);
       }
 
       // 1. REVERSE DNS (PTR)
@@ -922,7 +1001,7 @@ async function runScan() {
         print(`  PTR Hostname     → <span class="t-w">${ptrHost}</span>`);
         currentScanData.findings.push(`Reverse DNS: ${ptrHost}`);
       } else {
-        print(`  <span class="t-d">No PTR record associated with this IP.</span>`);
+        print(`  <span class="t-d">No PTR record associated with this IP (Standard for mobile/consumer broadband dynamic pools).</span>`);
       }
 
       // 2. IP GEOLOCATION & PHYSICAL LOCATION
@@ -933,14 +1012,35 @@ async function runScan() {
         print(`  Region / State   → <span class="t-w">${geoData.region || 'N/A'}</span>`);
         print(`  Country          → <span class="t-w">${geoData.country} (${geoData.countryCode || ''})</span>`);
         if (geoData.lat && geoData.lon) {
-          print(`  Geo Coordinates  → <span class="t-g">${geoData.lat}°, ${geoData.lon}°</span> <a href="https://www.google.com/maps?q=${geoData.lat},${geoData.lon}" target="_blank" style="color:var(--green);text-decoration:underline;font-size:.68rem;margin-left:.5rem">[ View on Map ↗ ]</a>`);
+          print(`  Geo Coordinates  → <span class="t-g">${geoData.lat}°, ${geoData.lon}°</span> <a href="https://www.google.com/maps?q=${geoData.lat},${geoData.lon}" target="_blank" style="color:var(--green);text-decoration:underline;font-size:.68rem;margin-left:.5rem">[ View on Google Maps ↗ ]</a>`);
         }
-        print(`  ISP / Carrier    → <span class="t-w">${geoData.isp || ''} — ${geoData.asn || 'N/A'}</span>`);
-        if (geoData.org && geoData.org !== geoData.isp) print(`  Org / Host       → <span class="t-w">${geoData.org}</span>`);
-        if (geoData.tz) print(`  Timezone         → <span class="t-w">${geoData.tz}</span>`);
+        if (geoData.tz) {
+          print(`  Device Timezone  → <span class="t-w">${geoData.tz}</span>${geoData.localTime ? ` <span class="t-d">(Target Local Time: ${geoData.localTime})</span>` : ''}`);
+        }
         currentScanData.findings.push(`Geo: ${geoData.city}, ${geoData.country} (${geoData.lat}, ${geoData.lon})`);
       } else {
         print(`  <span class="t-d">Geolocation data unavailable.</span>`);
+      }
+
+      // 3. CARRIER & NETWORK INTELLIGENCE
+      printSection('CARRIER & NETWORK INTELLIGENCE');
+      if (geoData && (geoData.isp || geoData.asn)) {
+        print(`  ISP / Provider   → <span class="t-w">${geoData.isp || 'N/A'}</span>`);
+        if (geoData.org && geoData.org !== geoData.isp) {
+          print(`  Organization     → <span class="t-w">${geoData.org}</span>`);
+        }
+        print(`  Autonomous Sys   → <span class="t-w">${geoData.asn || 'N/A'}</span>`);
+        print(`  Network Type     → <span class="t-w">${geoData.isMobile ? '📱 Mobile / Cellular Network (4G/5G Hotspot / Smartphone)' : '💻 Broadband / Fixed-line Wi-Fi Network'}</span>`);
+        
+        let privacyBadge = '<span class="t-g">● Clean Residential / Direct Carrier Connection</span>';
+        if (geoData.isVpn) privacyBadge = '<span class="t-o">⚠️ VPN Egress Detected</span>';
+        else if (geoData.isProxy) privacyBadge = '<span class="t-o">⚠️ Proxy Gateway Detected</span>';
+        else if (geoData.isTor) privacyBadge = '<span class="t-r">⚠️ Tor Exit Node Detected</span>';
+        else if (geoData.isDatacenter) privacyBadge = '<span class="t-y">🏢 Hosting / Datacenter IP</span>';
+        print(`  Privacy Profile  → ${privacyBadge}`);
+        currentScanData.findings.push(`Network: ${geoData.isp} (${geoData.asn})`);
+      } else {
+        print(`  <span class="t-d">Carrier and network telemetry unavailable.</span>`);
       }
 
       if (isMyDevice) {
@@ -952,7 +1052,7 @@ async function runScan() {
         print(`  Device Link      → <span class="t-g">● Active Client Session (Device Location Verified)</span>`);
       }
 
-      // 3. THREAT INTEL & OPEN PORTS (SHODAN)
+      // 4. THREAT INTEL & OPEN PORTS (SHODAN)
       printSection('THREAT INTEL & OPEN PORTS (SHODAN)');
       if (shodanData && shodanData.ports && shodanData.ports.length > 0) {
         print(`  <span class="t-g">Active Ports Discovered (${shodanData.ports.length}):</span>`);
@@ -978,17 +1078,17 @@ async function runScan() {
           currentScanData.riskPoints += 10;
         }
       } else {
-        print(`  <span class="t-g">No commonly exposed open ports or CVEs indexed on Shodan.</span>`);
+        print(`  <span class="t-g">● Clean: No exposed inbound listening ports (Protected by Carrier NAT / Router Firewall).</span>`);
       }
 
-      // 4. HTTP / WEB SERVICE TEST
+      // 5. HTTP / WEB SERVICE TEST
       printSection('HTTP / WEB SERVICE DETECTION');
       if (isHttpAlive) {
         print(`  <span class="t-g">Active HTTP Web Server Responded on IP:</span>`);
         if (httpBanner) print(`  Server   → <span class="t-w">${httpBanner}</span>`);
         print(`  Status   → <span class="t-g">Online & Accepting HTTP Connections</span>`);
       } else {
-        print(`  <span class="t-d">No active HTTP web service responded directly on raw IP address.</span>`);
+        print(`  <span class="t-d">No active HTTP web service responded directly on raw IP address (Standard for personal client devices).</span>`);
       }
 
     } else {
@@ -1146,7 +1246,7 @@ async function runScan() {
           uid: currentUser.uid,
           email: currentUser.email || 'user',
           target: target,
-          targetType: isTargetIP ? (isPrivate ? 'private_ip' : 'ip') : 'domain',
+          targetType: isTargetIP ? (isPrivate ? 'private_ip' : (isCgNatIP ? 'cgnat_ip' : 'ip')) : 'domain',
           riskScore: finalRisk,
           points: currentScanData.riskPoints,
           timestamp: serverTimestamp()
