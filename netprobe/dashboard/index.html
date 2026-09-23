@@ -101,8 +101,12 @@ td{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.02)}
 <body>
 
 <nav>
-  <a href="/netprobe/" class="nav-brand">NETPROBE<span style="color:var(--dim)">.</span>SOC</a>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <a href="/netprobe/" class="nav-brand">NETPROBE<span style="color:var(--dim)">.</span>SOC</a>
+    <a href="/" style="font-size:.65rem;color:var(--dim);text-decoration:none;border-left:1px solid var(--border);padding-left:1rem">← Portfolio</a>
+  </div>
   <div class="nav-r">
+    <a href="/netprobe/admin/" id="btn-admin" style="display:none;font-size:.65rem;letter-spacing:.08em;padding:.3rem .7rem;border:1px solid var(--green);color:var(--green);text-decoration:none;transition:all .2s;background:rgba(74,222,128,.08)">⚙ Admin Panel</a>
     <span class="nav-user" id="nav-user"></span>
     <button class="nav-out" id="btn-out">Sign Out</button>
   </div>
@@ -248,8 +252,18 @@ function show(id){
   document.getElementById(id).classList.add('active');
 }
 
+const ADMIN_EMAILS = ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com'];
+function isAdmin(email) {
+  return email && ADMIN_EMAILS.includes(email.toLowerCase().trim());
+}
+
 async function checkRateLimit(){
   try {
+    if(isAdmin(currentUser?.email)) {
+      document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ∞ (Admin)`;
+      return true;
+    }
+
     const q = query(collection(db,'scan_logs'), where('uid','==',currentUser.uid));
     const snap = await getDocs(q);
     
@@ -261,11 +275,6 @@ async function checkRateLimit(){
       const data = d.data();
       if(data.timestamp && data.timestamp.toDate && data.timestamp.toDate() >= startOfDay) scansToday++;
     });
-    
-    if(currentUser.email === 'satapathys198@gmail.com') {
-      document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ∞ (Admin)`;
-      return true;
-    }
     
     document.getElementById('scan-limit').textContent = `Scans today: ${scansToday} / ${MAX_SCANS}`;
     return scansToday < MAX_SCANS;
@@ -343,43 +352,78 @@ async function loadSocHistory() {
   }
 }
 
-onAuthStateChanged(auth,async user=>{
-  if(!user){window.location.href='/login/?redirect='+encodeURIComponent('/netprobe/dashboard/');return;}
+onAuthStateChanged(auth, async user => {
+  if(!user){
+    window.location.href='/login/?redirect='+encodeURIComponent('/netprobe/dashboard/');
+    return;
+  }
   currentUser = user;
   document.getElementById('nav-user').textContent=user.email||'';
   document.getElementById('btn-out').onclick=()=>signOut(auth).then(()=>window.location.href='/');
 
-  const uSnap=await getDoc(doc(db,'users',user.uid));
-  if(!uSnap.exists()||!uSnap.data().status){
-    show('st-request');
-  } else {
-    const s=uSnap.data().status;
-    if(s==='approved'){
-      show('st-scanner');
-      checkRateLimit();
-      loadSocHistory();
-    }
-    else if(s==='pending') show('st-pending');
-    else if(s==='rejected') show('st-rejected');
-    else show('st-request');
+  // Check if admin
+  if (isAdmin(user.email)) {
+    const adminBtn = document.getElementById('btn-admin');
+    if (adminBtn) adminBtn.style.display = 'inline-block';
+    
+    // Auto-approve admin in users collection in background
+    setDoc(doc(db, 'users', user.uid), {
+      status: 'approved',
+      email: user.email,
+      role: 'admin',
+      displayName: user.displayName || 'Admin'
+    }, { merge: true }).catch(() => {});
+    
+    show('st-scanner');
+    checkRateLimit();
+    loadSocHistory();
+    return;
   }
 
-  document.getElementById('req-form').onsubmit=async e=>{
-    e.preventDefault();
-    const btn=document.getElementById('req-btn');
-    btn.disabled=true;btn.textContent='Submitting…';
-    try{
-      await setDoc(doc(db,'users',user.uid),{
-        status:'pending',
-        displayName:document.getElementById('req-name').value.trim(),
-        email:user.email,
-        uid:user.uid,
-        reason:document.getElementById('req-reason').value.trim(),
-        requestedAt:serverTimestamp()
-      },{merge:true});
-      setTimeout(()=>show('st-pending'),1000);
-    }catch(err){alert('Error: '+err.message);btn.disabled=false;}
-  };
+  // Non-admin user verification with resilient fallback
+  try {
+    const uSnap = await getDoc(doc(db, 'users', user.uid));
+    if(!uSnap.exists() || !uSnap.data().status){
+      show('st-request');
+    } else {
+      const s = uSnap.data().status;
+      if(s === 'approved'){
+        show('st-scanner');
+        checkRateLimit();
+        loadSocHistory();
+      }
+      else if(s === 'pending') show('st-pending');
+      else if(s === 'rejected') show('st-rejected');
+      else show('st-request');
+    }
+  } catch(err) {
+    console.warn("Status check failed, defaulting to request view:", err);
+    show('st-request');
+  }
+
+  const reqForm = document.getElementById('req-form');
+  if (reqForm) {
+    reqForm.onsubmit = async e => {
+      e.preventDefault();
+      const btn = document.getElementById('req-btn');
+      btn.disabled = true; btn.textContent = 'Submitting…';
+      try {
+        await setDoc(doc(db, 'users', user.uid), {
+          status: 'pending',
+          displayName: document.getElementById('req-name').value.trim(),
+          email: user.email,
+          uid: user.uid,
+          reason: document.getElementById('req-reason').value.trim(),
+          requestedAt: serverTimestamp()
+        }, { merge: true });
+        setTimeout(() => show('st-pending'), 600);
+      } catch(err) {
+        alert('Error: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Submit Request';
+      }
+    };
+  }
 });
 
 // ── SCANNER LOGIC ──

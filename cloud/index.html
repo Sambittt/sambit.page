@@ -521,7 +521,8 @@
         } else {
           $topAvatar.innerHTML = `<svg viewBox="0 0 24 24" fill="#4ade80" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;margin:auto;display:block"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>`;
         }
-        if (user.email === 'satapathys198@gmail.com') {
+        const ADMIN_EMAILS = ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com'];
+        if (ADMIN_EMAILS.includes(user.email)) {
           document.getElementById('admin-btn').style.display = 'inline-block';
         }
         loadShares();

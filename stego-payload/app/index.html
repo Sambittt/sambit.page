@@ -14,8 +14,9 @@
   <div class="nav-links">
     <a href="/">← Portfolio</a>
     <a href="/ascii-converter/">ASCII Studio</a>
-    <a href="/netprobe/">NetProbe</a>
+    <a href="/netprobe/dashboard/">NetProbe</a>
     <a href="/stego-payload/" class="active">Stego Injector</a>
+    <a href="/stego-payload/admin/" id="btn-admin" style="display:none;color:var(--red);border:1px solid var(--red);padding:.2rem .5rem">⚙ Stego Admin</a>
   </div>
   <span class="pulse">SEC LAB</span>
 </nav>
@@ -141,19 +142,44 @@ function show(id) {
   document.getElementById(id).style.display = (id === 'st-app') ? 'block' : 'flex';
 }
 
+const ADMIN_EMAILS = ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com'];
+function isAdmin(email) {
+  return email && ADMIN_EMAILS.includes(email.toLowerCase().trim());
+}
+
 onAuthStateChanged(auth, async user => {
   if (!user) { window.location.href = '/stego-payload/'; return; }
   
-  const uSnap = await getDoc(doc(db, 'users', user.uid));
-  
-  if (!uSnap.exists() || !uSnap.data().stego_status) {
+  if (isAdmin(user.email)) {
+    const adminBtn = document.getElementById('btn-admin');
+    if (adminBtn) adminBtn.style.display = 'inline-block';
+    
+    // Auto-approve admin in users collection silently
+    setDoc(doc(db, 'users', user.uid), {
+      stego_status: 'approved',
+      email: user.email,
+      role: 'admin',
+      displayName: user.displayName || 'Admin'
+    }, { merge: true }).catch(() => {});
+    
+    show('st-app');
+    return;
+  }
+
+  try {
+    const uSnap = await getDoc(doc(db, 'users', user.uid));
+    if (!uSnap.exists() || !uSnap.data().stego_status) {
+      show('st-request');
+    } else {
+      const s = uSnap.data().stego_status;
+      if (s === 'approved') show('st-app');
+      else if (s === 'pending') show('st-pending');
+      else if (s === 'rejected') show('st-rejected');
+      else show('st-request');
+    }
+  } catch (err) {
+    console.warn("Stego status check error:", err);
     show('st-request');
-  } else {
-    const s = uSnap.data().stego_status;
-    if (s === 'approved') show('st-app');
-    else if (s === 'pending') show('st-pending');
-    else if (s === 'rejected') show('st-rejected');
-    else show('st-request');
   }
 
   const reqForm = document.getElementById('req-form');
@@ -168,7 +194,8 @@ onAuthStateChanged(auth, async user => {
           stego_status: 'pending',
           stego_reason: document.getElementById('req-reason').value.trim(),
           email: user.email,
-          displayName: user.displayName || 'Unknown'
+          displayName: user.displayName || 'Unknown',
+          requestedAt: new Date()
         }, { merge: true });
         show('st-pending');
       } catch (err) {

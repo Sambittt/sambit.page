@@ -272,6 +272,8 @@
   <nav>
     <div class="nav-brand">⚠ CLOUDSHARE <span>/ admin audit</span></div>
     <div class="nav-right">
+      <a href="/netprobe/admin/" class="btn-nav" style="border-color: rgba(34,197,94,0.3); color: #22c55e;">NetProbe Admin ↗</a>
+      <a href="/stego-payload/admin/" class="btn-nav" style="border-color: rgba(168,85,247,0.3); color: #c084fc;">Stego Admin ↗</a>
       <a href="/cloud/" class="btn-nav">← Cloud Dashboard</a>
       <span class="nav-user" id="nav-user"></span>
       <button class="btn-nav danger" id="btn-logout">Sign Out</button>
@@ -387,7 +389,7 @@
     import { getStorage, ref, deleteObject }
       from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
-    const ADMIN_EMAIL = 'satapathys198@gmail.com';
+    const ADMIN_EMAILS = ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com'];
 
     const fbApp = initializeApp({
       apiKey: "AIzaSyAvwVd19ucMaKp_WsYDSVU0hzu5asHhS1k",
@@ -421,7 +423,7 @@
         return;
       }
 
-      if (user.email !== ADMIN_EMAIL) {
+      if (!ADMIN_EMAILS.includes(user.email)) {
         $denied.classList.add('show');
         return;
       }
