@@ -182,13 +182,16 @@ td{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.02)}
       <div class="scan-limit" id="scan-limit">Scans today: - / 5</div>
     </div>
     
-    <!-- TARGET TYPE SELECTOR (Domain or IP Target) -->
+    <!-- TARGET TYPE SELECTOR (Domain, IP Target, or My Device) -->
     <div class="target-modes">
       <button type="button" class="target-mode-btn active" id="btn-mode-domain">
         <span>🌐</span> Domain / Website
       </button>
       <button type="button" class="target-mode-btn" id="btn-mode-ip">
         <span>🎯</span> IP Target (IPv4 / Host)
+      </button>
+      <button type="button" class="target-mode-btn" id="btn-mode-device" style="border-color:rgba(74,222,128,.3)">
+        <span>💻</span> Scan My Device (Auto-Detect)
       </button>
     </div>
 
@@ -460,9 +463,10 @@ const termOut = document.getElementById('term-out');
 const termTitle = document.getElementById('term-title');
 const scanMsg = document.getElementById('scan-msg');
 
-let scanMode = 'domain'; // 'domain' | 'ip'
+let scanMode = 'domain'; // 'domain' | 'ip' | 'device'
 const btnModeDomain = document.getElementById('btn-mode-domain');
 const btnModeIp = document.getElementById('btn-mode-ip');
+const btnModeDevice = document.getElementById('btn-mode-device');
 const inputPfx = document.getElementById('input-pfx');
 const targetModeTag = document.getElementById('target-mode-tag');
 const targetHintText = document.getElementById('target-hint-text');
@@ -471,23 +475,101 @@ if (btnModeDomain && btnModeIp) {
   btnModeDomain.onclick = () => setScanMode('domain');
   btnModeIp.onclick = () => setScanMode('ip');
 }
+if (btnModeDevice) {
+  btnModeDevice.onclick = () => setScanMode('device');
+}
 
-function setScanMode(mode) {
+async function detectDeviceLocation(customIp = '') {
+  let client = null;
+  const ipParam = customIp ? `/${customIp}` : '';
+  const queryParam = customIp ? customIp : '';
+
+  // 1. Try freeipapi.com
+  try {
+    const r1 = await fetch(`https://freeipapi.com/api/json${ipParam}`);
+    const d1 = await r1.json();
+    if (d1 && (d1.cityName || d1.countryName || d1.ipAddress)) {
+      client = {
+        ip: d1.ipAddress,
+        city: d1.cityName,
+        region: d1.regionName,
+        country: d1.countryName,
+        countryCode: d1.countryCode,
+        lat: d1.latitude,
+        lon: d1.longitude,
+        isp: d1.asnOrganization,
+        asn: d1.asn ? `AS${d1.asn}` : '',
+        tz: d1.timeZones ? d1.timeZones[0] : ''
+      };
+      return client;
+    }
+  } catch(e) {}
+
+  // 2. Try ipwhois.app
+  try {
+    const r2 = await fetch(`https://ipwhois.app/json/${queryParam}`);
+    const d2 = await r2.json();
+    if (d2 && d2.success !== false) {
+      client = {
+        ip: d2.ip,
+        city: d2.city,
+        region: d2.region,
+        country: d2.country,
+        countryCode: d2.country_code,
+        lat: d2.latitude,
+        lon: d2.longitude,
+        isp: d2.isp || d2.org,
+        org: d2.org,
+        asn: d2.asn,
+        tz: d2.timezone_name || d2.timezone
+      };
+      return client;
+    }
+  } catch(e) {}
+
+  // 3. Fallback to ipify for IP only
+  if (!customIp) {
+    try {
+      const r3 = await fetch('https://api.ipify.org?format=json');
+      const d3 = await r3.json();
+      if (d3 && d3.ip) client = { ip: d3.ip, city: 'Unknown', country: 'N/A' };
+    } catch(e) {}
+  }
+  return client;
+}
+
+async function setScanMode(mode) {
   scanMode = mode;
+  btnModeDomain.classList.toggle('active', mode === 'domain');
+  btnModeIp.classList.toggle('active', mode === 'ip');
+  if (btnModeDevice) btnModeDevice.classList.toggle('active', mode === 'device');
+
   if (mode === 'domain') {
-    btnModeDomain.classList.add('active');
-    btnModeIp.classList.remove('active');
     inputPfx.textContent = 'domain ›';
     inpTarget.placeholder = 'example.com or sub.example.com';
     targetModeTag.textContent = 'Domain Mode';
     targetHintText.textContent = 'Passive OSINT: Live Reachability, DNS Enumeration, WHOIS, Security Headers, SSL, Geolocation & Threat Intel';
-  } else {
-    btnModeIp.classList.add('active');
-    btnModeDomain.classList.remove('active');
+  } else if (mode === 'ip') {
     inputPfx.textContent = 'ip target ›';
     inpTarget.placeholder = 'e.g. 8.8.8.8, 1.1.1.1, 142.250.190.46';
     targetModeTag.textContent = 'IP Target Mode';
-    targetHintText.textContent = 'Host Recon: Live Host Reachability (Active/Offline Detector), Reverse DNS (PTR), Geolocation, Shodan Open Ports & CVEs';
+    targetHintText.textContent = 'Host Recon: Live Host Reachability (Active/Offline Detector), Reverse DNS (PTR), Physical Location, Shodan Ports & CVEs';
+  } else if (mode === 'device') {
+    inputPfx.textContent = 'my device ›';
+    inpTarget.placeholder = 'Auto-detecting your device location...';
+    targetModeTag.textContent = 'Device Location Mode';
+    targetHintText.textContent = 'Device Recon: Detecting physical coordinates, public WAN IP, city/region, ISP carrier & device security';
+    scanMsg.textContent = '// Auto-detecting your device public IP and location...';
+    scanMsg.className = 'msg ok show';
+    const dev = await detectDeviceLocation();
+    if (dev && dev.ip) {
+      inpTarget.value = dev.ip;
+      scanMsg.textContent = `// Device detected: ${dev.ip} (${dev.city || ''}, ${dev.country || ''})`;
+      runScan();
+    } else {
+      scanMsg.textContent = '// Could not auto-detect device IP. Please enter it manually.';
+      scanMsg.className = 'msg err show';
+    }
   }
 }
 
@@ -540,10 +622,23 @@ async function runScan() {
   let target = inpTarget.value.trim().toLowerCase();
   target = target.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').trim();
 
+  const isDeviceTarget = ['my device', 'mydevice', 'device', 'my ip', 'myip', 'me', 'this device', 'current device', 'localhost', '127.0.0.1'].includes(target);
+  let isMyDevice = isDeviceTarget || scanMode === 'device';
+
+  if (isDeviceTarget) {
+    scanMsg.textContent = '// Auto-resolving your device public IP & location...';
+    scanMsg.className = 'msg ok show';
+    const dev = await detectDeviceLocation();
+    if (dev && dev.ip) {
+      target = dev.ip;
+      inpTarget.value = dev.ip;
+    }
+  }
+
   if(!target) {
     scanMsg.textContent = scanMode === 'ip'
       ? '// Please enter an IP target (e.g. 8.8.8.8 or 192.168.0.1)'
-      : '// Please enter a domain target (e.g. example.com)';
+      : (scanMode === 'device' ? '// Auto-detecting your device IP...' : '// Please enter a domain target (e.g. example.com)');
     scanMsg.className = 'msg err show';
     return;
   }
@@ -551,14 +646,14 @@ async function runScan() {
   const isTargetIP = isIPAddress(target);
 
   // Auto-switch mode UI if user typed IP in domain mode or domain in IP mode
-  if (isTargetIP && scanMode !== 'ip') {
+  if (isTargetIP && scanMode === 'domain') {
     setScanMode('ip');
-  } else if (!isTargetIP && scanMode === 'ip') {
+  } else if (!isTargetIP && (scanMode === 'ip' || scanMode === 'device')) {
     setScanMode('domain');
   }
 
   if (!isTargetIP && (target.includes(' ') || target.split('.').length < 2)) {
-    scanMsg.textContent = '// Please enter a valid domain (e.g. example.com) or IP (e.g. 8.8.8.8)';
+    scanMsg.textContent = '// Please enter a valid domain (e.g. example.com), IP (e.g. 8.8.8.8), or "my device"';
     scanMsg.className = 'msg err show';
     return;
   }
@@ -637,7 +732,31 @@ async function runScan() {
       print(`  Reachability     → <span class="t-g">Active on Local LAN (Protected behind NAT / Non-Routable on WAN)</span>`);
       currentScanData.findings.push(`Host Status: ACTIVE (Private Intranet Interface: ${target})`);
 
-      // 1. RFC 1918 INTRANET SCOPE & SUBNET ANALYSIS
+      // 1. DEVICE PHYSICAL LOCATION & WAN EGRESS
+      printSection('DEVICE PHYSICAL LOCATION & WAN EGRESS');
+      print(`  Querying device WAN egress gateway and physical geolocation...`);
+      try {
+        const clientGeo = await detectDeviceLocation();
+        if (clientGeo && (clientGeo.city || clientGeo.country)) {
+          print(`  Device Public IP → <span class="t-w">${clientGeo.ip}</span> (Your WAN Egress Gateway)`);
+          print(`  Physical City    → <span class="t-g" style="font-weight:700">${clientGeo.city || 'Unknown'}</span>`);
+          print(`  Region / State   → <span class="t-w">${clientGeo.region || 'N/A'}</span>`);
+          print(`  Country          → <span class="t-w">${clientGeo.country} (${clientGeo.countryCode || ''})</span>`);
+          if (clientGeo.lat && clientGeo.lon) {
+            print(`  Geo Coordinates  → <span class="t-g">${clientGeo.lat}°, ${clientGeo.lon}°</span> <a href="https://www.google.com/maps?q=${clientGeo.lat},${clientGeo.lon}" target="_blank" style="color:var(--green);text-decoration:underline;font-size:.68rem;margin-left:.5rem">[ View on Map ↗ ]</a>`);
+          }
+          print(`  ISP / Carrier    → <span class="t-w">${clientGeo.isp || 'N/A'} ${clientGeo.asn ? '(' + clientGeo.asn + ')' : ''}</span>`);
+          if (clientGeo.tz) print(`  Device Timezone  → <span class="t-w">${clientGeo.tz}</span>`);
+          print(`  Local Interface  → <span class="t-o">${target} (Internal LAN Binding)</span>`);
+          currentScanData.findings.push(`Device Location: ${clientGeo.city}, ${clientGeo.country} (${clientGeo.lat}, ${clientGeo.lon})`);
+        } else {
+          print(`  <span class="t-d">Device WAN location lookup unavailable.</span>`);
+        }
+      } catch(e) {
+        print(`  <span class="t-d">Device location lookup skipped.</span>`);
+      }
+
+      // 2. RFC 1918 INTRANET SCOPE & SUBNET ANALYSIS
       printSection('RFC 1918 INTRANET SCOPE & SUBNET ANALYSIS');
       print(`  Host IP          → <span class="t-w">${target}</span>`);
       print(`  Network Type     → <span class="t-o">RFC 1918 Private Intranet (${subnetClass})</span>`);
@@ -731,14 +850,11 @@ async function runScan() {
           .catch(() => {})
       );
 
-      // C. IP Geolocation / ASN
+      // C. IP Geolocation / Physical Location
       probes.push(
-        fetch(`https://ipwhois.app/json/${target}`)
-          .then(r => r.json())
-          .then(d => {
-            if (d && d.success !== false) geoData = d;
-          })
-          .catch(() => {})
+        (async () => {
+          geoData = await detectDeviceLocation(target);
+        })()
       );
 
       // D. HTTP / Web Service probe with fast 2s timeout
@@ -809,27 +925,31 @@ async function runScan() {
         print(`  <span class="t-d">No PTR record associated with this IP.</span>`);
       }
 
-      // 2. IP GEOLOCATION & ASN INTEL
-      printSection('IP GEOLOCATION & NETWORK INTEL');
-      if (geoData && geoData.success !== false) {
+      // 2. IP GEOLOCATION & PHYSICAL LOCATION
+      printSection('IP GEOLOCATION & PHYSICAL LOCATION');
+      if (geoData && (geoData.city || geoData.country)) {
         print(`  IP Address       → <span class="t-w">${target}</span>`);
-        print(`  Location         → <span class="t-w">${geoData.city || 'Unknown'}, ${geoData.region || ''} (${geoData.country || 'N/A'})</span>`);
-        print(`  ISP / ASN        → <span class="t-w">${geoData.isp || ''} — ${geoData.asn || 'N/A'}</span>`);
-        print(`  Org / Host       → <span class="t-w">${geoData.org || geoData.isp || 'N/A'}</span>`);
-        currentScanData.findings.push(`Geo: ${geoData.city}, ${geoData.country} (${geoData.isp})`);
+        print(`  Physical City    → <span class="t-g" style="font-weight:700">${geoData.city || 'Unknown'}</span>`);
+        print(`  Region / State   → <span class="t-w">${geoData.region || 'N/A'}</span>`);
+        print(`  Country          → <span class="t-w">${geoData.country} (${geoData.countryCode || ''})</span>`);
+        if (geoData.lat && geoData.lon) {
+          print(`  Geo Coordinates  → <span class="t-g">${geoData.lat}°, ${geoData.lon}°</span> <a href="https://www.google.com/maps?q=${geoData.lat},${geoData.lon}" target="_blank" style="color:var(--green);text-decoration:underline;font-size:.68rem;margin-left:.5rem">[ View on Map ↗ ]</a>`);
+        }
+        print(`  ISP / Carrier    → <span class="t-w">${geoData.isp || ''} — ${geoData.asn || 'N/A'}</span>`);
+        if (geoData.org && geoData.org !== geoData.isp) print(`  Org / Host       → <span class="t-w">${geoData.org}</span>`);
+        if (geoData.tz) print(`  Timezone         → <span class="t-w">${geoData.tz}</span>`);
+        currentScanData.findings.push(`Geo: ${geoData.city}, ${geoData.country} (${geoData.lat}, ${geoData.lon})`);
       } else {
-        // Fallback to ipapi.co
-        try {
-          const altRes = await fetch(`https://ipapi.co/${target}/json/`);
-          const altData = await altRes.json();
-          if (altData && altData.ip) {
-            print(`  Location         → <span class="t-w">${altData.city}, ${altData.country_name}</span>`);
-            print(`  ISP / ASN        → <span class="t-w">${altData.org}</span>`);
-            currentScanData.findings.push(`Geo: ${altData.city}, ${altData.country_name}`);
-          } else {
-            print(`  <span class="t-d">Geolocation data unavailable.</span>`);
-          }
-        } catch(e) { print(`  <span class="t-d">Geolocation lookup skipped.</span>`); }
+        print(`  <span class="t-d">Geolocation data unavailable.</span>`);
+      }
+
+      if (isMyDevice) {
+        printSection('CLIENT DEVICE & BROWSER TELEMETRY');
+        print(`  Device Platform  → <span class="t-w">${navigator.userAgentData?.platform || navigator.platform || 'Client Workstation'}</span>`);
+        print(`  User-Agent       → <span class="t-w">${navigator.userAgent.slice(0, 75)}...</span>`);
+        print(`  Screen Viewport  → <span class="t-w">${window.screen.width} x ${window.screen.height} (${window.devicePixelRatio || 1}x DPI)</span>`);
+        print(`  Client Language  → <span class="t-w">${navigator.language || 'en-US'}</span>`);
+        print(`  Device Link      → <span class="t-g">● Active Client Session (Device Location Verified)</span>`);
       }
 
       // 3. THREAT INTEL & OPEN PORTS (SHODAN)
@@ -956,19 +1076,24 @@ async function runScan() {
 
       // 4. Geolocation & Shodan on resolved IP
       if(resolvedIP) {
-        printSection('IP GEOLOCATION');
+        printSection('IP GEOLOCATION & PHYSICAL LOCATION');
         try {
-          const geoRes = await fetch(`https://ipwhois.app/json/${resolvedIP}`);
-          const geoData = await geoRes.json();
-          if (geoData && geoData.success !== false) {
-            print(`  IP        → <span class="t-w">${resolvedIP}</span>`);
-            print(`  Location  → <span class="t-w">${geoData.city || 'Unknown'}, ${geoData.country || 'N/A'}</span>`);
-            print(`  ISP/ASN   → <span class="t-w">${geoData.isp || geoData.org || 'N/A'}</span>`);
-            currentScanData.findings.push(`Hosted by: ${geoData.isp} in ${geoData.country}`);
+          const domGeo = await detectDeviceLocation(resolvedIP);
+          if (domGeo && (domGeo.city || domGeo.country)) {
+            print(`  Resolved IP      → <span class="t-w">${resolvedIP}</span>`);
+            print(`  Physical City    → <span class="t-g" style="font-weight:700">${domGeo.city || 'Unknown'}</span>`);
+            print(`  Region / State   → <span class="t-w">${domGeo.region || 'N/A'}</span>`);
+            print(`  Country          → <span class="t-w">${domGeo.country} (${domGeo.countryCode || ''})</span>`);
+            if (domGeo.lat && domGeo.lon) {
+              print(`  Geo Coordinates  → <span class="t-g">${domGeo.lat}°, ${domGeo.lon}°</span> <a href="https://www.google.com/maps?q=${domGeo.lat},${domGeo.lon}" target="_blank" style="color:var(--green);text-decoration:underline;font-size:.68rem;margin-left:.5rem">[ View on Map ↗ ]</a>`);
+            }
+            print(`  ISP / Carrier    → <span class="t-w">${domGeo.isp || ''} — ${domGeo.asn || 'N/A'}</span>`);
+            currentScanData.findings.push(`Hosted by: ${domGeo.isp || 'Host'} in ${domGeo.city}, ${domGeo.country}`);
           } else {
-            print(`  IP        → <span class="t-w">${resolvedIP}</span>`);
+            print(`  Resolved IP      → <span class="t-w">${resolvedIP}</span>`);
+            print(`  <span class="t-d">Geolocation data unavailable.</span>`);
           }
-        } catch(e) { print(`  <span class="t-r">Geolocation failed.</span>`); }
+        } catch(e) { print(`  <span class="t-r">Geolocation lookup skipped.</span>`); }
 
         printSection('THREAT INTEL & VULNERABILITIES (SHODAN)');
         try {
