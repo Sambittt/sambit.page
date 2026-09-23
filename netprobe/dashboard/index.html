@@ -71,7 +71,16 @@ nav{border-bottom:1px solid var(--border);background:rgba(3,3,3,.95);padding:.65
 .scanner-inner{max-width:1000px;width:100%;margin:0 auto}
 .scanner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
 .scanner-title{font-size:1.1rem;font-weight:700;color:var(--green)}
-.scan-limit{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid rgba(74,222,128,.3);color:var(--green);background:rgba(74,222,128,.06)}
+.target-modes{display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap}
+.target-mode-btn{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.06em;
+  padding:.45rem 1rem;border:1px solid var(--border);background:var(--card);
+  color:var(--dim);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;border-radius:2px
+}
+.target-mode-btn.active{border-color:var(--green);color:var(--green);background:rgba(74,222,128,.1);box-shadow:0 0 12px rgba(74,222,128,.15)}
+.target-mode-btn:hover:not(.active){border-color:rgba(74,222,128,.4);color:var(--fg)}
+.target-hint{font-size:.67rem;color:var(--dim);margin-bottom:.85rem;letter-spacing:.04em;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.target-hint-tag{background:var(--muted);border:1px solid var(--border);padding:.15rem .5rem;color:var(--green);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}
 .scan-bar{display:flex;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap}
 .scan-bar .input-wrap{flex:1;min-width:200px}
 .term{border:1px solid var(--border);background:var(--card);overflow:hidden;margin-top:2rem;box-shadow:0 10px 30px rgba(0,0,0,.5)}
@@ -173,10 +182,25 @@ td{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.02)}
       <div class="scan-limit" id="scan-limit">Scans today: - / 5</div>
     </div>
     
+    <!-- TARGET TYPE SELECTOR (Domain or IP Target) -->
+    <div class="target-modes">
+      <button type="button" class="target-mode-btn active" id="btn-mode-domain">
+        <span>🌐</span> Domain / Website
+      </button>
+      <button type="button" class="target-mode-btn" id="btn-mode-ip">
+        <span>🎯</span> IP Target (IPv4 / Host)
+      </button>
+    </div>
+
+    <div class="target-hint" id="target-hint">
+      <span class="target-hint-tag" id="target-mode-tag">Domain Mode</span>
+      <span id="target-hint-text">Passive OSINT: DNS, WHOIS, Security Headers, SSL, Geolocation, Shodan & Nmap</span>
+    </div>
+
     <div class="scan-bar">
       <div class="input-wrap">
-        <span class="input-pfx">target ›</span>
-        <input type="text" id="scan-target" placeholder="example.com (domain only)" spellcheck="false"/>
+        <span class="input-pfx" id="input-pfx">domain ›</span>
+        <input type="text" id="scan-target" placeholder="example.com or sub.example.com" spellcheck="false"/>
       </div>
       <button class="btn btn-green" id="btn-scan">Initiate Scan</button>
     </div>
@@ -433,6 +457,54 @@ const termOut = document.getElementById('term-out');
 const termTitle = document.getElementById('term-title');
 const scanMsg = document.getElementById('scan-msg');
 
+let scanMode = 'domain'; // 'domain' | 'ip'
+const btnModeDomain = document.getElementById('btn-mode-domain');
+const btnModeIp = document.getElementById('btn-mode-ip');
+const inputPfx = document.getElementById('input-pfx');
+const targetModeTag = document.getElementById('target-mode-tag');
+const targetHintText = document.getElementById('target-hint-text');
+
+if (btnModeDomain && btnModeIp) {
+  btnModeDomain.onclick = () => setScanMode('domain');
+  btnModeIp.onclick = () => setScanMode('ip');
+}
+
+function setScanMode(mode) {
+  scanMode = mode;
+  if (mode === 'domain') {
+    btnModeDomain.classList.add('active');
+    btnModeIp.classList.remove('active');
+    inputPfx.textContent = 'domain ›';
+    inpTarget.placeholder = 'example.com or sub.example.com';
+    targetModeTag.textContent = 'Domain Mode';
+    targetHintText.textContent = 'Passive OSINT: DNS, WHOIS, Security Headers, SSL, Geolocation, Shodan & Nmap';
+  } else {
+    btnModeIp.classList.add('active');
+    btnModeDomain.classList.remove('active');
+    inputPfx.textContent = 'ip target ›';
+    inpTarget.placeholder = 'e.g. 8.8.8.8, 1.1.1.1, 142.250.190.46';
+    targetModeTag.textContent = 'IP Target Mode';
+    targetHintText.textContent = 'Host Recon: Reverse DNS (PTR), RDAP/ARIN, Geolocation, ASN, Shodan Ports/CVEs & Nmap';
+  }
+}
+
+function isIPv4(val) {
+  const parts = val.split('.');
+  if(parts.length !== 4) return false;
+  return parts.every(p => {
+    const n = Number(p);
+    return !isNaN(n) && n >= 0 && n <= 255 && String(n) === p;
+  });
+}
+
+function isIPv6(val) {
+  return val.includes(':') && /^[0-9a-fA-F:]+$/.test(val);
+}
+
+function isIPAddress(val) {
+  return isIPv4(val) || isIPv6(val);
+}
+
 function print(html) {
   const d = document.createElement('div');
   d.className = 't-line';
@@ -446,9 +518,28 @@ function printSection(title) {
 }
 
 async function runScan() {
-  const target = inpTarget.value.trim().toLowerCase();
-  if(!target || target.includes('http') || target.includes('/') || target.split('.').length < 2) {
-    scanMsg.textContent = '// Please enter a valid domain (e.g. example.com)';
+  let target = inpTarget.value.trim().toLowerCase();
+  target = target.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').trim();
+
+  if(!target) {
+    scanMsg.textContent = scanMode === 'ip'
+      ? '// Please enter an IP target (e.g. 8.8.8.8)'
+      : '// Please enter a domain target (e.g. example.com)';
+    scanMsg.className = 'msg err show';
+    return;
+  }
+
+  const isTargetIP = isIPAddress(target);
+
+  // Auto-switch mode UI if user typed IP in domain mode or domain in IP mode
+  if (isTargetIP && scanMode !== 'ip') {
+    setScanMode('ip');
+  } else if (!isTargetIP && scanMode === 'ip') {
+    setScanMode('domain');
+  }
+
+  if (!isTargetIP && (target.includes(' ') || target.split('.').length < 2)) {
+    scanMsg.textContent = '// Please enter a valid domain (e.g. example.com) or IP (e.g. 8.8.8.8)';
     scanMsg.className = 'msg err show';
     return;
   }
@@ -465,104 +556,110 @@ async function runScan() {
   document.getElementById('scan-term').style.display = 'block';
   document.getElementById('export-bar').style.display = 'none';
   termOut.innerHTML = '';
-  termTitle.textContent = `Target: ${target}`;
+  termTitle.textContent = `Target: ${target} [${isTargetIP ? 'IP HOST' : 'DOMAIN'}]`;
 
   currentScanData = {
     target: target,
+    type: isTargetIP ? 'ip' : 'domain',
     timestamp: new Date().toISOString(),
     findings: [],
     riskPoints: 0
   };
 
-  print(`<span class="t-d">$ netprobe --target ${target}</span>`);
-  print(`<span class="t-g">✓ Target acquired. Initiating OSINT modules...</span>`);
+  if (isTargetIP) {
+    print(`<span class="t-d">$ netprobe --ip-target ${target}</span>`);
+    print(`<span class="t-g">✓ IP Target acquired. Initiating Host Reconnaissance modules...</span>`);
+  } else {
+    print(`<span class="t-d">$ netprobe --target ${target}</span>`);
+    print(`<span class="t-g">✓ Target acquired. Initiating OSINT modules...</span>`);
+  }
 
-  let resolvedIP = null;
+  let resolvedIP = isTargetIP ? target : null;
 
   try {
-    // 1. DNS
-    printSection('DNS ENUMERATION');
-    const dnsRes = await fetch(`https://dns.google/resolve?name=${target}&type=A`);
-    const dnsData = await dnsRes.json();
-    if(dnsData.Answer && dnsData.Answer.length > 0) {
-      resolvedIP = dnsData.Answer[0].data;
-      dnsData.Answer.forEach(a => {
-        print(`  A      → <span class="t-w">${a.data}</span>`);
-        currentScanData.findings.push(`DNS A: ${a.data}`);
-      });
-    } else {
-      print(`  <span class="t-r">No A records found.</span>`);
-    }
+    if (isTargetIP) {
+      // ══════════════════════════════════════════════
+      // IP TARGET SCAN PIPELINE
+      // ══════════════════════════════════════════════
 
-    const mxRes = await fetch(`https://dns.google/resolve?name=${target}&type=MX`);
-    const mxData = await mxRes.json();
-    if(mxData.Answer) mxData.Answer.forEach(a => print(`  MX     → <span class="t-w">${a.data}</span>`));
-
-    // 2. WHOIS
-    printSection('WHOIS DATA');
-    try {
-      const whoRes = await fetch(`https://rdap.org/domain/${target}`);
-      const whoData = await whoRes.json();
-      let registrar = 'Unknown';
-      if(whoData.entities) {
-        whoData.entities.forEach(e => {
-          if(e.roles && e.roles.includes('registrar') && e.vcardArray) {
-            const fnNode = e.vcardArray[1].find(v => v[0] === 'fn');
-            if(fnNode) registrar = fnNode[3];
-          }
-        });
-      }
-      print(`  Registrar → <span class="t-w">${registrar}</span>`);
-      currentScanData.findings.push(`Registrar: ${registrar}`);
-    } catch(e) { print(`  <span class="t-d">WHOIS lookup skipped.</span>`); }
-
-    // 3. HTTP Headers (Via Custom Backend)
-    printSection('HTTP SECURITY HEADERS');
-    try {
-      const hdrsRes = await fetch(`https://netprobe-api.onrender.com/api/scan/headers?target=${target}`);
-      const text = await hdrsRes.text();
-      if(text && !text.includes('error')) {
-        const lastBlock = text.split('\r\n\r\n').pop() || text.split('\n\n').pop() || text;
-        const finalLines = lastBlock.split('\n').filter(l => l.trim().length > 0);
-        
-        const server = finalLines.find(l => l.toLowerCase().startsWith('server:'));
-        if(server) print(`  Server → <span class="t-w">${server.split(':')[1].trim()}</span>`);
-        
-        const hsts = finalLines.find(l => l.toLowerCase().startsWith('strict-transport-security:'));
-        if(hsts) print(`  HSTS   → <span class="t-g">Enabled ✓</span>`);
-        else { print(`  HSTS   → <span class="t-r">Missing ✗</span>`); currentScanData.riskPoints += 2; }
-
-        const csp = finalLines.find(l => l.toLowerCase().startsWith('content-security-policy:'));
-        if(csp) print(`  CSP    → <span class="t-g">Enabled ✓</span>`);
-        else { print(`  CSP    → <span class="t-y">Missing ⚠</span>`); currentScanData.riskPoints += 1; }
-      } else {
-        print(`  <span class="t-d">Header scan failed.</span>`);
-      }
-    } catch(e) { print(`  <span class="t-r">Failed to fetch headers.</span>`); }
-
-    // 4. Geolocation & Shodan
-    if(resolvedIP) {
-      printSection('IP GEOLOCATION');
+      // 1. REVERSE DNS (PTR)
+      printSection('REVERSE DNS (PTR LOOKUP)');
       try {
-        const geoRes = await fetch(`https://ipapi.co/${resolvedIP}/json/`);
-        const geoData = await geoRes.json();
-        print(`  IP        → <span class="t-w">${resolvedIP}</span>`);
-        print(`  Location  → <span class="t-w">${geoData.city}, ${geoData.country_name}</span>`);
-        print(`  ISP/ASN   → <span class="t-w">${geoData.org}</span>`);
-        currentScanData.findings.push(`Hosted by: ${geoData.org} in ${geoData.country_name}`);
-      } catch(e) { print(`  <span class="t-r">Geolocation failed.</span>`); }
+        if (isIPv4(target)) {
+          const ptrQuery = `${target.split('.').reverse().join('.')}.in-addr.arpa`;
+          const ptrRes = await fetch(`https://dns.google/resolve?name=${ptrQuery}&type=PTR`);
+          const ptrData = await ptrRes.json();
+          if (ptrData.Answer && ptrData.Answer.length > 0) {
+            ptrData.Answer.forEach(a => {
+              const host = a.data.endsWith('.') ? a.data.slice(0, -1) : a.data;
+              print(`  PTR Hostname → <span class="t-w">${host}</span>`);
+              currentScanData.findings.push(`Reverse DNS: ${host}`);
+            });
+          } else {
+            print(`  <span class="t-d">No PTR record associated with this IP.</span>`);
+          }
+        } else {
+          print(`  <span class="t-d">Reverse DNS skipped for IPv6.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-d">Reverse DNS query skipped.</span>`); }
 
+      // 2. REGIONAL INTERNET REGISTRY (RDAP)
+      printSection('REGIONAL INTERNET REGISTRY (RDAP / WHOIS)');
+      try {
+        const rdapRes = await fetch(`https://rdap.org/ip/${target}`);
+        if (rdapRes.ok) {
+          const rdapData = await rdapRes.json();
+          if (rdapData.name) {
+            print(`  NetName   → <span class="t-w">${rdapData.name}</span>`);
+            currentScanData.findings.push(`NetName: ${rdapData.name}`);
+          }
+          if (rdapData.startAddress && rdapData.endAddress) {
+            print(`  NetRange  → <span class="t-w">${rdapData.startAddress} - ${rdapData.endAddress}</span>`);
+          }
+          if (rdapData.country) {
+            print(`  Country   → <span class="t-w">${rdapData.country}</span>`);
+          }
+          if (rdapData.entities && rdapData.entities.length > 0) {
+            let entityHandle = rdapData.entities[0].handle || 'Assigned';
+            if (rdapData.entities[0].vcardArray && rdapData.entities[0].vcardArray[1]) {
+              const fn = rdapData.entities[0].vcardArray[1].find(v => v[0] === 'fn');
+              if (fn) entityHandle = fn[3];
+            }
+            print(`  Org/Admin → <span class="t-w">${entityHandle}</span>`);
+            currentScanData.findings.push(`Owner: ${entityHandle}`);
+          }
+        } else {
+          print(`  <span class="t-d">RDAP query returned no records.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-d">RDAP query skipped.</span>`); }
+
+      // 3. IP GEOLOCATION & ASN
+      printSection('IP GEOLOCATION & NETWORK INTEL');
+      try {
+        const geoRes = await fetch(`https://ipapi.co/${target}/json/`);
+        const geoData = await geoRes.json();
+        if (geoData && geoData.ip) {
+          print(`  IP Address → <span class="t-w">${target}</span>`);
+          print(`  Location   → <span class="t-w">${geoData.city || 'Unknown'}, ${geoData.region || ''} (${geoData.country_name || 'N/A'})</span>`);
+          print(`  ISP / ASN  → <span class="t-w">${geoData.org || geoData.asn || 'N/A'}</span>`);
+          currentScanData.findings.push(`Geo: ${geoData.city}, ${geoData.country_name} (${geoData.org})`);
+        } else {
+          print(`  <span class="t-d">Geolocation data unavailable.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-r">Geolocation lookup failed.</span>`); }
+
+      // 4. SHODAN THREAT INTEL
       printSection('THREAT INTEL & VULNERABILITIES (SHODAN)');
       try {
-        const shodanRes = await fetch(`https://netprobe-api.onrender.com/api/scan/shodan?ip=${resolvedIP}&key=${SHODAN_KEY}`);
+        const shodanRes = await fetch(`https://netprobe-api.onrender.com/api/scan/shodan?ip=${target}&key=${SHODAN_KEY}`);
         if(shodanRes.ok) {
           const shodanData = await shodanRes.json();
           if(shodanData.ports && shodanData.ports.length > 0) {
             shodanData.ports.forEach(p => {
               print(`  Port <span class="t-o">${p}</span>  → OPEN`);
               currentScanData.findings.push(`Open Port: ${p}`);
-              currentScanData.riskPoints += 1; // 1 risk point per open port
-              if([21,22,23,3389,445].includes(p)) currentScanData.riskPoints += 3; // risky ports
+              currentScanData.riskPoints += 1;
+              if([21,22,23,3389,445].includes(p)) currentScanData.riskPoints += 3;
             });
             
             if(shodanData.vulns && shodanData.vulns.length > 0) {
@@ -572,38 +669,183 @@ async function runScan() {
                 currentScanData.findings.push(`Vulnerability: ${cve}`);
               });
               if(shodanData.vulns.length > 5) print(`    <span class="t-d">...and ${shodanData.vulns.length - 5} more.</span>`);
-              currentScanData.riskPoints += 10; // massive risk point jump
+              currentScanData.riskPoints += 10;
             }
           } else {
-            print(`  <span class="t-g">No open ports or exposures found.</span>`);
+            print(`  <span class="t-g">No open ports or exposures indexed on Shodan.</span>`);
           }
         } else {
-          print(`  <span class="t-d">No Threat Intel data for this IP.</span>`);
+          print(`  <span class="t-d">No Threat Intel data indexed for this IP.</span>`);
         }
-      } catch(e) { print(`  <span class="t-d">Shodan lookup skipped.</span>`); }
-    }
+      } catch(e) { print(`  <span class="t-d">Shodan threat lookup skipped.</span>`); }
 
-    // 5. NMAP PORT SCAN (Via Custom Backend)
-    printSection('NMAP PORT SCAN (Top 100)');
-    try {
-      print(`  <span class="t-d">Initiating remote Nmap scan via api.sambit.page...</span>`);
-      const nmapRes = await fetch(`https://netprobe-api.onrender.com/api/scan/nmap`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ target })
-      });
-      const nmapData = await nmapRes.json();
-      
-      if (nmapData.openPorts && nmapData.openPorts.length > 0) {
-        nmapData.openPorts.forEach(port => {
-          print(`  <span class="t-o">${port.port}</span> / ${port.service} → <span class="t-g">${port.state.toUpperCase()}</span>`);
-          currentScanData.findings.push(`Nmap Port: ${port.port} (${port.service})`);
-          currentScanData.riskPoints += 1;
+      // 5. NMAP PORT SCAN
+      printSection('NMAP PORT SCAN (Top 100)');
+      try {
+        print(`  <span class="t-d">Initiating remote Nmap scan for ${target}...</span>`);
+        const nmapRes = await fetch(`https://netprobe-api.onrender.com/api/scan/nmap`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target: target })
+        });
+        const nmapData = await nmapRes.json();
+        if (nmapData.openPorts && nmapData.openPorts.length > 0) {
+          nmapData.openPorts.forEach(port => {
+            print(`  <span class="t-o">${port.port}</span> / ${port.service} → <span class="t-g">${port.state.toUpperCase()}</span>`);
+            currentScanData.findings.push(`Nmap: ${port.port}/${port.service}`);
+            currentScanData.riskPoints += 1;
+          });
+        } else {
+          print(`  <span class="t-g">No commonly exposed ports found.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-r">Nmap scan failed or timed out.</span>`); }
+
+      // 6. HTTP HEADERS CHECK
+      printSection('HTTP / WEB SERVICE PROBE');
+      try {
+        const hdrsRes = await fetch(`https://netprobe-api.onrender.com/api/scan/headers?target=${target}`);
+        const text = await hdrsRes.text();
+        if(text && !text.includes('error') && text.trim().length > 10) {
+          print(`  <span class="t-g">Web Server Detected on IP host!</span>`);
+          const lastBlock = text.split('\r\n\r\n').pop() || text.split('\n\n').pop() || text;
+          const finalLines = lastBlock.split('\n').filter(l => l.trim().length > 0);
+          const server = finalLines.find(l => l.toLowerCase().startsWith('server:'));
+          if(server) print(`  Server → <span class="t-w">${server.split(':')[1].trim()}</span>`);
+        } else {
+          print(`  <span class="t-d">No active HTTP web service on raw IP.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-d">Web service probe skipped.</span>`); }
+
+    } else {
+      // ══════════════════════════════════════════════
+      // DOMAIN TARGET SCAN PIPELINE
+      // ══════════════════════════════════════════════
+
+      // 1. DNS
+      printSection('DNS ENUMERATION');
+      const dnsRes = await fetch(`https://dns.google/resolve?name=${target}&type=A`);
+      const dnsData = await dnsRes.json();
+      if(dnsData.Answer && dnsData.Answer.length > 0) {
+        resolvedIP = dnsData.Answer[0].data;
+        dnsData.Answer.forEach(a => {
+          print(`  A      → <span class="t-w">${a.data}</span>`);
+          currentScanData.findings.push(`DNS A: ${a.data}`);
         });
       } else {
-        print(`  <span class="t-g">No commonly exposed ports found.</span>`);
+        print(`  <span class="t-r">No A records found.</span>`);
       }
-    } catch(e) { print(`  <span class="t-r">Nmap scan failed or timed out.</span>`); }
+
+      const mxRes = await fetch(`https://dns.google/resolve?name=${target}&type=MX`);
+      const mxData = await mxRes.json();
+      if(mxData.Answer) mxData.Answer.forEach(a => print(`  MX     → <span class="t-w">${a.data}</span>`));
+
+      // 2. WHOIS
+      printSection('WHOIS DATA');
+      try {
+        const whoRes = await fetch(`https://rdap.org/domain/${target}`);
+        const whoData = await whoRes.json();
+        let registrar = 'Unknown';
+        if(whoData.entities) {
+          whoData.entities.forEach(e => {
+            if(e.roles && e.roles.includes('registrar') && e.vcardArray) {
+              const fnNode = e.vcardArray[1].find(v => v[0] === 'fn');
+              if(fnNode) registrar = fnNode[3];
+            }
+          });
+        }
+        print(`  Registrar → <span class="t-w">${registrar}</span>`);
+        currentScanData.findings.push(`Registrar: ${registrar}`);
+      } catch(e) { print(`  <span class="t-d">WHOIS lookup skipped.</span>`); }
+
+      // 3. HTTP Headers (Via Custom Backend)
+      printSection('HTTP SECURITY HEADERS');
+      try {
+        const hdrsRes = await fetch(`https://netprobe-api.onrender.com/api/scan/headers?target=${target}`);
+        const text = await hdrsRes.text();
+        if(text && !text.includes('error')) {
+          const lastBlock = text.split('\r\n\r\n').pop() || text.split('\n\n').pop() || text;
+          const finalLines = lastBlock.split('\n').filter(l => l.trim().length > 0);
+          
+          const server = finalLines.find(l => l.toLowerCase().startsWith('server:'));
+          if(server) print(`  Server → <span class="t-w">${server.split(':')[1].trim()}</span>`);
+          
+          const hsts = finalLines.find(l => l.toLowerCase().startsWith('strict-transport-security:'));
+          if(hsts) print(`  HSTS   → <span class="t-g">Enabled ✓</span>`);
+          else { print(`  HSTS   → <span class="t-r">Missing ✗</span>`); currentScanData.riskPoints += 2; }
+
+          const csp = finalLines.find(l => l.toLowerCase().startsWith('content-security-policy:'));
+          if(csp) print(`  CSP    → <span class="t-g">Enabled ✓</span>`);
+          else { print(`  CSP    → <span class="t-y">Missing ⚠</span>`); currentScanData.riskPoints += 1; }
+        } else {
+          print(`  <span class="t-d">Header scan failed.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-r">Failed to fetch headers.</span>`); }
+
+      // 4. Geolocation & Shodan
+      if(resolvedIP) {
+        printSection('IP GEOLOCATION');
+        try {
+          const geoRes = await fetch(`https://ipapi.co/${resolvedIP}/json/`);
+          const geoData = await geoRes.json();
+          print(`  IP        → <span class="t-w">${resolvedIP}</span>`);
+          print(`  Location  → <span class="t-w">${geoData.city}, ${geoData.country_name}</span>`);
+          print(`  ISP/ASN   → <span class="t-w">${geoData.org}</span>`);
+          currentScanData.findings.push(`Hosted by: ${geoData.org} in ${geoData.country_name}`);
+        } catch(e) { print(`  <span class="t-r">Geolocation failed.</span>`); }
+
+        printSection('THREAT INTEL & VULNERABILITIES (SHODAN)');
+        try {
+          const shodanRes = await fetch(`https://netprobe-api.onrender.com/api/scan/shodan?ip=${resolvedIP}&key=${SHODAN_KEY}`);
+          if(shodanRes.ok) {
+            const shodanData = await shodanRes.json();
+            if(shodanData.ports && shodanData.ports.length > 0) {
+              shodanData.ports.forEach(p => {
+                print(`  Port <span class="t-o">${p}</span>  → OPEN`);
+                currentScanData.findings.push(`Open Port: ${p}`);
+                currentScanData.riskPoints += 1; // 1 risk point per open port
+                if([21,22,23,3389,445].includes(p)) currentScanData.riskPoints += 3; // risky ports
+              });
+              
+              if(shodanData.vulns && shodanData.vulns.length > 0) {
+                print(`  <span class="t-r">CVEs Detected → ${shodanData.vulns.length} Critical Vulnerabilities Found!</span>`);
+                shodanData.vulns.slice(0, 5).forEach(cve => {
+                  print(`    <a href="https://nvd.nist.gov/vuln/detail/${cve}" target="_blank" style="color:var(--red);text-decoration:underline">! ${cve}</a>`);
+                  currentScanData.findings.push(`Vulnerability: ${cve}`);
+                });
+                if(shodanData.vulns.length > 5) print(`    <span class="t-d">...and ${shodanData.vulns.length - 5} more.</span>`);
+                currentScanData.riskPoints += 10; // massive risk point jump
+              }
+            } else {
+              print(`  <span class="t-g">No open ports or exposures found.</span>`);
+            }
+          } else {
+            print(`  <span class="t-d">No Threat Intel data for this IP.</span>`);
+          }
+        } catch(e) { print(`  <span class="t-d">Shodan lookup skipped.</span>`); }
+      }
+
+      // 5. NMAP PORT SCAN (Via Custom Backend)
+      printSection('NMAP PORT SCAN (Top 100)');
+      try {
+        print(`  <span class="t-d">Initiating remote Nmap scan via api.sambit.page...</span>`);
+        const nmapRes = await fetch(`https://netprobe-api.onrender.com/api/scan/nmap`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target })
+        });
+        const nmapData = await nmapRes.json();
+        
+        if (nmapData.openPorts && nmapData.openPorts.length > 0) {
+          nmapData.openPorts.forEach(port => {
+            print(`  <span class="t-o">${port.port}</span> / ${port.service} → <span class="t-g">${port.state.toUpperCase()}</span>`);
+            currentScanData.findings.push(`Nmap Port: ${port.port} (${port.service})`);
+            currentScanData.riskPoints += 1;
+          });
+        } else {
+          print(`  <span class="t-g">No commonly exposed ports found.</span>`);
+        }
+      } catch(e) { print(`  <span class="t-r">Nmap scan failed or timed out.</span>`); }
+    }
 
     // RISK CALCULATION
     let finalRisk = 'LOW';
@@ -622,6 +864,7 @@ async function runScan() {
       uid: currentUser.uid,
       email: currentUser.email,
       target: target,
+      targetType: isTargetIP ? 'ip' : 'domain',
       riskScore: finalRisk,
       points: currentScanData.riskPoints,
       timestamp: serverTimestamp()
