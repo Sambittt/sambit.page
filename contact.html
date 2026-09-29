@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Sambit Kumar Satapathy | SOC Analyst</title>
+  <meta name="description" content="Get in touch with Sambit Kumar Satapathy, SOC Analyst in Hyderabad. Connect via email, LinkedIn, or GitHub." />
+  <link rel="canonical" href="https://sambit.page/contact.html" />
+  <meta property="og:title" content="Contact Sambit Kumar Satapathy | SOC Analyst" />
+  <meta property="og:description" content="Reach out for SOC analyst roles, incident response, and cybersecurity inquiries." />
+  <meta property="og:image" content="https://sambit.page/profile.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sambit.page/contact.html" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/chatbot.css?v=2.3" />
+</head>
+<body>
+
+  <!-- SHARED NAVBAR -->
+  <nav>
+    <a href="/" class="nav-brand">sambit.page</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/experience.html">Experience</a>
+      <a href="/skills.html">Skills</a>
+      <a href="/certifications.html">Certs</a>
+      <a href="/contact.html">Contact</a>
+    </div>
+
+    <!-- Sign In button -->
+    <a href="/login/" class="nav-login" id="nav-login-btn">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      Sign In
+    </a>
+
+    <!-- Avatar menu -->
+    <div class="nav-avatar-wrap" id="nav-avatar-wrap">
+      <button class="nav-avatar-btn" id="nav-avatar-btn" onclick="toggleAvatarMenu()" aria-label="Account menu">
+        <span id="nav-avatar-inner"></span>
+      </button>
+      <div class="avatar-dropdown" id="avatar-dropdown">
+        <div class="avatar-drop-info">
+          <div class="avatar-drop-name" id="drop-name">—</div>
+          <div class="avatar-drop-email" id="drop-email">—</div>
+        </div>
+        <div class="avatar-drop-divider"></div>
+        <a href="/tools.html" class="avatar-drop-item" style="color:var(--green);font-weight:600">
+          <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+          ⚡ My Tools Dashboard
+        </a>
+        <div class="avatar-drop-divider"></div>
+        <div style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-muted);padding:0.4rem 1rem 0.2rem">Tools Shortcuts</div>
+        <a href="/cloud/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+          CloudShare
+        </a>
+        <a href="/netprobe/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          NetProbe
+        </a>
+        <a href="/stego-payload/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v5h-2V7zm0 7h2v2h-2v-2z"/></svg>
+          Stego Injector
+        </a>
+        <a href="/ascii-converter/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h8v2H8v-2z"/></svg>
+          ASCII Studio
+        </a>
+        <a href="/font-animator/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/></svg>
+          Font Animator
+        </a>
+        <a href="/resume-builder/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-5 4h8v2H8zm0 4h5v2H8z"/></svg>
+          Resume Builder
+        </a>
+        <div class="avatar-drop-divider"></div>
+        <button class="avatar-drop-item" id="drop-signout-btn">
+          <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+          Sign Out
+        </button>
+      </div>
+    </div>
+
+    <button id="hmbg" onclick="toggleMob()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE OVERLAY MENU -->
+  <div id="mob-menu">
+    <div class="mob-user-card" id="mob-user-card">
+      <div class="mob-avatar-lg" id="mob-avatar-lg"></div>
+      <div class="mob-user-name" id="mob-user-name"></div>
+      <div class="mob-user-email" id="mob-user-email"></div>
+      <a href="/tools.html" class="tool-link" onclick="closeMob()" style="margin-top:.4rem;padding:.5rem 1rem;font-size:.78rem">⚡ My Tools Dashboard</a>
+      <button class="mob-signout-btn" id="mob-signout-btn">Sign Out</button>
+    </div>
+    <div class="mob-divider"></div>
+    <a href="/" onclick="closeMob()">Home</a>
+    <a href="/about.html" onclick="closeMob()">About</a>
+    <a href="/experience.html" onclick="closeMob()">Experience</a>
+    <a href="/skills.html" onclick="closeMob()">Skills</a>
+    <a href="/certifications.html" onclick="closeMob()">Certs</a>
+    <a href="/contact.html" onclick="closeMob()">Contact</a>
+    <div class="mob-divider"></div>
+    <a href="/login/" class="tool-link" id="mob-login-link" onclick="closeMob()" style="letter-spacing:.12em">
+      🔐 Sign Up / Login
+    </a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="page-main">
+    <div class="page-container">
+      <div class="page-header">
+        <div class="sec-label">// 05 — contact</div>
+        <h1 class="sec-title">Get In Touch</h1>
+        <div class="sec-line"></div>
+      </div>
+
+      <div class="contact-grid">
+        <a href="https://github.com/Sambittt" target="_blank" rel="noopener noreferrer" class="contact-card">
+          <div class="contact-icon"><img src="https://cdn.simpleicons.org/github/888888" alt="GitHub" /></div>
+          <div>
+            <div class="contact-label">GitHub</div>
+            <div class="contact-val">github.com/Sambittt</div>
+          </div>
+        </a>
+
+        <a href="https://linkedin.com/in/sambit-satapathy" target="_blank" rel="noopener noreferrer" class="contact-card">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-val">sambit-satapathy</div>
+          </div>
+        </a>
+
+        <a href="mailto:sambitsatapathy22@gmail.com" class="contact-card">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-val">sambitsatapathy22@gmail.com</div>
+          </div>
+        </a>
+
+        <a href="tel:+917735207434" class="contact-card">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-val">+91 7735207434</div>
+          </div>
+        </a>
+
+        <a href="https://sambit.page" class="contact-card">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Portfolio</div>
+            <div class="contact-val">sambit.page</div>
+          </div>
+        </a>
+
+        <div class="contact-card">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-val">Hyderabad, Telangana, India</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIRECT EMAIL DISPATCHER SECTION -->
+      <div class="direct-contact-section" id="direct-email-section">
+        <div class="direct-contact-header">
+          <div class="sec-label">// 05.1 — direct dispatch</div>
+          <h2 class="direct-contact-title">
+            <span class="direct-title-icon">⚡</span>
+            Send a Direct Message
+          </h2>
+          <p class="direct-contact-sub">
+            Transmit an inquiry, job opportunity, or security collaboration proposal directly to my inbox (<strong>sambitsatapathy22@gmail.com</strong>).
+          </p>
+        </div>
+
+        <form id="directContactForm" action="https://shipmyform.com/to/sambitsatapathy22@gmail.com" method="POST" class="direct-contact-form" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="contactName" class="form-label">
+                <span class="label-prefix">// </span>Your Name / Organization <span class="label-req">*</span>
+              </label>
+              <input type="text" id="contactName" name="name" class="form-input" placeholder="e.g. Alex Morgan / Security Recruiter" required />
+            </div>
+
+            <div class="form-group">
+              <label for="contactEmail" class="form-label">
+                <span class="label-prefix">// </span>Your Email Address <span class="label-req">*</span>
+              </label>
+              <input type="email" id="contactEmail" name="email" class="form-input" placeholder="e.g. alex@company.com" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contactSubject" class="form-label">
+              <span class="label-prefix">// </span>Subject / Purpose <span class="label-req">*</span>
+            </label>
+            <input type="text" id="contactSubject" name="subject" class="form-input" placeholder="e.g. SOC Analyst Opportunity / Security Discussion" required />
+          </div>
+
+          <div class="form-group">
+            <label for="contactMessage" class="form-label">
+              <span class="label-prefix">// </span>Message Payload <span class="label-req">*</span>
+            </label>
+            <textarea id="contactMessage" name="message" class="form-textarea" rows="5" placeholder="Write your message here..." required></textarea>
+          </div>
+
+          <!-- Anti-spam honeypot -->
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+
+          <!-- Form Status Notification Banner -->
+          <div id="formStatusMsg" class="form-status-msg" aria-live="polite"></div>
+
+          <div class="form-actions">
+            <button type="submit" id="submitContactBtn" class="btn-pri form-submit-btn">
+              <span class="btn-spinner" id="btnSpinner"></span>
+              <svg class="btn-send-icon" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+              <span id="btnText">Transmit Direct Message</span>
+            </button>
+
+            <a href="mailto:sambitsatapathy22@gmail.com" id="fallbackMailtoBtn" class="btn-sec form-mailto-btn">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              Open in Mail Client
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <div style="margin-top:3.5rem;border:1px solid var(--border);background:var(--card);padding:2rem;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent 70%)"></div>
+        <div class="sec-label">// resume download</div>
+        <h2 style="font-size:1.1rem;font-weight:600;color:var(--fg);margin-bottom:.6rem">Looking for my updated resume?</h2>
+        <p style="font-size:.8rem;color:var(--fg-dim);margin-bottom:1.2rem;line-height:1.7">
+          Download the complete single-page SOC Analyst resume containing my experience at Infozit, EDR/SOAR playbook projects, and technical skills.
+        </p>
+        <a href="/assets/Sambit_Kumar_Satapathy_Resume.pdf" download="Sambit_Kumar_Satapathy_Resume.pdf" class="btn-pri">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Download Resume (PDF)
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SHARED FOOTER -->
+  <footer>
+    <p>© 2026 <span>sambit.page</span> — <strong>Sambit Kumar Satapathy</strong> · SOC Analyst · Hyderabad, India</p>
+  </footer>
+
+  <!-- Custom Green Cursor -->
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+
+  <!-- Direct Email Submit Handler -->
+  <script>
+    (function() {
+      const form = document.getElementById('directContactForm');
+      const statusMsg = document.getElementById('formStatusMsg');
+      const submitBtn = document.getElementById('submitContactBtn');
+      const btnText = document.getElementById('btnText');
+      const fallbackBtn = document.getElementById('fallbackMailtoBtn');
+
+      function showStatus(msg, type) {
+        if (!statusMsg) return;
+        statusMsg.className = `form-status-msg is-${type}`;
+        statusMsg.innerHTML = msg;
+        statusMsg.style.display = 'block';
+      }
+
+      if (form && submitBtn) {
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const nameInput = document.getElementById('contactName');
+          const emailInput = document.getElementById('contactEmail');
+          const subjectInput = document.getElementById('contactSubject');
+          const msgInput = document.getElementById('contactMessage');
+
+          const name = nameInput ? nameInput.value.trim() : '';
+          const email = emailInput ? emailInput.value.trim() : '';
+          const subject = subjectInput ? subjectInput.value.trim() : '';
+          const message = msgInput ? msgInput.value.trim() : '';
+
+          if (!name || !email || !subject || !message) {
+            showStatus('Please fill out all required fields before transmitting.', 'error');
+            return;
+          }
+
+          // Email validation
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            showStatus('Please provide a valid email address.', 'error');
+            return;
+          }
+
+          // Set loading state
+          submitBtn.disabled = true;
+          submitBtn.classList.add('loading');
+          if (btnText) btnText.textContent = 'TRANSMITTING INTEL...';
+          statusMsg.style.display = 'none';
+
+          // Update fallback link immediately with current form inputs
+          const mailtoUrl = `mailto:sambitsatapathy22@gmail.com?subject=${encodeURIComponent('[sambit.page] ' + subject)}&body=${encodeURIComponent('From: ' + name + ' (' + email + ')\n\n' + message)}`;
+          if (fallbackBtn) fallbackBtn.href = mailtoUrl;
+
+          try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('subject', subject);
+            formData.append('message', message);
+
+            const response = await fetch('https://shipmyform.com/to/sambitsatapathy22@gmail.com', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json'
+              },
+              body: formData
+            });
+
+            const data = await response.json();
+            if (response.ok && (data.ok === true || data.success === true || response.status === 200)) {
+              showStatus('✓ Message transmitted successfully! Your email has been delivered to sambitsatapathy22@gmail.com. I will reply to you promptly.', 'success');
+              form.reset();
+              if (btnText) btnText.textContent = '✓ Message Sent!';
+              setTimeout(() => {
+                if (btnText) btnText.textContent = 'Transmit Direct Message';
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+              }, 4000);
+            } else {
+              throw new Error((data && (data.message || data.error)) || 'Direct transmission response was not successful.');
+            }
+          } catch (err) {
+            console.warn('Direct email submission notice:', err);
+            showStatus(`Direct transmission encountered an issue. <a href="${mailtoUrl}" style="color:var(--green);text-decoration:underline;font-weight:600">Click here to send immediately via your email client</a>.`, 'warning');
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('loading');
+            if (btnText) btnText.textContent = 'Transmit Direct Message';
+          }
+        });
+      }
+    })();
+  </script>
+
+  <!-- Portfolio AI Agent -->
+  <script defer src="/config.js?v=2.3"></script>
+  <script defer src="/chatbot.js?v=2.3"></script>
+  <script src="/js/main.js"></script>
+
+</body>
+</html>

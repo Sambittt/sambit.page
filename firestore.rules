@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Users Collection (ACCESS REQUESTS + STATUS) ──
+    // This was MISSING — causing the "Missing Permission" error
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId; // Users read own status
+      allow create, update: if request.auth != null && request.auth.uid == userId; // Users submit access requests
+      allow read, write: if request.auth != null && request.auth.token.email in
+        ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com']; // Admin full access
+    }
+
+    // ── Scan Logs (NetProbe scan history) ──
+    // This was also MISSING — scan logs couldn't be saved
+    match /scan_logs/{logId} {
+      allow create: if request.auth != null; // Any authenticated user can log a scan
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid; // Users read own logs
+      allow read: if request.auth != null && request.auth.token.email in
+        ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com']; // Admin read all
+    }
+
+    // Cloud Shares
+    match /cloud-shares/{share} {
+      allow read: if true; // Public view
+      allow create: if request.auth != null; // Authenticated upload
+      allow update, delete: if request.auth != null && resource.data.uid == request.auth.uid; // Owner manage
+    }
+
+    // Cloud Visitor Security Logs
+    match /cloud-visits/{visit} {
+      allow create: if true; // Public visitor logging (write-only)
+      allow read, update, delete: if request.auth != null && request.auth.token.email == 'satapathys198@gmail.com'; // Admin-only read/write
+    }
+  }
+}

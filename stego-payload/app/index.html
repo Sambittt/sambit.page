@@ -199,11 +199,16 @@ onAuthStateChanged(auth, async user => {
         }, { merge: true });
         show('st-pending');
       } catch (err) {
-        console.error(err);
+        console.error('Stego access request failed:', err);
         btn.disabled = false;
         btn.textContent = 'Submit Request';
         const msg = document.getElementById('req-msg');
-        msg.textContent = 'Error submitting request.';
+        const isPermError = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
+        if (isPermError) {
+          msg.innerHTML = '⚠ Missing Permission — Firestore security rules are blocking this request. Please contact the admin.';
+        } else {
+          msg.textContent = 'Error: ' + err.message;
+        }
         msg.className = 'msg err show';
       }
     };

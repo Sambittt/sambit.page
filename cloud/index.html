@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -546,23 +547,26 @@
       if ($fileInput.files.length) handleFiles($fileInput.files);
     });
 
-    // ── Client-side Image Compression Helper ──
+    // ── Client-side Image Compression & Format Normalizer ──
     function compressImage(file, maxDimension = 4096, quality = 0.92) {
       return new Promise((resolve, reject) => {
-        // Skip compression for small images (< 1.5 MB) to preserve 100% original quality
-        if (file.size <= 1.5 * 1024 * 1024) {
-          resolve(file);
-          return;
-        }
-
         const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
         const isGif = file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif');
-        
-        // Never compress GIFs (preserves animations) or small PNGs
+        const isWebp = file.type === 'image/webp' || file.name.toLowerCase().endsWith('.webp');
+
+        // Never compress GIFs (preserves animations)
         if (isGif) {
           resolve(file);
           return;
         }
+
+        // Skip compression for small non-webp images (< 1.5 MB) to preserve 100% original quality
+        if (!isWebp && file.size <= 1.5 * 1024 * 1024) {
+          resolve(file);
+          return;
+        }
+
+        const safeFileName = file.name.replace(/\.webp$/i, '.jpg');
 
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -596,7 +600,7 @@
             if (isPng) {
               ctx.clearRect(0, 0, width, height); // Preserve alpha channel
             } else {
-              ctx.fillStyle = '#FFFFFF'; // Recover background solid white for JPEGs
+              ctx.fillStyle = '#FFFFFF'; // Solid white background for JPEGs
               ctx.fillRect(0, 0, width, height);
             }
 
@@ -605,11 +609,11 @@
             const outputType = isPng ? 'image/png' : 'image/jpeg';
             canvas.toBlob(blob => {
               if (blob) {
-                const compressedFile = new File([blob], file.name, {
+                const normalizedFile = new File([blob], safeFileName, {
                   type: outputType,
                   lastModified: Date.now()
                 });
-                resolve(compressedFile);
+                resolve(normalizedFile);
               } else {
                 resolve(file);
               }
@@ -751,9 +755,9 @@
             }
 
             uploadedFiles.push({
-              fileName: original.name,
+              fileName: original.name.replace(/\.webp$/i, '.jpg'),
               fileSize: optimized.size,
-              fileType: optimized.type,
+              fileType: optimized.type === 'image/webp' ? 'image/jpeg' : optimized.type,
               downloadURL,
               index
             });
@@ -775,9 +779,9 @@
         await addDoc(collection(db, 'cloud-shares'), {
           shareId,
           uid: currentUser.uid,
-          fileName: files.length > 1 ? `Bundle (${files.length} images)` : files[0].name,
+          fileName: files.length > 1 ? `Bundle (${files.length} images)` : files[0].name.replace(/\.webp$/i, '.jpg'),
           fileSize: totalCompressedSize,
-          fileType: files.length > 1 ? 'application/bundle' : files[0].type,
+          fileType: files.length > 1 ? 'application/bundle' : (files[0].type === 'image/webp' ? 'image/jpeg' : files[0].type),
           storagePath: '',
           downloadURL: uploadedFiles[0].downloadURL, // Fallback direct link
           files: uploadedFiles,

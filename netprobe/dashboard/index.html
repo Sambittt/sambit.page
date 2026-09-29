@@ -436,7 +436,9 @@ onAuthStateChanged(auth, async user => {
     reqForm.onsubmit = async e => {
       e.preventDefault();
       const btn = document.getElementById('req-btn');
+      const reqMsg = document.getElementById('req-msg');
       btn.disabled = true; btn.textContent = 'Submitting…';
+      reqMsg.className = 'msg'; // hide previous messages
       try {
         await setDoc(doc(db, 'users', user.uid), {
           status: 'pending',
@@ -446,9 +448,18 @@ onAuthStateChanged(auth, async user => {
           reason: document.getElementById('req-reason').value.trim(),
           requestedAt: serverTimestamp()
         }, { merge: true });
+        reqMsg.textContent = '✓ Request submitted successfully! Redirecting…';
+        reqMsg.className = 'msg ok show';
         setTimeout(() => show('st-pending'), 600);
       } catch(err) {
-        alert('Error: ' + err.message);
+        console.error('Access request failed:', err);
+        const isPermError = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
+        if (isPermError) {
+          reqMsg.innerHTML = '⚠ Missing Permission — Firestore security rules are blocking this write. The site admin needs to update the Firestore rules to allow authenticated users to write to the <code>users</code> collection. Please contact the admin.';
+        } else {
+          reqMsg.textContent = 'Error: ' + err.message;
+        }
+        reqMsg.className = 'msg err show';
         btn.disabled = false;
         btn.textContent = 'Submit Request';
       }

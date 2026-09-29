@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Sambit Kumar Satapathy | SOC Analyst | sambit.page</title>
+  <meta name="description" content="Learn about Sambit Kumar Satapathy — SOC Analyst with hands-on experience in Wazuh SIEM, incident response, and cloud security." />
+  <link rel="canonical" href="https://sambit.page/about.html" />
+  <meta property="og:title" content="About Sambit Kumar Satapathy | SOC Analyst" />
+  <meta property="og:description" content="SOC Analyst with hands-on Wazuh SIEM, incident response, and cloud security experience." />
+  <meta property="og:image" content="https://sambit.page/profile.png" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:url" content="https://sambit.page/about.html" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/chatbot.css?v=2.3" />
+</head>
+<body>
+
+  <!-- SHARED NAVBAR -->
+  <nav>
+    <a href="/" class="nav-brand">sambit.page</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/experience.html">Experience</a>
+      <a href="/skills.html">Skills</a>
+      <a href="/certifications.html">Certs</a>
+      <a href="/contact.html">Contact</a>
+    </div>
+
+    <!-- Sign In button -->
+    <a href="/login/" class="nav-login" id="nav-login-btn">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      Sign In
+    </a>
+
+    <!-- Avatar menu -->
+    <div class="nav-avatar-wrap" id="nav-avatar-wrap">
+      <button class="nav-avatar-btn" id="nav-avatar-btn" onclick="toggleAvatarMenu()" aria-label="Account menu">
+        <span id="nav-avatar-inner"></span>
+      </button>
+      <div class="avatar-dropdown" id="avatar-dropdown">
+        <div class="avatar-drop-info">
+          <div class="avatar-drop-name" id="drop-name">—</div>
+          <div class="avatar-drop-email" id="drop-email">—</div>
+        </div>
+        <div class="avatar-drop-divider"></div>
+        <a href="/tools.html" class="avatar-drop-item" style="color:var(--green);font-weight:600">
+          <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+          ⚡ My Tools Dashboard
+        </a>
+        <div class="avatar-drop-divider"></div>
+        <div style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-muted);padding:0.4rem 1rem 0.2rem">Tools Shortcuts</div>
+        <a href="/cloud/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+          CloudShare
+        </a>
+        <a href="/netprobe/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          NetProbe
+        </a>
+        <a href="/stego-payload/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v5h-2V7zm0 7h2v2h-2v-2z"/></svg>
+          Stego Injector
+        </a>
+        <a href="/ascii-converter/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h8v2H8v-2z"/></svg>
+          ASCII Studio
+        </a>
+        <a href="/font-animator/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/></svg>
+          Font Animator
+        </a>
+        <a href="/resume-builder/" class="avatar-drop-item">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-5 4h8v2H8zm0 4h5v2H8z"/></svg>
+          Resume Builder
+        </a>
+        <div class="avatar-drop-divider"></div>
+        <button class="avatar-drop-item" id="drop-signout-btn">
+          <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+          Sign Out
+        </button>
+      </div>
+    </div>
+
+    <button id="hmbg" onclick="toggleMob()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE OVERLAY MENU -->
+  <div id="mob-menu">
+    <div class="mob-user-card" id="mob-user-card">
+      <div class="mob-avatar-lg" id="mob-avatar-lg"></div>
+      <div class="mob-user-name" id="mob-user-name"></div>
+      <div class="mob-user-email" id="mob-user-email"></div>
+      <a href="/tools.html" class="tool-link" onclick="closeMob()" style="margin-top:.4rem;padding:.5rem 1rem;font-size:.78rem">⚡ My Tools Dashboard</a>
+      <button class="mob-signout-btn" id="mob-signout-btn">Sign Out</button>
+    </div>
+    <div class="mob-divider"></div>
+    <a href="/" onclick="closeMob()">Home</a>
+    <a href="/about.html" onclick="closeMob()">About</a>
+    <a href="/experience.html" onclick="closeMob()">Experience</a>
+    <a href="/skills.html" onclick="closeMob()">Skills</a>
+    <a href="/certifications.html" onclick="closeMob()">Certs</a>
+    <a href="/contact.html" onclick="closeMob()">Contact</a>
+    <div class="mob-divider"></div>
+    <a href="/login/" class="tool-link" id="mob-login-link" onclick="closeMob()" style="letter-spacing:.12em">
+      🔐 Sign Up / Login
+    </a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="page-main">
+    <div class="page-container">
+      <div class="page-header">
+        <div class="sec-label">// 01 — about</div>
+        <h1 class="sec-title">Who Is Sambit Kumar Satapathy?</h1>
+        <div class="sec-line"></div>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-text">
+          <p>I'm <span>Sambit Kumar Satapathy</span> — a <span>SOC Analyst</span> with hands-on experience deploying and operating a <span>Wazuh SIEM</span> platform, onboarding endpoints, writing <span>custom detection rules</span>, and investigating security events. Currently working as an <span>SOC Intern at Infozit</span> on the Wazuh Cloud Project (AWS).</p>
+          <p>Skilled in <span>log analysis</span>, <span>incident response</span>, <span>vulnerability assessment</span>, and network traffic analysis using <span>Nmap</span> and <span>Wireshark</span>. I've also built a <span>SOAR and EDR Incident Response Playbook</span> using LimaCharlie, Tines, and Slack.</p>
+          <p>BCA graduate from <span>Gayatri Institute of Science and Technology</span>, Berhampur University (CGPA: 8.2/10). Based in <span>Hyderabad, Telangana</span>.</p>
+          <p>Find me on <a href="https://github.com/Sambittt" rel="me" target="_blank" style="color:var(--green)">GitHub (Sambittt)</a> and <a href="https://linkedin.com/in/sambit-satapathy" rel="me" target="_blank" style="color:var(--green)">LinkedIn</a>.</p>
+
+          <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap">
+            <a href="/experience.html" class="btn-pri">View Experience & Projects →</a>
+            <a href="/contact.html" class="btn-sec">Get In Touch →</a>
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span style="background:#ef4444"></span>
+              <span style="background:#eab308"></span>
+              <span style="background:#22c55e"></span>
+            </div>
+            <div class="terminal-title">sambit@soc-ops:~ (zsh)</div>
+            <div class="terminal-status">● LIVE</div>
+          </div>
+          <div class="t-body">
+            <div><span class="t-dim">$</span> <span class="t-green">whoami</span></div>
+            <div>sambit — soc analyst / siem & incident response</div>
+            <br />
+            <div><span class="t-dim">$</span> <span class="t-green">cat info.txt</span></div>
+            <div>Role    : SOC Intern @ Infozit (Wazuh Cloud Project)</div>
+            <div>Degree  : BCA — Gayatri Institute, Berhampur Univ</div>
+            <div>Focus   : Wazuh SIEM · Detection Rules · IR · SOAR</div>
+            <div>Skills  : Splunk · Docker · Wireshark · Nmap · Linux</div>
+            <div>Certs   : TryHackMe Pre-Security · Cisco Cybersec</div>
+            <div>Location: Hyderabad, Telangana, India</div>
+            <div>Site    : sambit.page</div>
+            <br />
+            <div><span class="t-dim">$</span> <span class="t-green">uptime</span></div>
+            <div id="uptime-val">calculating...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Professional Summary Card -->
+      <div style="margin-top:3.5rem;border:1px solid var(--border);background:var(--card);padding:2rem;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent 70%)"></div>
+        <div class="sec-label" style="margin-bottom:.6rem">// professional summary</div>
+        <h2 style="font-size:1.15rem;font-weight:600;color:var(--fg);margin-bottom:1rem">Core Focus & Defensive Security Philosophy</h2>
+        <p style="font-size:.85rem;color:var(--fg-dim);line-height:2">
+          Security Operations Center (SOC) Analyst with hands-on experience deploying and operating a Wazuh Security Information and Event Management (SIEM) platform, onboarding endpoints, writing custom detection rules, and investigating security events. Skilled in log analysis, incident response, vulnerability assessment, and network traffic analysis using Nmap and Wireshark. Strong documentation skills including runbooks, incident notes, and technical reporting.
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SHARED FOOTER -->
+  <footer>
+    <p>© 2026 <span>sambit.page</span> — <strong>Sambit Kumar Satapathy</strong> · SOC Analyst · Hyderabad, India</p>
+  </footer>
+
+  <!-- Custom Green Cursor -->
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+
+  <!-- Portfolio AI Agent -->
+  <script defer src="/config.js?v=2.3"></script>
+  <script defer src="/chatbot.js?v=2.3"></script>
+  <script src="/js/main.js"></script>
+
+</body>
+</html>
