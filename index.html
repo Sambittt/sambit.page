@@ -170,11 +170,10 @@
         <!-- Dedicated Avatar Home Dock -->
         <div class="hero-avatar-dock" id="heroAvatarDock">
           <div class="dock-slot" id="dockSlot">
-            <!-- Interactive PFP Card (100% Round Circle, lifts off on name hover, glides back to dock) -->
+            <!-- Interactive PFP Card (100% Round Circle, Clean, lifts off on name hover, glides back to dock) -->
             <div class="interactive-pfp-card is-docked" id="interactivePfpCard" role="button" tabindex="0" aria-label="Sambit Kumar Satapathy profile and cyber intel">
               <div class="pfp-card-inner">
                 <img src="/profile.png" alt="Sambit Kumar Satapathy" class="pfp-card-img" />
-                <span class="ai-badge" id="aiIntelBadge" title="AI Cyber Intel Attached">INTEL ✦</span>
               </div>
 
               <!-- Cyber Fact AI Bubble attached directly to the image -->
@@ -405,6 +404,8 @@
       let isNameHovered = false;
       let lingerTimer = null;
       let rafId = null;
+      let destX = 0;
+      let destY = 0;
 
       function getDockCoords() {
         const rect = dockSlot.getBoundingClientRect();
@@ -423,7 +424,7 @@
           clearTimeout(lingerTimer);
           lingerTimer = setTimeout(() => {
             beginReturn();
-          }, 850);
+          }, 750);
         }
       }
 
@@ -432,7 +433,7 @@
       function physicsLoop() {
         if (state === 'floating') {
           const targetX = mouseX;
-          const targetY = mouseY - 95; // Floats slightly above cursor
+          const targetY = mouseY - 90; // Floats slightly above cursor
 
           // Silky smooth exponential lerp (0.09)
           currentX += (targetX - currentX) * 0.09;
@@ -441,39 +442,47 @@
           // Velocity-based rotation tilt
           const deltaX = mouseX - prevMouseX;
           prevMouseX = mouseX;
-          const targetTilt = Math.max(Math.min(deltaX * 0.55, 12), -12);
+          const targetTilt = Math.max(Math.min(deltaX * 0.5, 10), -10);
           currentTilt += (targetTilt - currentTilt) * 0.08;
-          currentScale += (1.05 - currentScale) * 0.08;
+          currentScale += (1.04 - currentScale) * 0.08;
 
           // Pure GPU composite transform - zero layout reflows!
           pfpCard.style.transform = `translate3d(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px, 0) translate(-50%, -50%) rotate(${currentTilt.toFixed(2)}deg) scale(${currentScale.toFixed(3)})`;
 
           rafId = requestAnimationFrame(physicsLoop);
         } else if (state === 'returning') {
-          const dock = getDockCoords();
-          const targetX = dock.x;
-          const targetY = dock.y;
+          // If destination not set yet, calculate once from dock center
+          if (destX === 0 && destY === 0) {
+            const dock = getDockCoords();
+            destX = dock.x;
+            destY = dock.y;
+          }
 
-          // Smoothly glide back to dock slot
-          currentX += (targetX - currentX) * 0.11;
-          currentY += (targetY - currentY) * 0.11;
-          currentTilt += (0 - currentTilt) * 0.11;
-          currentScale += (1 - currentScale) * 0.11;
+          // Smoothly glide towards frozen dock coordinates
+          currentX += (destX - currentX) * 0.12;
+          currentY += (destY - currentY) * 0.12;
+          currentTilt += (0 - currentTilt) * 0.12;
+          currentScale += (1 - currentScale) * 0.12;
 
           pfpCard.style.transform = `translate3d(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px, 0) translate(-50%, -50%) rotate(${currentTilt.toFixed(2)}deg) scale(${currentScale.toFixed(3)})`;
 
-          const dist = Math.hypot(targetX - currentX, targetY - currentY);
-          if (dist < 0.6) {
-            // Reached dock center with sub-pixel precision!
+          const dist = Math.hypot(destX - currentX, destY - currentY);
+          if (dist < 1.0) {
+            // Arrived at dock with zero jump or glitch!
             state = 'docked';
-            pfpCard.classList.remove('is-floating', 'is-returning');
-            pfpCard.classList.add('is-docked');
+            destX = 0;
+            destY = 0;
+
+            cancelAnimationFrame(rafId);
+            rafId = null;
+
+            pfpCard.style.transition = 'none';
+            pfpCard.style.transform = 'none';
             pfpCard.style.position = '';
             pfpCard.style.left = '';
             pfpCard.style.top = '';
-            pfpCard.style.transform = '';
-            cancelAnimationFrame(rafId);
-            rafId = null;
+            pfpCard.classList.remove('is-floating', 'is-returning');
+            pfpCard.classList.add('is-docked');
           } else {
             rafId = requestAnimationFrame(physicsLoop);
           }
@@ -481,6 +490,7 @@
       }
 
       function liftOff() {
+        if (state === 'floating') return;
         isNameHovered = true;
         clearTimeout(lingerTimer);
         hideFactBubble();
@@ -515,12 +525,15 @@
         clearTimeout(lingerTimer);
         lingerTimer = setTimeout(() => {
           beginReturn();
-        }, 850);
+        }, 750);
       }
 
       function beginReturn() {
         if (state !== 'floating') return;
         state = 'returning';
+        const dock = getDockCoords();
+        destX = dock.x;
+        destY = dock.y;
         pfpCard.classList.remove('is-floating');
         pfpCard.classList.add('is-returning');
       }

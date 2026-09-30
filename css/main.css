@@ -711,14 +711,15 @@ nav.scrolled {
 /* When Docked */
 .interactive-pfp-card.is-docked {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -2px;
+  left: -2px;
   transform: none !important;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+  transition: none !important;
 }
 
 .interactive-pfp-card.is-docked:hover {
   transform: scale(1.04) !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
 }
 
 /* When Floating or Returning */
@@ -755,30 +756,6 @@ nav.scrolled {
   object-fit: cover;
   object-position: center 20%;
   display: block;
-}
-
-.ai-badge {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--green);
-  color: #000;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 12px;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-  z-index: 10;
-  animation: pulseGlow 2s infinite ease-in-out;
-  white-space: nowrap;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.92; }
-  50% { transform: translateX(-50%) scale(1.08); opacity: 1; box-shadow: 0 0 10px var(--green); }
 }
 
 /* ── CYBER FACT BUBBLE ATTACHED TO THE ROUND CARD ── */
