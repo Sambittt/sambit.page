@@ -37,9 +37,10 @@ window.toggleMob = function() {
   const hmbg = document.getElementById('hmbg');
   const menu = document.getElementById('mob-menu');
   if (hmbg && menu) {
-    hmbg.classList.toggle('open');
-    menu.classList.toggle('open');
-    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    const isOpen = menu.classList.toggle('open');
+    hmbg.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    document.documentElement.style.overflow = isOpen ? 'hidden' : '';
   }
 };
 
@@ -50,8 +51,24 @@ window.closeMob = function() {
     hmbg.classList.remove('open');
     menu.classList.remove('open');
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   }
 };
+
+// Dismiss mobile menu on outside tap or Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') window.closeMob();
+});
+
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('mob-menu');
+  const hmbg = document.getElementById('hmbg');
+  if (menu && menu.classList.contains('open')) {
+    if (e.target === menu) {
+      window.closeMob();
+    }
+  }
+});
 
 // ── 3. LIVE UPTIME DISPLAY ──────────────────────────────────────────────
 function initUptime() {
@@ -87,7 +104,7 @@ function initScrollReveal() {
 
 // ── 5. CUSTOM GREEN CURSOR ──────────────────────────────────────────────
 function initCursor() {
-  if (!window.matchMedia('(pointer:fine)').matches) return;
+  if (!window.matchMedia('(pointer:fine) and (hover:hover)').matches) return;
   
   const dot = document.getElementById('cur-dot');
   const ring = document.getElementById('cur-ring');

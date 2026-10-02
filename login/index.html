@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
   <title>Secure Access | sambit.page</title>
   <meta name="description" content="Secure login to sambit.page tools and dashboard."/>
   <meta name="robots" content="noindex,nofollow"/>
@@ -17,13 +17,15 @@
       --red:#f87171;--red-glow:rgba(248,113,113,.1);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
+    html,body{min-height:100%}
     body{
       font-family:'JetBrains Mono',monospace;
       background:var(--bg);color:var(--fg);
       -webkit-font-smoothing:antialiased;
       display:flex;align-items:center;justify-content:center;
-      min-height:100vh;overflow:hidden;position:relative;
+      min-height:100vh;min-height:100dvh;overflow-x:hidden;overflow-y:auto;position:relative;
+      touch-action:manipulation;
+      padding:1.5rem 0;
     }
 
     /* ── Matrix canvas ── */
@@ -97,7 +99,7 @@
     .input-prompt{padding:0 .7rem;color:var(--green);font-size:.8rem;flex-shrink:0;opacity:.7}
     .field input{
       flex:1;background:transparent;border:none;outline:none;
-      font-family:inherit;font-size:.8rem;color:var(--fg);
+      font-family:inherit;font-size:16px;color:var(--fg);
       padding:.65rem .5rem .65rem 0;
     }
     .field input::placeholder{color:var(--fg-muted)}
@@ -166,7 +168,10 @@
 
     /* ── Responsive ── */
     @media(max-width:480px){
-      .login-card{padding:2rem 1.3rem}
+      .login-wrap{padding:.75rem}
+      .login-card{padding:1.8rem 1.25rem}
+      .btn-submit{min-height:46px;font-size:.82rem}
+      .btn-social{min-height:46px;font-size:.76rem}
     }
   </style>
 </head>

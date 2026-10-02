@@ -2,7 +2,7 @@
 <html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <!-- ═══ PRIMARY SEO ═══ -->
   <title>Sambit Kumar Satapathy | SOC Analyst & SIEM Specialist | sambit.page</title>
@@ -156,6 +156,9 @@
     <a href="/certifications.html" onclick="closeMob()">Certs</a>
     <a href="/contact.html" onclick="closeMob()">Contact</a>
     <div class="mob-divider"></div>
+    <a href="/assets/Sambit_Kumar_Satapathy_Resume.pdf" download="Sambit_Kumar_Satapathy_Resume.pdf" class="mob-resume-link" onclick="closeMob()">
+      📄 Download Resume
+    </a>
     <a href="/login/" class="tool-link" id="mob-login-link" onclick="closeMob()" style="letter-spacing:.12em">
       🔐 Sign Up / Login
     </a>
@@ -217,7 +220,9 @@
               <span class="pfp-hover-target" id="pfpNameTarget">
                 Samb!t<span class="hn-dot">.</span>
                 <span class="hover-hint-badge">
-                  <span class="hint-sparkle">✦</span> hover me
+                  <span class="hint-sparkle">✦</span>
+                  <span class="hint-text-desktop">hover me</span>
+                  <span class="hint-text-mobile">tap intel</span>
                 </span>
               </span>
             </h1>
@@ -337,30 +342,67 @@
 
   <!-- HERO SCRIPTS (Matrix Rain, Typing, Cyber Fact AI) -->
   <script>
-    // ── Matrix Rain ───────────────────────────────────────────────────────────
+    // ── Matrix Rain (Optimized with IntersectionObserver & Mobile Throttling) ──
     const cvs = document.getElementById('matrix');
     if (cvs) {
       const ctx = cvs.getContext('2d');
-      function resize() { cvs.width = cvs.offsetWidth; cvs.height = cvs.offsetHeight; }
-      window.addEventListener('resize', resize);
-      resize();
-      const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>/\\|{}[]';
-      const SZ = 14;
-      let cols = Math.floor(cvs.width / SZ);
-      let drops = Array(cols).fill(0);
-      setInterval(() => {
+      const isMobile = window.innerWidth < 640;
+      const SZ = isMobile ? 18 : 14;
+      let cols = 0;
+      let drops = [];
+
+      function resize() {
+        cvs.width = cvs.offsetWidth;
+        cvs.height = cvs.offsetHeight;
         cols = Math.floor(cvs.width / SZ);
-        if (drops.length !== cols) drops = Array(cols).fill(0);
-        ctx.fillStyle = 'rgba(3,3,3,0.05)';
+        drops = Array(cols).fill(0);
+      }
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+
+      const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>/\\|{}[]';
+      let matrixInterval = null;
+
+      function renderMatrix() {
+        ctx.fillStyle = 'rgba(3,3,3,0.06)';
         ctx.fillRect(0, 0, cvs.width, cvs.height);
         ctx.fillStyle = '#4ade80';
         ctx.font = SZ + 'px JetBrains Mono';
-        drops.forEach((y, i) => {
-          ctx.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], i * SZ, y * SZ);
-          if (y * SZ > cvs.height && Math.random() > 0.97) drops[i] = 0;
-          else drops[i]++;
-        });
-      }, 50);
+        for (let i = 0; i < drops.length; i++) {
+          const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+          ctx.fillText(char, i * SZ, drops[i] * SZ);
+          if (drops[i] * SZ > cvs.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          } else {
+            drops[i]++;
+          }
+        }
+      }
+
+      function startMatrix() {
+        if (!matrixInterval) {
+          matrixInterval = setInterval(renderMatrix, isMobile ? 65 : 50);
+        }
+      }
+
+      function stopMatrix() {
+        if (matrixInterval) {
+          clearInterval(matrixInterval);
+          matrixInterval = null;
+        }
+      }
+
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) startMatrix();
+            else stopMatrix();
+          });
+        }, { threshold: 0.05 });
+        obs.observe(cvs);
+      } else {
+        startMatrix();
+      }
     }
 
     // ── Typing Animation ──────────────────────────────────────────────────────
@@ -490,6 +532,7 @@
       }
 
       function liftOff() {
+        if (window.innerWidth <= 768 || !window.matchMedia('(pointer:fine) and (hover:hover)').matches) return;
         if (state === 'floating') return;
         isNameHovered = true;
         clearTimeout(lingerTimer);
@@ -541,20 +584,32 @@
       pfpTarget.addEventListener('mouseenter', liftOff);
       pfpTarget.addEventListener('mouseleave', scheduleReturn);
 
-      // Support mobile touch tap on name
+      // Support mobile touch tap on name or dock badge to toggle Cyber Intel cleanly
       pfpTarget.addEventListener('click', (e) => {
-        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        const isTouch = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth <= 768);
+        if (isTouch) {
           e.preventDefault();
-          if (state === 'floating') {
-            beginReturn();
+          if (factBubble && factBubble.classList.contains('visible')) {
+            factPinned = false;
+            hideFactBubble();
           } else {
-            mouseX = e.clientX || (window.innerWidth / 2);
-            mouseY = (e.clientY || (window.innerHeight / 2)) - 50;
-            liftOff();
-            setTimeout(scheduleReturn, 2500);
+            factPinned = true;
+            showFactBubble();
+            fetchCyberFact();
           }
         }
       });
+
+      const dockStatus = document.querySelector('.dock-status-tag');
+      if (dockStatus) {
+        dockStatus.style.cursor = 'pointer';
+        dockStatus.addEventListener('click', (e) => {
+          e.stopPropagation();
+          factPinned = true;
+          showFactBubble();
+          fetchCyberFact();
+        });
+      }
     }
 
     // ── Cyber Fact AI (Attached directly to PFP Card in Dock) ─────────────────
