@@ -728,116 +728,36 @@ nav.scrolled {
   text-align: left;
 }
 
-.hero-avatar-dock {
-  position: relative;
+/* ── HERO AVATAR (STATIC, NORMAL, CLEAN) ── */
+.hero-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   width: 160px;
-  height: 160px;
   flex-shrink: 0;
-  margin-top: 0.4rem;
+  margin-top: 0.35rem;
 }
 
-.dock-slot {
+.hero-avatar {
   position: relative;
   width: 160px;
   height: 160px;
-  border-radius: 50%;
-  border: 2px dashed rgba(74, 222, 128, 0.35);
-  background: radial-gradient(circle, rgba(74, 222, 128, 0.08) 0%, rgba(8, 13, 26, 0.6) 75%);
-  box-shadow: inset 0 0 15px rgba(74, 222, 128, 0.1), 0 0 20px rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Subtle orbital ring animation around dock */
-.dock-slot::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px dashed rgba(74, 222, 128, 0.2);
-  animation: rotateOrbit 22s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes rotateOrbit {
-  to { transform: rotate(360deg); }
-}
-
-.dock-status-tag {
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  color: var(--green);
-  opacity: 0.85;
-  letter-spacing: 0.1em;
-  margin-top: 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  text-align: center;
-}
-
-.dock-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 6px var(--green);
-}
-
-/* Interactive PFP Card - 100% ROUND CIRCLE */
-.interactive-pfp-card {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 25;
-  will-change: transform;
-}
-
-/* When Docked */
-.interactive-pfp-card.is-docked {
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  transform: none !important;
-  transition: none !important;
-}
-
-.interactive-pfp-card.is-docked:hover {
-  transform: scale(1.04) !important;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
-}
-
-/* When Floating or Returning */
-.interactive-pfp-card.is-floating,
-.interactive-pfp-card.is-returning {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 10000;
-}
-
-.pfp-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
   border-radius: 50%;
   overflow: hidden;
   border: 3px solid var(--green);
   background: #080d1a;
-  box-shadow: 0 0 25px rgba(74, 222, 128, 0.4), 0 16px 36px rgba(0, 0, 0, 0.8);
-  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 0 25px rgba(74, 222, 128, 0.35), 0 12px 30px rgba(0, 0, 0, 0.7);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.interactive-pfp-card:hover .pfp-card-inner {
-  box-shadow: 0 0 35px rgba(74, 222, 128, 0.6), 0 20px 45px rgba(0, 0, 0, 0.9);
+.hero-avatar:hover {
+  transform: scale(1.03);
   border-color: #5eff8e;
+  box-shadow: 0 0 35px rgba(74, 222, 128, 0.55), 0 16px 36px rgba(0, 0, 0, 0.85);
 }
 
-.pfp-card-img {
+.hero-avatar-img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -846,136 +766,32 @@ nav.scrolled {
   display: block;
 }
 
-/* ── CYBER FACT BUBBLE ATTACHED TO THE ROUND CARD ── */
-.interactive-pfp-card .fact-bubble {
-  position: absolute;
-  left: calc(100% + 18px);
-  top: 50%;
-  transform: translateY(-50%) translateX(-8px) scale(0.95);
-  transform-origin: left center;
-  width: 290px;
-  background: rgba(8, 13, 26, 0.96);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(74, 222, 128, 0.35);
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.65), 0 0 20px rgba(74, 222, 128, 0.15);
-  border-radius: 12px;
-  padding: 1rem;
-  text-align: left;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
-  z-index: 100;
-  pointer-events: auto;
-}
-
-.interactive-pfp-card .fact-bubble::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border-width: 7px;
-  border-style: solid;
-  border-color: transparent rgba(74, 222, 128, 0.35) transparent transparent;
-}
-
-.interactive-pfp-card .fact-bubble.visible,
-.interactive-pfp-card.is-docked:hover .fact-bubble {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(-50%) translateX(0) scale(1);
-}
-
-.interactive-pfp-card.is-floating .fact-bubble,
-.interactive-pfp-card.is-returning .fact-bubble {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  display: none !important;
-}
-
-.fact-bubble-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.fact-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-bottom: 1px solid rgba(74, 222, 128, 0.25);
-  padding-bottom: 0.4rem;
-  margin-bottom: 0.2rem;
-}
-
-.fact-icon {
-  font-size: 1rem;
-}
-
-.fact-title {
+.hero-avatar-badge {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.62rem;
   color: var(--green);
-  letter-spacing: 1px;
-  flex-grow: 1;
-}
-
-.fact-close {
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 1.1rem;
-  line-height: 1;
-  transition: color 0.2s ease;
-  padding: 0 4px;
-}
-
-.fact-close:hover {
-  color: var(--green);
-}
-
-.fact-content {
-  font-size: 0.76rem;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.88);
-  font-family: inherit;
-}
-
-.fact-loading {
-  display: flex;
+  letter-spacing: 0.12em;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 0.5rem 0;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  background: rgba(74, 222, 128, 0.06);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 20px;
+  text-align: center;
+  user-select: none;
 }
 
-.fact-loading .dot {
+.avatar-status-dot {
   width: 6px;
   height: 6px;
-  background: var(--green);
   border-radius: 50%;
-  animation: bounceDot 1.4s infinite ease-in-out both;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulseDot 2s infinite ease-in-out;
 }
 
-.fact-loading .dot:nth-child(1) { animation-delay: -0.32s; }
-.fact-loading .dot:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes bounceDot {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
-}
-
-.fact-footer-hint {
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  color: var(--green);
-  opacity: 0.65;
-  letter-spacing: 0.05em;
-  margin-top: 0.35rem;
-  border-top: 1px dashed rgba(74, 222, 128, 0.18);
-  padding-top: 0.35rem;
-  text-align: right;
-}
 
 /* ── HERO MAIN CONTENT ── */
 .hero-main-content {
@@ -1053,52 +869,8 @@ nav.scrolled {
   margin: 0;
 }
 
-.pfp-hover-target {
-  position: relative;
-  display: inline-flex;
-  align-items: baseline;
-  cursor: pointer;
-  padding: 0.1rem 0;
-  transition: color 0.25s, text-shadow 0.25s;
-}
-
-.pfp-hover-target:hover {
-  color: #ffffff;
-  text-shadow: 0 0 30px rgba(74, 222, 128, 0.6);
-}
-
 .hn-dot {
   color: var(--green);
-}
-
-.hover-hint-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  color: var(--green);
-  background: rgba(74, 222, 128, 0.09);
-  border: 1px solid rgba(74, 222, 128, 0.35);
-  border-radius: 20px;
-  padding: 0.18rem 0.65rem;
-  margin-left: 1rem;
-  vertical-align: middle;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  animation: floatHint 2.4s infinite ease-in-out;
-  pointer-events: none;
-  user-select: none;
-}
-
-@keyframes floatHint {
-  0%, 100% { transform: translateY(0); opacity: 0.85; }
-  50% { transform: translateY(-4px); opacity: 1; box-shadow: 0 0 12px rgba(74, 222, 128, 0.3); }
-}
-
-.hint-sparkle {
-  color: #fff;
-  font-size: 0.65rem;
 }
 
 .hero-sub {
@@ -2316,69 +2088,19 @@ footer strong {
     max-width: 100%;
   }
 
-  .hero-avatar-dock {
+  .hero-avatar-wrap {
     width: 120px;
-    height: 120px;
     margin: 0 auto 0.6rem auto;
   }
 
-  .dock-slot {
+  .hero-avatar {
     width: 120px;
     height: 120px;
   }
 
-  .interactive-pfp-card {
-    width: 120px;
-    height: 120px;
-  }
-
-  .dock-status-tag {
+  .hero-avatar-badge {
     font-size: 0.58rem;
-    margin-top: 0.65rem;
-    padding: 0.25rem 0.65rem;
-    background: rgba(74, 222, 128, 0.06);
-    border: 1px solid rgba(74, 222, 128, 0.2);
-    border-radius: 12px;
-    display: inline-flex;
-    touch-action: manipulation;
-  }
-
-  /* Cyber Intel card as bottom briefing sheet on mobile */
-  .interactive-pfp-card .fact-bubble {
-    position: fixed !important;
-    left: 14px !important;
-    right: 14px !important;
-    bottom: max(18px, env(safe-area-inset-bottom, 18px)) !important;
-    top: auto !important;
-    width: auto !important;
-    max-width: 440px !important;
-    margin: 0 auto !important;
-    transform: translateY(20px) scale(0.96) !important;
-    transform-origin: bottom center !important;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.95), 0 0 24px rgba(74, 222, 128, 0.25) !important;
-    z-index: 10001 !important;
-    pointer-events: auto !important;
-    background: rgba(8, 13, 26, 0.98) !important;
-  }
-
-  .interactive-pfp-card .fact-bubble::before {
-    display: none !important;
-  }
-
-  .interactive-pfp-card .fact-bubble.visible {
-    transform: translateY(0) scale(1) !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  .fact-close {
-    font-size: 1.3rem;
-    padding: 2px 8px;
-    min-width: 32px;
-    min-height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0.2rem 0.6rem;
   }
 
   /* Hero Content */
@@ -2410,26 +2132,6 @@ footer strong {
   .hero-name {
     font-size: clamp(2.2rem, 9vw, 3.2rem);
     letter-spacing: -0.02em;
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-
-  .hover-hint-badge {
-    margin-left: 0.4rem;
-    font-size: 0.58rem;
-    padding: 0.16rem 0.55rem;
-    vertical-align: middle;
-  }
-
-  .hint-text-desktop {
-    display: none;
-  }
-
-  .hint-text-mobile {
-    display: inline;
   }
 
   .hero-sub {
@@ -2641,17 +2343,11 @@ footer strong {
     font-size: clamp(2rem, 11vw, 2.8rem);
   }
 
-  .hero-avatar-dock {
+  .hero-avatar-wrap {
     width: 110px;
-    height: 110px;
   }
 
-  .dock-slot {
-    width: 110px;
-    height: 110px;
-  }
-
-  .interactive-pfp-card {
+  .hero-avatar {
     width: 110px;
     height: 110px;
   }

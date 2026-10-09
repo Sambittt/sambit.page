@@ -130,7 +130,7 @@ function initCursor() {
   loop();
 
   // Ring expand on hoverable elements
-  const hoverSelector = 'a, button, .btn-pri, .btn-sec, .nav-tool, .skill-card, .exp-card, .cert-card, .contact-card, .hl-card, .pfp-hover-target';
+  const hoverSelector = 'a, button, .btn-pri, .btn-sec, .nav-tool, .skill-card, .exp-card, .cert-card, .contact-card, .hl-card, .hero-avatar';
   document.querySelectorAll(hoverSelector).forEach(el => {
     el.addEventListener('mouseenter', () => {
       ring.style.width = '46px';
