@@ -50,9 +50,12 @@ function createResumePDF() {
     { text: "Teks Academy, Hyderabad | July 2026 - Present", font: "F1", size: 8.5, dy: 11 },
     { text: "- SOC operations, networking, ethical hacking, SIEM, EDR, forensics, cloud security, Linux, UFW firewall, and Bash scripting.", font: "F1", size: 8.5, dy: 15 },
 
-    { text: "CERTIFICATIONS", font: "F2", size: 10, dy: 15 },
+    { text: "CERTIFICATIONS & CREDENTIALS", font: "F2", size: 10, dy: 14 },
+    { text: "- AttackIQ Academy: Foundations of Operationalizing MITRE ATT&CK v19 (Credly, 13 CPEs)", font: "F1", size: 8.5, dy: 11 },
+    { text: "- Deloitte: Cyber Job Simulation (Forage Verified)", font: "F1", size: 8.5, dy: 11 },
+    { text: "- Hack & Fix Academy: Certified Online Fraud Prevention Specialist (COFPS)", font: "F1", size: 8.5, dy: 11 },
     { text: "- Cisco: Introduction to Cybersecurity (Credly Verified)", font: "F1", size: 8.5, dy: 11 },
-    { text: "- TryHackMe: Pre-Security and Cybersecurity 101 Paths (Certificate ID: THM-KKI9XDUMZE)", font: "F1", size: 8.5, dy: 11 }
+    { text: "- TryHackMe: Pre-Security and Cybersecurity 101 Paths (ID: THM-KKI9XDUMZE)", font: "F1", size: 8.5, dy: 11 }
   ];
 
   let streamContent = "";

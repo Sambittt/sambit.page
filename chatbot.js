@@ -41,7 +41,10 @@ EDUCATION & PROFESSIONAL TRAINING:
   * Curriculum: SOC operations, SIEM, EDR, network analysis, Linux administration, UFW firewall, and Bash scripting.
 - **Location**: Hyderabad, Telangana, India.
 
-CERTIFICATIONS:
+CERTIFICATIONS & INDUSTRY CREDENTIALS:
+- **AttackIQ Academy — Foundations of Operationalizing MITRE ATT&CK v19**: Credly Verified (Badge ID: **1193a076-7182-4412-911a-900351f755b9** | October 2026, **13 CPE Credits**). Specialized in CTEM loops, ATT&CK Navigator heatmaps, and empirical behavioral detection validation.
+- **Deloitte — Cyber Job Simulation**: Verified via Forage (October 2026, Verification Code: **6ac39dd5f06977f0cf6e35b1**). Practical tasks in enterprise incident triage, defense-in-depth security controls, and client risk advisory communication.
+- **Hack & Fix Academy — Certified Online Fraud Prevention Specialist (COFPS)**: Credential ID: **4687-4839-7811-2187** (October 2026). Specialized in online fraud detection, credential stuffing defense, and account takeover (ATO) mitigation.
 - **TryHackMe Pre-Security & Cybersecurity 101**: Certificate ID: **THM-KKI9XDUMZE** (Networking basics, Linux fundamentals, web security).
 - **Cisco Introduction to Cybersecurity**: Verified via Credly.
 
