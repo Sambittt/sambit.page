@@ -337,7 +337,7 @@
 
       const gap = this.dotGap;
       const tmp = [];
-      const isDesktop = this.w >= 768;
+      const isDesktop = this.w >= 992;
 
       let cardX = 0, cardY = 0, cardW = 0, cardH = 0;
       let drawW = 0, drawH = 0, drawX = 0, drawY = 0;
@@ -431,49 +431,54 @@
         m.fillText(word, textX, textY);
 
       } else {
-        // ── MOBILE LAYOUT (Stacked)
-        this.cardBounds = null;
-        const availH = Math.max(100, this.h - 80);
-        const maxWordH = Math.min(availH * 0.24, 100);
+        // ── MOBILE LAYOUT (Clean Vertical Stack Inside Self-Contained Canvas)
+        const padX = Math.round(this.w * 0.04);
+        cardW = Math.min(210, Math.round(this.w * 0.58));
+        cardH = Math.min(205, Math.round(cardW * 1.02));
+        cardX = Math.round((this.w - cardW) / 2);
+        cardY = 8;
+        this.cardBounds = { x: cardX, y: cardY, w: cardW, h: cardH };
+
+        if (this.avatarImg) {
+          const imgW = this.avatarImg.naturalWidth || 1018;
+          const imgH = this.avatarImg.naturalHeight || 1024;
+          const aspect = imgW / imgH;
+          const dh = Math.round(cardH * 1.05);
+          const dw = Math.round(dh * aspect);
+          const dx = Math.round(cardX + (cardW - dw) / 2);
+          const dy = Math.round(cardY + 10 - (61 / 1024) * dh);
+          m.drawImage(this.avatarImg, dx, dy, dw, dh);
+        }
+
+        wordTop = cardY + cardH + 10;
         m.font = this.fontWeight + ' 100px ' + this.fontFamily;
         const testMetrics = m.measureText(word);
-        const scaleW = (this.w * 0.92 / (testMetrics.width || 1)) * 100;
-        const scaleH = (maxWordH / 85) * 100;
-        const fit = Math.max(34, Math.floor(Math.min(scaleW, scaleH)));
+        const scaleW = ((this.w - padX * 2) * 0.88 / (testMetrics.width || 1)) * 100;
+        const fit = Math.min(Math.round(scaleW), 42);
 
         m.font = this.fontWeight + ' ' + fit + 'px ' + this.fontFamily;
         const finalMetrics = m.measureText(word);
-        const descent = finalMetrics.actualBoundingBoxDescent || fit * 0.2;
-        const ascent = finalMetrics.actualBoundingBoxAscent || fit * 0.75;
+        const descent = (typeof finalMetrics.actualBoundingBoxDescent === 'number' && !isNaN(finalMetrics.actualBoundingBoxDescent))
+          ? finalMetrics.actualBoundingBoxDescent
+          : fit * 0.22;
+        const ascent = (typeof finalMetrics.actualBoundingBoxAscent === 'number' && !isNaN(finalMetrics.actualBoundingBoxAscent))
+          ? finalMetrics.actualBoundingBoxAscent
+          : fit * 0.75;
 
         textX = Math.round((this.w - finalMetrics.width) / 2);
-        textY = Math.round(this.h - descent - 20);
-        wordTop = textY - ascent;
+        textY = Math.round(wordTop + ascent);
 
         m.fillStyle = '#00ff00';
         m.textBaseline = 'alphabetic';
         m.fillText(word, textX, textY);
 
-        const wordHFromBottom = Math.round(this.h - wordTop);
         const heroEl = document.getElementById('hero');
         if (heroEl) {
-          heroEl.style.setProperty('--hwf-word-h-bottom', `${wordHFromBottom}px`);
-          heroEl.style.setProperty('--hwf-word-top', `${Math.round(wordTop)}px`);
           heroEl.style.setProperty('--hwf-word-left', `${Math.round(textX)}px`);
-        }
-
-        if (this.avatarImg) {
-          const availPortraitH = Math.max(140, wordTop - 30);
-          const imgW = this.avatarImg.naturalWidth || 1018;
-          const imgH = this.avatarImg.naturalHeight || 1024;
-          const aspect = imgW / imgH;
-
-          let dw, dh;
-          dh = Math.round(availPortraitH / 0.94);
-          dw = Math.round(dh * aspect);
-          const dx = Math.round((this.w - dw) / 2);
-          const dy = Math.round(24 - (61 / 1024) * dh);
-          m.drawImage(this.avatarImg, dx, dy, dw, dh);
+          heroEl.style.setProperty('--hwf-word-top', `${Math.round(wordTop)}px`);
+          heroEl.style.setProperty('--hwf-word-bottom', `${Math.round(wordTop + ascent + descent)}px`);
+          heroEl.style.setProperty('--hero-card-left', `${cardX}px`);
+          heroEl.style.setProperty('--hero-card-w', `${cardW}px`);
         }
       }
 
@@ -548,7 +553,7 @@
               }
             } else {
               // PORTRAIT PHOTO: Only keep dots inside card bounds
-              if (isDesktop && !inCard(hx, hy)) continue;
+              if (this.cardBounds && !inCard(hx, hy)) continue;
 
               const lum = r * 0.299 + g * 0.587 + b * 0.114;
               const toneFactor = Math.min(1, Math.max(0, (lum - 36) / 54));

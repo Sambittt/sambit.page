@@ -1582,40 +1582,6 @@ nav.scrolled {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-@media (max-width: 992px) {
-  .hero-skyline-wrapper {
-    top: calc(var(--hwf-word-bottom, 160px) + 16px + var(--hwf-taglines-h, 78px) + 16px);
-    bottom: auto;
-    right: 2.5vw;
-    width: min(540px, 52vw);
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-theme-wrapper {
-    top: 12px;
-    right: 12px;
-  }
-  .hero-theme-dropdown {
-    width: calc(100vw - 24px);
-    right: 0;
-  }
-  .hero-skyline-wrapper {
-    position: relative;
-    top: auto;
-    right: auto;
-    margin: 60px auto 14px;
-    width: 94%;
-    max-width: 440px;
-  }
-  .skyline-stage {
-    height: 125px;
-  }
-  .skyline-stat:last-child {
-    display: none;
-  }
-}
-
 /* ── CYBER ROLE KEYWORDS & SPECIALTIES (POSITIONED BEAUTIFULLY BELOW SAMBIT WORDMARK) ── */
 .hero-taglines-wrap {
   position: absolute;
@@ -1711,35 +1677,6 @@ nav.scrolled {
   background: rgba(var(--green-rgb), 0.08);
 }
 
-@media (max-width: 992px) {
-  .hero-taglines-wrap {
-    left: var(--hwf-word-left, calc(min(440px, 42vw) + 3vw));
-    right: auto;
-    width: max-content;
-    max-width: min(500px, 52vw);
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-taglines-wrap {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    top: auto;
-    margin: 8px auto 14px;
-    width: 92%;
-    max-width: 440px;
-    align-items: center;
-    text-align: center;
-  }
-  .htw-tech-chips {
-    justify-content: center;
-  }
-  .hero-scroll-btn {
-    left: 50%;
-  }
-}
-
 /* ── SLEEK MINIMALIST SCROLL BUTTON ── */
 .hero-scroll-btn {
   position: absolute;
@@ -1815,6 +1752,264 @@ nav.scrolled {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   FULLSCREEN HERO MOBILE OPTIMIZATION (< 992px, <= 768px, <= 440px)
+   Reorganizes hero into an ultra-clean vertical stack on phones:
+   1. Halftone Portrait + "sambit." wordmark in self-contained canvas
+   2. Cyber Role Badge + Subline + Tech Chips
+   3. 3D Contribution Skyline Dashboard
+   4. Minimalist Scroll Indicator
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 992px) {
+  #hero.hero-fullscreen-section {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: calc(100svh - var(--nav-h)) !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 1.2rem 1rem 3.5rem !important;
+    padding-top: max(1.2rem, env(safe-area-inset-top, 1.2rem)) !important;
+    box-sizing: border-box !important;
+  }
+
+  #hero.hero-fullscreen-section .hwf-root {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    height: 320px !important;
+    min-height: 320px !important;
+    max-height: 320px !important;
+    margin: 0 auto !important;
+    display: block !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  #hero.hero-fullscreen-section .hwf-root canvas {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+  }
+
+  /* Compact Theme Toggle Button */
+  .hero-theme-wrapper {
+    position: absolute !important;
+    top: max(10px, env(safe-area-inset-top, 10px)) !important;
+    right: 12px !important;
+    z-index: 45 !important;
+  }
+
+  .hero-theme-toggle-btn {
+    padding: 0.28rem 0.6rem !important;
+    font-size: 0.58rem !important;
+    gap: 5px !important;
+  }
+
+  .hero-theme-dropdown {
+    position: fixed !important;
+    top: calc(var(--nav-h) + 8px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+    z-index: 999 !important;
+  }
+
+  .htb-col {
+    padding: 0.5rem 0.2rem 0.45rem !important;
+  }
+
+  .htb-swatch {
+    height: 22px !important;
+  }
+
+  .htb-name {
+    font-size: 0.52rem !important;
+  }
+
+  /* Role Badge & Specialties */
+  .hero-taglines-wrap {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    margin: 10px auto 0 !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    z-index: 25 !important;
+  }
+
+  .htw-role-badge {
+    padding: 0.24rem 0.65rem !important;
+    border-radius: 4px !important;
+  }
+
+  .htw-role-text {
+    font-size: 0.62rem !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  .htw-sub-line {
+    font-size: 0.6rem !important;
+    letter-spacing: 0.07em !important;
+    line-height: 1.45 !important;
+    max-width: 380px !important;
+  }
+
+  .htw-tech-chips {
+    justify-content: center !important;
+    gap: 5px !important;
+    max-width: 380px !important;
+  }
+
+  .htw-chip {
+    font-size: 0.54rem !important;
+    padding: 0.16rem 0.44rem !important;
+  }
+
+  /* 3D Contribution Skyline Dashboard */
+  .hero-skyline-wrapper {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    margin: 14px auto 0 !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    box-sizing: border-box !important;
+    z-index: 25 !important;
+  }
+
+  .skyline-card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0.5rem 0.7rem 0.45rem !important;
+    border-radius: 10px !important;
+  }
+
+  .skyline-header {
+    gap: 6px !important;
+    padding-bottom: 0.38rem !important;
+    margin-bottom: 0.38rem !important;
+  }
+
+  .skyline-title {
+    font-size: 0.58rem !important;
+    letter-spacing: 0.07em !important;
+  }
+
+  .skyline-total-tag {
+    font-size: 0.52rem !important;
+    padding: 0.06rem 0.32rem !important;
+  }
+
+  .skyline-toggle-group {
+    gap: 2px !important;
+  }
+
+  .skyline-view-btn {
+    font-size: 0.54rem !important;
+    padding: 0.18rem 0.44rem !important;
+    min-height: 28px !important;
+    touch-action: manipulation !important;
+  }
+
+  .skyline-stage-wrap {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .skyline-stage {
+    width: 100% !important;
+    height: 115px !important;
+  }
+
+  .skyline-footer {
+    font-size: 0.54rem !important;
+    margin-top: 0.35rem !important;
+    padding-top: 0.35rem !important;
+  }
+
+  .skyline-stats {
+    gap: 8px !important;
+  }
+
+  .skyline-stat:last-child {
+    display: none !important;
+  }
+
+  /* Scroll Button */
+  .hero-scroll-btn {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    margin: 1.8rem auto 0.6rem !important;
+    padding: 0.38rem 0.95rem !important;
+    z-index: 25 !important;
+  }
+}
+
+@media (max-width: 440px) {
+  #hero.hero-fullscreen-section {
+    padding: 0.8rem 0.75rem 2.8rem !important;
+  }
+
+  #hero.hero-fullscreen-section .hwf-root {
+    height: 300px !important;
+    min-height: 300px !important;
+    max-height: 300px !important;
+  }
+
+  .htw-role-text {
+    font-size: 0.56rem !important;
+  }
+
+  .htw-sub-line {
+    font-size: 0.56rem !important;
+    max-width: 320px !important;
+  }
+
+  .htw-chip {
+    font-size: 0.5rem !important;
+    padding: 0.12rem 0.36rem !important;
+  }
+
+  .skyline-title {
+    font-size: 0.52rem !important;
+  }
+
+  .skyline-total-tag {
+    font-size: 0.48rem !important;
+    padding: 0.05rem 0.25rem !important;
+  }
+
+  .skyline-view-btn {
+    font-size: 0.5rem !important;
+    padding: 0.14rem 0.34rem !important;
+  }
+
+  .skyline-stage {
+    height: 105px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    LEFT-SIDE MINIMALIST FLOATING SECTION HUD PILL
    ═══════════════════════════════════════════════════════════════════ */
 .scroll-section-hud {
@@ -1887,17 +2082,10 @@ nav.scrolled {
   text-transform: uppercase;
 }
 
-/* Responsive HUD Breakpoint */
+/* Responsive HUD Breakpoint (Hide on mobile to prevent clutter and tap overlap) */
 @media (max-width: 960px) {
   .scroll-section-hud {
-    left: 50%;
-    top: auto;
-    bottom: 20px;
-    transform: translateX(-50%) translateY(100px);
-  }
-
-  .scroll-section-hud.hud-visible {
-    transform: translateX(-50%) translateY(0);
+    display: none !important;
   }
 }
 
