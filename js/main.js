@@ -135,8 +135,8 @@ function initCursor() {
     el.addEventListener('mouseenter', () => {
       ring.style.width = '46px';
       ring.style.height = '46px';
-      ring.style.borderColor = 'rgba(74, 222, 128, 0.85)';
-      ring.style.background = 'rgba(74, 222, 128, 0.07)';
+      ring.style.borderColor = 'var(--border-hover, var(--green))';
+      ring.style.background = 'var(--green-soft, rgba(74, 222, 128, 0.07))';
     });
     el.addEventListener('mouseleave', () => {
       ring.style.width = '';
@@ -170,7 +170,7 @@ async function initFirebaseAuth() {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const DEFAULT_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" fill="#4ade80"/></svg>`;
+    const DEFAULT_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" fill="var(--green, #4ade80)"/></svg>`;
 
     onAuthStateChanged(auth, user => {
       const loginBtn = document.getElementById('nav-login-btn');
@@ -251,8 +251,17 @@ async function initFirebaseAuth() {
   }
 }
 
+// ── 7. THEME SYNCHRONIZATION BACKUP ─────────────────────────────────────
+function initThemeSync() {
+  if (window.applySambitTheme) {
+    const key = window.getSambitCurrentTheme ? window.getSambitCurrentTheme() : 'cyber';
+    window.applySambitTheme(key, false);
+  }
+}
+
 // ── DOM READY BOOTSTRAP ─────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeSync();
   initActiveNav();
   initUptime();
   initScrollReveal();

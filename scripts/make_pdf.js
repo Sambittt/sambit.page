@@ -6,7 +6,7 @@ function createResumePDF() {
     { text: "SAMBIT KUMAR SATAPATHY", font: "F2", size: 16, dy: 22 },
     { text: "SOC Analyst | SIEM and Incident Response", font: "F2", size: 11, dy: 16 },
     { text: "Hyderabad, Telangana, India | Phone: +91 7735207434 | Email: sambitsatapathy22@gmail.com", font: "F1", size: 9, dy: 13 },
-    { text: "Portfolio: sambit.page | GitHub: github.com/Sambittt", font: "F1", size: 9, dy: 16 },
+    { text: "Portfolio: sambit.page | GitHub: github.com/Sambittt | LinkedIn: linkedin.com/in/sambit-satapathy", font: "F1", size: 9, dy: 16 },
 
     { text: "PROFESSIONAL SUMMARY", font: "F2", size: 10, dy: 15 },
     { text: "Security Operations Center (SOC) Analyst with hands-on experience deploying and operating a Wazuh Security Information", font: "F1", size: 8.5, dy: 11 },
@@ -44,7 +44,7 @@ function createResumePDF() {
     { text: "- Tested both response paths and documented the complete incident-response workflow.", font: "F1", size: 8.5, dy: 15 },
 
     { text: "EDUCATION AND TRAINING", font: "F2", size: 10, dy: 15 },
-    { text: "Bachelor of Computer Applications (BCA) | CGPA: 8.2/10", font: "F2", size: 9, dy: 12 },
+    { text: "Bachelor of Computer Applications (BCA) | CGPA: 8.0/10", font: "F2", size: 9, dy: 12 },
     { text: "Gayatri Institute of Science and Technology, Berhampur University, Odisha", font: "F1", size: 8.5, dy: 11 },
     { text: "Cybersecurity Program (SOC Focused)", font: "F2", size: 9, dy: 12 },
     { text: "Teks Academy, Hyderabad | July 2026 - Present", font: "F1", size: 8.5, dy: 11 },
@@ -59,13 +59,17 @@ function createResumePDF() {
   ];
 
   let streamContent = "";
-  let y = 750;
+  let y = 752;
 
   for (const line of lines) {
     y -= line.dy;
     // escape parentheses
     const safeText = line.text.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
     streamContent += `BT /${line.font} ${line.size} Tf 50 ${y} Td (${safeText}) Tj ET\n`;
+    // For major section titles, draw a clean horizontal rule (standard Harvard / Tech ATS standard)
+    if (line.size === 10 && line.font === 'F2') {
+      streamContent += `0.5 w 0.3 0.3 0.3 RG 50 ${y - 3} m 562 ${y - 3} l S 0 g\n`;
+    }
   }
 
   const objects = [];

@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const { exec } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,12 +11,17 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Blocked by CORS policy'));
     }
   }
 }));
 
 app.use(express.json());
+
+// Target validator: letters, numbers, hyphens, dots
+const isValidTarget = (val) => typeof val === 'string' && /^[a-zA-Z0-9.-]+$/.test(val.trim());
+// IP validator: IPv4 or IPv6
+const isValidIp = (val) => typeof val === 'string' && /^[a-fA-F0-9.:-]+$/.test(val.trim());
 
 // Basic health check
 app.get('/', (req, res) => {
@@ -25,16 +29,17 @@ app.get('/', (req, res) => {
 });
 
 // ── NMAP ENDPOINT ──
-// Uses HackerTarget Nmap API so this backend can be hosted ANYWHERE (no local nmap required)
+// Queries HackerTarget Nmap API
 app.post('/api/scan/nmap', async (req, res) => {
   const { target } = req.body;
 
-  if (!target || !/^[a-zA-Z0-9.-]+$/.test(target)) {
-    return res.status(400).json({ error: 'Invalid target format.' });
+  if (!isValidTarget(target)) {
+    return res.status(400).json({ error: 'Invalid target format. Only alphanumeric hostnames/IPs are permitted.' });
   }
 
   try {
-    const url = `https://api.hackertarget.com/nmap/?q=${target}`;
+    const cleanTarget = target.trim();
+    const url = `https://api.hackertarget.com/nmap/?q=${encodeURIComponent(cleanTarget)}`;
     const response = await fetch(url);
     const text = await response.text();
     
@@ -56,7 +61,7 @@ app.post('/api/scan/nmap', async (req, res) => {
     });
 
     res.json({
-      target: target,
+      target: cleanTarget,
       rawOutput: text,
       openPorts: openPorts
     });
@@ -66,13 +71,18 @@ app.post('/api/scan/nmap', async (req, res) => {
   }
 });
 
-// ── PROXY ENDPOINTS (Moving frontend logic to backend) ──
+// ── PROXY ENDPOINTS ──
 
 // Headers
 app.get('/api/scan/headers', async (req, res) => {
   const { target } = req.query;
+  if (!isValidTarget(target)) {
+    return res.status(400).json({ error: 'Invalid target domain or IP.' });
+  }
+
   try {
-    const hdrsUrl = encodeURIComponent(`https://api.hackertarget.com/httpheaders/?q=${target}`);
+    const cleanTarget = target.trim();
+    const hdrsUrl = encodeURIComponent(`https://api.hackertarget.com/httpheaders/?q=${cleanTarget}`);
     const response = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${hdrsUrl}`);
     const text = await response.text();
     res.send(text);
@@ -83,11 +93,20 @@ app.get('/api/scan/headers', async (req, res) => {
 
 // Shodan
 app.get('/api/scan/shodan', async (req, res) => {
-  const { ip, key } = req.query;
+  const { ip } = req.query;
+  const key = process.env.SHODAN_KEY || req.query.key;
+
+  if (!key) {
+    return res.status(400).json({ error: 'Shodan API key is required (set SHODAN_KEY in environment or supply key parameter).' });
+  }
+
+  if (!isValidIp(ip)) {
+    return res.status(400).json({ error: 'Invalid IP address format.' });
+  }
+
   try {
-    // You should hardcode your SHODAN_KEY here instead of passing from frontend
-    // const SHODAN_KEY = process.env.SHODAN_KEY || 'your_key';
-    const response = await fetch(`https://api.shodan.io/shodan/host/${ip}?key=${key}`);
+    const cleanIp = ip.trim();
+    const response = await fetch(`https://api.shodan.io/shodan/host/${encodeURIComponent(cleanIp)}?key=${encodeURIComponent(key)}`);
     const data = await response.json();
     res.json(data);
   } catch (error) {

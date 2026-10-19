@@ -2,35 +2,73 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper: Check if user is an authorized administrator
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in
+        ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com'];
+    }
+
     // ── Users Collection (ACCESS REQUESTS + STATUS) ──
-    // This was MISSING — causing the "Missing Permission" error
+    // Enforces server-side privilege separation: normal users cannot grant themselves
+    // 'approved' status or 'admin' roles.
     match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId; // Users read own status
-      allow create, update: if request.auth != null && request.auth.uid == userId; // Users submit access requests
-      allow read, write: if request.auth != null && request.auth.token.email in
-        ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com']; // Admin full access
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+
+      allow create: if request.auth != null && (
+        isAdmin() ||
+        (
+          request.auth.uid == userId &&
+          request.resource.data.keys().hasOnly(['displayName', 'email', 'uid', 'reason', 'stego_reason', 'requestedAt', 'status', 'stego_status']) &&
+          (!('status' in request.resource.data) || request.resource.data.status in ['pending', 'not requested']) &&
+          (!('stego_status' in request.resource.data) || request.resource.data.stego_status in ['pending', 'not requested']) &&
+          (!('role' in request.resource.data))
+        )
+      );
+
+      allow update: if request.auth != null && (
+        isAdmin() ||
+        (
+          request.auth.uid == userId &&
+          // Non-admin users cannot touch the 'role' field
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']) &&
+          // If status is changed, user can only set it to 'pending'
+          (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['status']) || request.resource.data.status == 'pending') &&
+          // If stego_status is changed, user can only set it to 'pending'
+          (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['stego_status']) || request.resource.data.stego_status == 'pending')
+        )
+      );
+
+      allow delete: if isAdmin();
     }
 
     // ── Scan Logs (NetProbe scan history) ──
-    // This was also MISSING — scan logs couldn't be saved
     match /scan_logs/{logId} {
-      allow create: if request.auth != null; // Any authenticated user can log a scan
-      allow read: if request.auth != null && resource.data.uid == request.auth.uid; // Users read own logs
-      allow read: if request.auth != null && request.auth.token.email in
-        ['satapathys198@gmail.com', 'sambitsatapathy22@gmail.com']; // Admin read all
+      allow create: if request.auth != null; // Any authenticated user can log their scan
+      allow read: if request.auth != null && (resource.data.uid == request.auth.uid || isAdmin());
+      allow update, delete: if isAdmin();
     }
 
-    // Cloud Shares
+    // ── Cloud Shares ──
     match /cloud-shares/{share} {
       allow read: if true; // Public view
       allow create: if request.auth != null; // Authenticated upload
-      allow update, delete: if request.auth != null && resource.data.uid == request.auth.uid; // Owner manage
+      allow update, delete: if request.auth != null && (resource.data.uid == request.auth.uid || isAdmin()); // Owner or Admin
     }
 
-    // Cloud Visitor Security Logs
+    // ── Cloud Visitor Security Logs ──
     match /cloud-visits/{visit} {
-      allow create: if true; // Public visitor logging (write-only)
-      allow read, update, delete: if request.auth != null && request.auth.token.email == 'satapathys198@gmail.com'; // Admin-only read/write
+      // Validate allowed keys on visitor logging to prevent arbitrary JSON injection
+      allow create: if request.resource.data.keys().hasOnly([
+        'shareId', 'fileName', 'ip', 'city', 'region', 'country', 'countryCode',
+        'org', 'userAgent', 'platform', 'language', 'screenRes', 'referrer', 'visitedAt'
+      ]);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── AI Chat History / Analytics ──
+    match /ai_chats/{chat} {
+      allow create: if request.resource.data.keys().hasOnly(['userName', 'sender', 'message', 'timestamp']);
+      allow read, update, delete: if isAdmin();
     }
   }
 }

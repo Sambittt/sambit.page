@@ -15,55 +15,61 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
 endobj
 6 0 obj
-<< /Length 5160 >>
+<< /Length 5481 >>
 stream
-BT /F2 16 Tf 50 728 Td (SAMBIT KUMAR SATAPATHY) Tj ET
-BT /F2 11 Tf 50 712 Td (SOC Analyst | SIEM and Incident Response) Tj ET
-BT /F1 9 Tf 50 699 Td (Hyderabad, Telangana, India | Phone: +91 7735207434 | Email: sambitsatapathy22@gmail.com) Tj ET
-BT /F1 9 Tf 50 683 Td (Portfolio: sambit.page | GitHub: github.com/Sambittt) Tj ET
-BT /F2 10 Tf 50 668 Td (PROFESSIONAL SUMMARY) Tj ET
-BT /F1 8.5 Tf 50 657 Td (Security Operations Center \(SOC\) Analyst with hands-on experience deploying and operating a Wazuh Security Information) Tj ET
-BT /F1 8.5 Tf 50 646 Td (and Event Management \(SIEM\) platform, onboarding endpoints, writing custom detection rules, and investigating security) Tj ET
-BT /F1 8.5 Tf 50 635 Td (events. Skilled in log analysis, incident response, vulnerability assessment, and network traffic analysis using Nmap and) Tj ET
-BT /F1 8.5 Tf 50 620 Td (Wireshark. Strong documentation skills including runbooks, incident notes, and technical reporting.) Tj ET
-BT /F2 10 Tf 50 605 Td (SKILLS) Tj ET
-BT /F1 8.5 Tf 50 594 Td (SIEM & Monitoring: Wazuh \(manager, indexer, dashboard\), Splunk, log collection & correlation, alert triage, custom rules) Tj ET
-BT /F1 8.5 Tf 50 583 Td (Incident Response: Security event investigation, incident response workflow, SOAR \(Tines\), EDR \(LimaCharlie\), playbooks) Tj ET
-BT /F1 8.5 Tf 50 572 Td (Vulnerability Assessment: Nmap scanning, network reconnaissance, vulnerability identification, security exposure reporting) Tj ET
-BT /F1 8.5 Tf 50 561 Td (Network & Traffic Analysis: Wireshark, TCP/IP, DNS, HTTP, UFW firewall, suspicious traffic detection) Tj ET
-BT /F1 8.5 Tf 50 550 Td (Operating Systems: Linux \(Ubuntu, Kali\), Windows 10, Windows 11, Windows Server) Tj ET
-BT /F1 8.5 Tf 50 539 Td (Scripting & Admin: Bash, cron, user and group management) Tj ET
-BT /F1 8.5 Tf 50 528 Td (Frameworks: MITRE ATT&CK, Cyber Kill Chain, NIST, SANS incident response lifecycle) Tj ET
-BT /F1 8.5 Tf 50 517 Td (Cloud & Tools: AWS EC2, Docker, Git, GitHub, VMware, VS Code) Tj ET
-BT /F1 8.5 Tf 50 502 Td (Reporting: Incident documentation, security procedure documentation, management reports) Tj ET
-BT /F2 10 Tf 50 487 Td (PROFESSIONAL EXPERIENCE) Tj ET
-BT /F2 9 Tf 50 475 Td (Security Operations Center \(SOC\) Intern, Wazuh Cloud Project \(AWS\)) Tj ET
-BT /F1 8.5 Tf 50 464 Td (Infozit | Team of 4 | July 2026 - Present) Tj ET
-BT /F1 8.5 Tf 50 453 Td (- Deployed and configured a pre-production Wazuh SIEM including manager, indexer, and dashboard on AWS EC2.) Tj ET
-BT /F1 8.5 Tf 50 442 Td (- Onboarded Windows 11, Windows Server, and Ubuntu Server endpoints using Wazuh agents for centralized log collection.) Tj ET
-BT /F1 8.5 Tf 50 431 Td (- Configured a custom web server to generate and forward HTTP traffic logs to the SIEM.) Tj ET
-BT /F1 8.5 Tf 50 420 Td (- Authored and tested custom detection rules to identify simulated brute-force and web-based attacks.) Tj ET
-BT /F1 8.5 Tf 50 409 Td (- Built the initial Wazuh stack using Docker and configured Role-Based Access Control \(RBAC\) for secure team access.) Tj ET
-BT /F1 8.5 Tf 50 394 Td (- Managed detection rules and configuration through Git pull-request workflows and maintained operational runbooks.) Tj ET
-BT /F2 10 Tf 50 379 Td (PROJECTS) Tj ET
-BT /F2 9 Tf 50 367 Td (SOAR and EDR Incident Response Playbook \(LimaCharlie, Tines, Slack\)) Tj ET
-BT /F1 8.5 Tf 50 356 Td (- Enrolled a Windows 10 virtual machine as a LimaCharlie EDR sensor and simulated credential-theft activity using LaZagne.) Tj ET
-BT /F1 8.5 Tf 50 345 Td (- Created and validated a custom Detection and Response \(D&R\) rule using historical replay.) Tj ET
-BT /F1 8.5 Tf 50 334 Td (- Forwarded EDR detections to a Tines webhook and built a SOAR workflow that sends alert details to Slack.) Tj ET
-BT /F1 8.5 Tf 50 323 Td (- Automated endpoint containment through the LimaCharlie API, with separate YES and NO analyst decision paths.) Tj ET
-BT /F1 8.5 Tf 50 308 Td (- Tested both response paths and documented the complete incident-response workflow.) Tj ET
-BT /F2 10 Tf 50 293 Td (EDUCATION AND TRAINING) Tj ET
-BT /F2 9 Tf 50 281 Td (Bachelor of Computer Applications \(BCA\) | CGPA: 8.2/10) Tj ET
-BT /F1 8.5 Tf 50 270 Td (Gayatri Institute of Science and Technology, Berhampur University, Odisha) Tj ET
-BT /F2 9 Tf 50 258 Td (Cybersecurity Program \(SOC Focused\)) Tj ET
-BT /F1 8.5 Tf 50 247 Td (Teks Academy, Hyderabad | July 2026 - Present) Tj ET
-BT /F1 8.5 Tf 50 232 Td (- SOC operations, networking, ethical hacking, SIEM, EDR, forensics, cloud security, Linux, UFW firewall, and Bash scripting.) Tj ET
-BT /F2 10 Tf 50 218 Td (CERTIFICATIONS & CREDENTIALS) Tj ET
-BT /F1 8.5 Tf 50 207 Td (- AttackIQ Academy: Foundations of Operationalizing MITRE ATT&CK v19 \(Credly, 13 CPEs\)) Tj ET
-BT /F1 8.5 Tf 50 196 Td (- Deloitte: Cyber Job Simulation \(Forage Verified\)) Tj ET
-BT /F1 8.5 Tf 50 185 Td (- Hack & Fix Academy: Certified Online Fraud Prevention Specialist \(COFPS\)) Tj ET
-BT /F1 8.5 Tf 50 174 Td (- Cisco: Introduction to Cybersecurity \(Credly Verified\)) Tj ET
-BT /F1 8.5 Tf 50 163 Td (- TryHackMe: Pre-Security and Cybersecurity 101 Paths \(ID: THM-KKI9XDUMZE\)) Tj ET
+BT /F2 16 Tf 50 730 Td (SAMBIT KUMAR SATAPATHY) Tj ET
+BT /F2 11 Tf 50 714 Td (SOC Analyst | SIEM and Incident Response) Tj ET
+BT /F1 9 Tf 50 701 Td (Hyderabad, Telangana, India | Phone: +91 7735207434 | Email: sambitsatapathy22@gmail.com) Tj ET
+BT /F1 9 Tf 50 685 Td (Portfolio: sambit.page | GitHub: github.com/Sambittt | LinkedIn: linkedin.com/in/sambit-satapathy) Tj ET
+BT /F2 10 Tf 50 670 Td (PROFESSIONAL SUMMARY) Tj ET
+0.5 w 0.3 0.3 0.3 RG 50 667 m 562 667 l S 0 g
+BT /F1 8.5 Tf 50 659 Td (Security Operations Center \(SOC\) Analyst with hands-on experience deploying and operating a Wazuh Security Information) Tj ET
+BT /F1 8.5 Tf 50 648 Td (and Event Management \(SIEM\) platform, onboarding endpoints, writing custom detection rules, and investigating security) Tj ET
+BT /F1 8.5 Tf 50 637 Td (events. Skilled in log analysis, incident response, vulnerability assessment, and network traffic analysis using Nmap and) Tj ET
+BT /F1 8.5 Tf 50 622 Td (Wireshark. Strong documentation skills including runbooks, incident notes, and technical reporting.) Tj ET
+BT /F2 10 Tf 50 607 Td (SKILLS) Tj ET
+0.5 w 0.3 0.3 0.3 RG 50 604 m 562 604 l S 0 g
+BT /F1 8.5 Tf 50 596 Td (SIEM & Monitoring: Wazuh \(manager, indexer, dashboard\), Splunk, log collection & correlation, alert triage, custom rules) Tj ET
+BT /F1 8.5 Tf 50 585 Td (Incident Response: Security event investigation, incident response workflow, SOAR \(Tines\), EDR \(LimaCharlie\), playbooks) Tj ET
+BT /F1 8.5 Tf 50 574 Td (Vulnerability Assessment: Nmap scanning, network reconnaissance, vulnerability identification, security exposure reporting) Tj ET
+BT /F1 8.5 Tf 50 563 Td (Network & Traffic Analysis: Wireshark, TCP/IP, DNS, HTTP, UFW firewall, suspicious traffic detection) Tj ET
+BT /F1 8.5 Tf 50 552 Td (Operating Systems: Linux \(Ubuntu, Kali\), Windows 10, Windows 11, Windows Server) Tj ET
+BT /F1 8.5 Tf 50 541 Td (Scripting & Admin: Bash, cron, user and group management) Tj ET
+BT /F1 8.5 Tf 50 530 Td (Frameworks: MITRE ATT&CK, Cyber Kill Chain, NIST, SANS incident response lifecycle) Tj ET
+BT /F1 8.5 Tf 50 519 Td (Cloud & Tools: AWS EC2, Docker, Git, GitHub, VMware, VS Code) Tj ET
+BT /F1 8.5 Tf 50 504 Td (Reporting: Incident documentation, security procedure documentation, management reports) Tj ET
+BT /F2 10 Tf 50 489 Td (PROFESSIONAL EXPERIENCE) Tj ET
+0.5 w 0.3 0.3 0.3 RG 50 486 m 562 486 l S 0 g
+BT /F2 9 Tf 50 477 Td (Security Operations Center \(SOC\) Intern, Wazuh Cloud Project \(AWS\)) Tj ET
+BT /F1 8.5 Tf 50 466 Td (Infozit | Team of 4 | July 2026 - Present) Tj ET
+BT /F1 8.5 Tf 50 455 Td (- Deployed and configured a pre-production Wazuh SIEM including manager, indexer, and dashboard on AWS EC2.) Tj ET
+BT /F1 8.5 Tf 50 444 Td (- Onboarded Windows 11, Windows Server, and Ubuntu Server endpoints using Wazuh agents for centralized log collection.) Tj ET
+BT /F1 8.5 Tf 50 433 Td (- Configured a custom web server to generate and forward HTTP traffic logs to the SIEM.) Tj ET
+BT /F1 8.5 Tf 50 422 Td (- Authored and tested custom detection rules to identify simulated brute-force and web-based attacks.) Tj ET
+BT /F1 8.5 Tf 50 411 Td (- Built the initial Wazuh stack using Docker and configured Role-Based Access Control \(RBAC\) for secure team access.) Tj ET
+BT /F1 8.5 Tf 50 396 Td (- Managed detection rules and configuration through Git pull-request workflows and maintained operational runbooks.) Tj ET
+BT /F2 10 Tf 50 381 Td (PROJECTS) Tj ET
+0.5 w 0.3 0.3 0.3 RG 50 378 m 562 378 l S 0 g
+BT /F2 9 Tf 50 369 Td (SOAR and EDR Incident Response Playbook \(LimaCharlie, Tines, Slack\)) Tj ET
+BT /F1 8.5 Tf 50 358 Td (- Enrolled a Windows 10 virtual machine as a LimaCharlie EDR sensor and simulated credential-theft activity using LaZagne.) Tj ET
+BT /F1 8.5 Tf 50 347 Td (- Created and validated a custom Detection and Response \(D&R\) rule using historical replay.) Tj ET
+BT /F1 8.5 Tf 50 336 Td (- Forwarded EDR detections to a Tines webhook and built a SOAR workflow that sends alert details to Slack.) Tj ET
+BT /F1 8.5 Tf 50 325 Td (- Automated endpoint containment through the LimaCharlie API, with separate YES and NO analyst decision paths.) Tj ET
+BT /F1 8.5 Tf 50 310 Td (- Tested both response paths and documented the complete incident-response workflow.) Tj ET
+BT /F2 10 Tf 50 295 Td (EDUCATION AND TRAINING) Tj ET
+0.5 w 0.3 0.3 0.3 RG 50 292 m 562 292 l S 0 g
+BT /F2 9 Tf 50 283 Td (Bachelor of Computer Applications \(BCA\) | CGPA: 8.0/10) Tj ET
+BT /F1 8.5 Tf 50 272 Td (Gayatri Institute of Science and Technology, Berhampur University, Odisha) Tj ET
+BT /F2 9 Tf 50 260 Td (Cybersecurity Program \(SOC Focused\)) Tj ET
+BT /F1 8.5 Tf 50 249 Td (Teks Academy, Hyderabad | July 2026 - Present) Tj ET
+BT /F1 8.5 Tf 50 234 Td (- SOC operations, networking, ethical hacking, SIEM, EDR, forensics, cloud security, Linux, UFW firewall, and Bash scripting.) Tj ET
+BT /F2 10 Tf 50 220 Td (CERTIFICATIONS & CREDENTIALS) Tj ET
+0.5 w 0.3 0.3 0.3 RG 50 217 m 562 217 l S 0 g
+BT /F1 8.5 Tf 50 209 Td (- AttackIQ Academy: Foundations of Operationalizing MITRE ATT&CK v19 \(Credly, 13 CPEs\)) Tj ET
+BT /F1 8.5 Tf 50 198 Td (- Deloitte: Cyber Job Simulation \(Forage Verified\)) Tj ET
+BT /F1 8.5 Tf 50 187 Td (- Hack & Fix Academy: Certified Online Fraud Prevention Specialist \(COFPS\)) Tj ET
+BT /F1 8.5 Tf 50 176 Td (- Cisco: Introduction to Cybersecurity \(Credly Verified\)) Tj ET
+BT /F1 8.5 Tf 50 165 Td (- TryHackMe: Pre-Security and Cybersecurity 101 Paths \(ID: THM-KKI9XDUMZE\)) Tj ET
 endstream
 endobj
 xref
@@ -78,5 +84,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R >>
 startxref
-5607
+5928
 %%EOF

@@ -60,9 +60,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="/chatbot.css?v=2.3" />
+  <script src="/js/theme.js"></script>
 </head>
 
 <body>
@@ -71,12 +72,12 @@
   <nav>
     <a href="/" class="nav-brand">sambit.page</a>
     <div class="nav-links">
-      <a href="/">Home</a>
-      <a href="/about.html">About</a>
-      <a href="/experience.html">Experience</a>
-      <a href="/skills.html">Skills</a>
-      <a href="/certifications.html">Certs</a>
-      <a href="/contact.html">Contact</a>
+      <a href="#hero" class="nav-active" id="nav-link-hero">Home</a>
+      <a href="#sec-about" id="nav-link-about">About</a>
+      <a href="#sec-experience" id="nav-link-experience">Experience</a>
+      <a href="#sec-skills" id="nav-link-skills">Skills</a>
+      <a href="#sec-certs" id="nav-link-certs">Certs</a>
+      <a href="#sec-contact" id="nav-link-contact">Contact</a>
     </div>
 
     <!-- Sign In button (shown when logged out) -->
@@ -149,12 +150,12 @@
       <button class="mob-signout-btn" id="mob-signout-btn">Sign Out</button>
     </div>
     <div class="mob-divider"></div>
-    <a href="/" onclick="closeMob()">Home</a>
-    <a href="/about.html" onclick="closeMob()">About</a>
-    <a href="/experience.html" onclick="closeMob()">Experience</a>
-    <a href="/skills.html" onclick="closeMob()">Skills</a>
-    <a href="/certifications.html" onclick="closeMob()">Certs</a>
-    <a href="/contact.html" onclick="closeMob()">Contact</a>
+    <a href="#hero" onclick="closeMob()">Home</a>
+    <a href="#sec-about" onclick="closeMob()">About</a>
+    <a href="#sec-experience" onclick="closeMob()">Experience</a>
+    <a href="#sec-skills" onclick="closeMob()">Skills</a>
+    <a href="#sec-certs" onclick="closeMob()">Certs</a>
+    <a href="#sec-contact" onclick="closeMob()">Contact</a>
     <div class="mob-divider"></div>
     <a href="/assets/Sambit_Kumar_Satapathy_Resume.pdf" download="Sambit_Kumar_Satapathy_Resume.pdf" class="mob-resume-link" onclick="closeMob()">
       📄 Download Resume
@@ -164,140 +165,740 @@
     </a>
   </div>
 
-  <!-- HERO SECTION (HERO SPLIT: DOCKED & MAGNETIC FLOATING PFP + INTEL BUBBLE) -->
+  <!-- HERO SECTION WITH ONLY REACTIVE HALFTONE AVATAR & NAME -->
   <main class="page-main">
-    <section id="hero">
-      <canvas id="matrix"></canvas>
 
-      <div class="hero-header-split">
-        <!-- Normal Static Profile Avatar -->
-        <div class="hero-avatar-wrap">
-          <div class="hero-avatar">
-            <img src="/profile.png" alt="Sambit Kumar Satapathy" class="hero-avatar-img" />
+    <!-- ═══ LEFT-SIDE MINIMALIST FLOATING CYBER SECTION HUD ═══ -->
+    <aside class="scroll-section-hud" id="scroll-section-hud" aria-label="Current Section HUD">
+      <div class="ssh-pill">
+        <span class="ssh-pulse"></span>
+        <span class="ssh-code" id="ssh-code">01</span>
+        <span class="ssh-sep">//</span>
+        <span class="ssh-name" id="ssh-name">ABOUT SAMBIT</span>
+      </div>
+    </aside>
+
+    <!-- ═══ MINIMALIST FULLSCREEN HERO: DOTTED PORTRAIT + BIG DOTTED SAMBIT + SCROLL BTN ═══ -->
+    <section id="hero" class="hero-fullscreen-section">
+      <div class="hwf-root" data-wordmark="sambit" data-image="/assets/sambit_cutout.png" data-preset="cyber" data-dot-gap="3.8" data-radius="95" style="--hwf-bg: #030303; --hwf-ink: #f0ede6; --hwf-warm: #4ade80;">
+        <canvas aria-hidden="true"></canvas>
+        <h1 class="hwf-sr">Sambit Kumar Satapathy — SOC Analyst &amp; SIEM Specialist</h1>
+      </div>
+
+      <!-- ═══ EXPANDABLE THEME TOGGLE BUTTON & DROPDOWN ═══ -->
+      <div class="hero-theme-wrapper" id="hero-theme-wrapper">
+        <button type="button" class="hero-theme-toggle-btn" id="hero-theme-toggle-btn" aria-expanded="false" aria-haspopup="true" aria-label="Toggle Color Theme">
+          <span class="htt-swatch" id="htt-active-swatch"></span>
+          <span class="htt-label">THEME</span>
+          <span class="htt-active-badge" id="htt-active-badge">CYBER</span>
+          <svg class="htt-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
+
+        <div class="hero-theme-dropdown" id="hero-theme-dropdown" aria-label="Hero Halftone Color Themes">
+          <div class="htb-header">
+            <span class="htb-title">// SELECT PALETTE</span>
+            <span class="htb-active-badge" id="htb-active-badge-sub">6 PRESETS</span>
           </div>
-          <div class="hero-avatar-badge">
-            <span class="avatar-status-dot"></span>
-            <span>SOC DEFENDER</span>
+          <div class="htb-columns" id="htb-columns">
+            <button type="button" class="htb-col active" data-preset="cyber" aria-label="Cyber Green theme" title="Cyber Green">
+              <span class="htb-swatch" style="background: #4ade80; box-shadow: 0 0 14px rgba(74, 222, 128, 0.65);"></span>
+              <span class="htb-name">CYBER</span>
+              <span class="htb-code">01</span>
+            </button>
+            <button type="button" class="htb-col" data-preset="night" aria-label="Night Amber theme" title="Night Amber">
+              <span class="htb-swatch" style="background: #f59e0b; box-shadow: 0 0 14px rgba(245, 158, 11, 0.65);"></span>
+              <span class="htb-name">NIGHT</span>
+              <span class="htb-code">02</span>
+            </button>
+            <button type="button" class="htb-col" data-preset="ember" aria-label="Ember Flame theme" title="Ember Flame">
+              <span class="htb-swatch" style="background: #ff5a1f; box-shadow: 0 0 14px rgba(255, 90, 31, 0.65);"></span>
+              <span class="htb-name">EMBER</span>
+              <span class="htb-code">03</span>
+            </button>
+            <button type="button" class="htb-col" data-preset="cobalt" aria-label="Cobalt Cyan theme" title="Cobalt Cyan">
+              <span class="htb-swatch" style="background: #38bdf8; box-shadow: 0 0 14px rgba(56, 189, 248, 0.65);"></span>
+              <span class="htb-name">COBALT</span>
+              <span class="htb-code">04</span>
+            </button>
+            <button type="button" class="htb-col" data-preset="matrix" aria-label="Matrix Phosphor theme" title="Matrix Phosphor">
+              <span class="htb-swatch" style="background: #22c55e; box-shadow: 0 0 14px rgba(34, 197, 94, 0.65);"></span>
+              <span class="htb-name">MATRIX</span>
+              <span class="htb-code">05</span>
+            </button>
+            <button type="button" class="htb-col" data-preset="violet" aria-label="Violet Purple theme" title="Violet Purple">
+              <span class="htb-swatch" style="background: #a855f7; box-shadow: 0 0 14px rgba(168, 85, 247, 0.65);"></span>
+              <span class="htb-name">VIOLET</span>
+              <span class="htb-code">06</span>
+            </button>
           </div>
         </div>
+      </div>
 
-        <!-- Main Hero Content -->
-        <div class="hero-main-content">
-          <!-- Top Status & Category Badges -->
-          <div class="hero-top-badges">
-            <div class="hero-tag">SOC Analyst · SIEM & Incident Response</div>
-            <div class="hero-status-pill">
-              <span class="status-pulse-dot"></span>
-              OPEN TO SOC ROLES · HYDERABAD
+      <!-- ═══ 3D CONTRIBUTION SKYLINE (GITHUB & TRYHACKME LIVE ACTIVITY) ═══ -->
+      <div class="hero-skyline-wrapper" id="hero-contribution-skyline" aria-label="Live Combined Activity Skyline">
+        <!-- Rendered dynamically by js/contribution-skyline.js -->
+      </div>
+
+      <!-- ═══ CYBER TAGLINES ABOVE SAMBIT WORDMARK ═══ -->
+      <div class="hero-taglines-wrap" id="hero-taglines-wrap" aria-label="Professional Specialties">
+        <div class="htw-role-badge">
+          <span class="htw-pulse"></span>
+          <span class="htw-role-text">// SOC ANALYST &amp; THREAT DETECTIVE</span>
+        </div>
+        <div class="htw-sub-line">
+          CLOUD SIEM ENGINEERING · INCIDENT RESPONSE PLAYBOOKS · REAL-TIME TRIAGE
+        </div>
+        <div class="htw-tech-chips">
+          <span class="htw-chip">WAZUH SIEM</span>
+          <span class="htw-chip">LIMACHARLIE EDR</span>
+          <span class="htw-chip">TINES SOAR</span>
+          <span class="htw-chip">WIRESHARK</span>
+        </div>
+      </div>
+
+      <!-- Minimalist Sleek Scroll Indicator -->
+      <a href="#sec-about" class="hero-scroll-btn" id="hero-scroll-btn" aria-label="Scroll to About section">
+        <span class="hsb-dot"></span>
+        <span class="hsb-label">SCROLL</span>
+        <svg class="hsb-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </a>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         01: ABOUT ME SECTION
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="portfolio-section" id="sec-about">
+      <div class="page-container">
+        <div class="page-header">
+          <div class="sec-label">// 01 — about me</div>
+          <h2 class="sec-title">Who Is Sambit Kumar Satapathy?</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-text">
+            <p>I'm <span>Sambit Kumar Satapathy</span> — a dedicated <span>SOC Analyst</span> with deep hands-on experience deploying, hardening, and operating a <span>Wazuh SIEM</span> platform on <span>AWS EC2</span>. Currently operating as an <span>SOC Intern at Infozit</span> leading the Wazuh Cloud Infrastructure project.</p>
+            <p>Specialized in <span>log analysis &amp; correlation</span>, <span>incident triage</span>, <span>vulnerability assessment</span>, and packet inspection using <span>Nmap</span> and <span>Wireshark</span>. I engineered an automated <span>SOAR &amp; EDR Incident Response Playbook</span> with LimaCharlie, Tines, and Slack for sub-minute threat containment.</p>
+            <p>BCA graduate from <span>Gayatri Institute of Science and Technology</span>, Berhampur University (CGPA: 8.0/10). Based in <span>Hyderabad, Telangana, India</span>.</p>
+
+            <!-- Key Cyber Metrics -->
+            <div class="about-stats-grid">
+              <div class="about-stat-card">
+                <div class="about-stat-num">100%</div>
+                <div class="about-stat-label">Lab Uptime (AWS)</div>
+              </div>
+              <div class="about-stat-card">
+                <div class="about-stat-num">5+</div>
+                <div class="about-stat-label">Verified Certs</div>
+              </div>
+              <div class="about-stat-card">
+                <div class="about-stat-num">8.0</div>
+                <div class="about-stat-label">BCA CGPA</div>
+              </div>
+              <div class="about-stat-card">
+                <div class="about-stat-num">&lt; 1m</div>
+                <div class="about-stat-label">SOAR Triage Time</div>
+              </div>
             </div>
-          </div>
 
-          <!-- Name -->
-          <div class="hero-name-wrap">
-            <h1 class="hero-name">Samb!t<span class="hn-dot">.</span></h1>
-            <p class="hero-sub">K. Satapathy</p>
-          </div>
-
-          <!-- Typing Animation Role Line -->
-          <div id="typed"><span class="cursor"></span></div>
-
-          <!-- Summary Description -->
-          <p class="hero-desc">SOC Analyst with hands-on experience deploying Wazuh SIEM on AWS, writing custom detection rules, incident response automation with SOAR, and vulnerability assessment using Nmap & Wireshark.</p>
-
-          <!-- Defensive Security Stack Tags -->
-          <div class="hero-tech-pills">
-            <span class="tech-pill"><span class="pill-dot"></span>Wazuh SIEM (AWS)</span>
-            <span class="tech-pill"><span class="pill-dot"></span>LimaCharlie EDR</span>
-            <span class="tech-pill"><span class="pill-dot"></span>Tines SOAR</span>
-            <span class="tech-pill"><span class="pill-dot"></span>Wireshark & Nmap</span>
-            <span class="tech-pill"><span class="pill-dot"></span>Splunk & Linux</span>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="hero-action-row">
-            <div class="hero-btns">
-              <a href="/assets/Sambit_Kumar_Satapathy_Resume.pdf" download="Sambit_Kumar_Satapathy_Resume.pdf" class="btn-pri" id="download-cv-btn">
-                <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                Download Resume
+            <div class="action-btn-group" style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+              <a href="#sec-experience" class="btn-pri">Explore Experience &amp; Labs ↓</a>
+              <a href="#sec-contact" class="btn-sec">Initiate Contact →</a>
+              <a href="/assets/Sambit_Kumar_Satapathy_Resume.pdf" download="Sambit_Kumar_Satapathy_Resume.pdf" class="hl-link" style="display:inline-flex;align-items:center;gap:.4rem">
+                📄 Get Resume PDF
               </a>
-              <a href="/contact.html" class="btn-sec">Contact Me</a>
-              <a href="/experience.html" class="hl-link">View Experience →</a>
             </div>
           </div>
+
+          <!-- Interactive Live Cyber Terminal -->
+          <div class="terminal-box">
+            <div class="terminal-bar">
+              <div class="terminal-dots">
+                <span style="background:#ef4444"></span>
+                <span style="background:#eab308"></span>
+                <span style="background:var(--green)"></span>
+              </div>
+              <div class="terminal-title">sambit@soc-ops:~ (zsh)</div>
+              <div class="terminal-status">● LIVE</div>
+            </div>
+            <div class="t-body">
+              <div><span class="t-dim">$</span> <span class="t-green">whoami</span></div>
+              <div>sambit — soc analyst / siem &amp; incident response</div>
+              <br />
+              <div><span class="t-dim">$</span> <span class="t-green">cat info.txt</span></div>
+              <div>Role    : SOC Intern @ Infozit (Wazuh Cloud Project)</div>
+              <div>Degree  : BCA — Gayatri Institute, Berhampur Univ (8.0 CGPA)</div>
+              <div>Focus   : Wazuh SIEM · Custom D&amp;R Rules · IR · SOAR</div>
+              <div>Skills  : Wazuh · Splunk · ATT&amp;CK · EDR · Docker · Linux</div>
+              <div>Certs   : AttackIQ ATT&amp;CK v19 · Deloitte · COFPS · Cisco · THM</div>
+              <div>Location: Hyderabad, Telangana, India</div>
+              <div>Site    : sambit.page</div>
+              <br />
+              <div><span class="t-dim">$</span> <span class="t-green">uptime</span></div>
+              <div id="uptime-val">calculating uptime...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Summary & Defensive Philosophy Card -->
+        <div style="margin-top:2.5rem;border:1px solid rgba(var(--green-rgb), 0.2);background:rgba(10, 13, 18, 0.8);padding:1.8rem;position:relative;overflow:hidden;border-radius:4px">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent 70%)"></div>
+          <div class="sec-label" style="margin-bottom:.5rem">// defensive security philosophy</div>
+          <h3 style="font-size:1.1rem;font-weight:600;color:var(--fg);margin-bottom:.8rem">Threat-Informed Defense &amp; Continuous Validation</h3>
+          <p style="font-size:.85rem;color:var(--fg-dim);line-height:1.9">
+            Defensive security is not passive listening; it is an active, empirical engineering discipline. My methodology focuses on operationalizing the MITRE ATT&amp;CK framework within continuous threat exposure management (CTEM) loops: constructing high-fidelity detection rules, validating adversary emulation coverage, eliminating alert fatigue through SOAR playbooks, and ensuring incident responders possess instant telemetry to isolate compromises before lateral movement can occur.
+          </p>
+        </div>
+
+        <div class="sec-jump-row">
+          <a href="#sec-experience" class="sec-jump-next">Next: 02 Experience &amp; Labs ↓</a>
+          <a href="#hero" class="sec-back-top">↑ Back to Top</a>
         </div>
       </div>
     </section>
 
-    <!-- HIGHLIGHTS SECTION -->
-    <section class="home-highlights">
-      <div class="sec-inner">
-        <div class="sec-label">// portfolio highlights</div>
-        <h2 class="sec-title">Security Focus & Portfolio Sections</h2>
-        <div class="sec-line"></div>
+    <!-- ═══════════════════════════════════════════════════════════
+         02: EXPERIENCE & PROJECTS SECTION
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="portfolio-section" id="sec-experience">
+      <div class="page-container">
+        <div class="page-header">
+          <div class="sec-label">// 02 — experience &amp; projects</div>
+          <h2 class="sec-title">Professional Experience &amp; Defense Labs</h2>
+          <div class="sec-line"></div>
+        </div>
 
-        <div class="highlights-grid">
-          <!-- Card 1: Experience -->
-          <div class="hl-card">
+        <!-- SOC Intern Role at Infozit -->
+        <div class="exp-card">
+          <div class="exp-header">
             <div>
-              <div class="hl-tag">// 01 — experience</div>
-              <div class="hl-title">SOC Intern @ Infozit</div>
-              <p class="hl-desc">Pre-production Wazuh SIEM deployment on AWS EC2, endpoint onboarding (Windows 11, Windows Server, Ubuntu), custom attack detection rules, and operational runbooks.</p>
+              <div class="exp-role">Security Operations Center (SOC) Intern</div>
+              <div class="exp-company">Infozit — Wazuh Cloud Project (AWS EC2)</div>
             </div>
-            <a href="/experience.html" class="hl-link">Explore Experience ↗</a>
+            <div class="exp-badge">Team of 4 · July 2026 – Present</div>
+          </div>
+          <ul class="exp-list">
+            <li>Architected and deployed a pre-production <span>Wazuh SIEM</span> (manager, indexer, dashboard) on an <span>AWS EC2</span> instance to monitor a multi-OS cloud environment.</li>
+            <li>Onboarded endpoints by installing and configuring <span>Wazuh agents</span> across Windows 11, Windows Server, and Ubuntu Server virtual machines for structured log telemetry ingestion.</li>
+            <li>Configured custom web servers to generate, parse, and forward HTTP traffic logs to the SIEM for real-time monitoring and anomaly detection.</li>
+            <li>Authored and validated <span>custom detection rules</span> and decoders, successfully identifying simulated brute-force, web-based attacks, and privilege escalation attempts.</li>
+            <li>Built the initial Wazuh stack containerization using <span>Docker</span>, resolved kernel virtualization errors, and configured <span>Role-Based Access Control (RBAC)</span> for secure team access.</li>
+            <li>Maintained configuration and custom rules in <span>Git</span> through a pull-request workflow, authoring comprehensive runbooks for repeatable operational response.</li>
+          </ul>
+          <div class="hero-tech-pills" style="margin-top:1.2rem">
+            <span class="tech-pill"><span class="pill-dot"></span>Wazuh SIEM</span>
+            <span class="tech-pill"><span class="pill-dot"></span>AWS EC2</span>
+            <span class="tech-pill"><span class="pill-dot"></span>Docker</span>
+            <span class="tech-pill"><span class="pill-dot"></span>Custom Rules &amp; Decoders</span>
+            <span class="tech-pill"><span class="pill-dot"></span>Linux &amp; Windows Server</span>
+            <span class="tech-pill"><span class="pill-dot"></span>RBAC &amp; Git</span>
+          </div>
+        </div>
+
+        <!-- SOAR & EDR Project -->
+        <div class="exp-card" id="sec-projects" style="border-top:1px solid rgba(250, 204, 21, 0.25);margin-top:2rem">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#facc15,transparent 70%)"></div>
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">SOAR and EDR Automated Incident Response Playbook</div>
+              <div class="exp-company" style="color:#facc15">LimaCharlie EDR · Tines SOAR · Slack Bot Integration</div>
+            </div>
+            <div class="exp-badge" style="border-color:rgba(250, 204, 21, 0.3);color:#facc15">Featured Security Project</div>
           </div>
 
-          <!-- Card 2: Projects -->
-          <div class="hl-card">
-            <div>
-              <div class="hl-tag">// 02 — projects</div>
-              <div class="hl-title">SOAR & EDR Incident Playbook</div>
-              <p class="hl-desc">LimaCharlie EDR sensor telemetry, custom detection and response rule replay, Tines webhook orchestration, Slack alert notifications, and automated endpoint containment.</p>
+          <!-- 5-Step Automated Response Architecture -->
+          <div class="playbook-steps-wrap">
+            <div class="playbook-steps-header">
+              <span class="hss-pulse" style="background:#facc15;box-shadow:0 0 8px #facc15"></span>
+              Automated Incident Response Workflow
             </div>
-            <a href="/experience.html" class="hl-link">View Projects ↗</a>
+            <div class="playbook-steps">
+              <div class="pb-step">
+                <div class="pb-num">01 // SENSOR</div>
+                <div class="pb-title">EDR Enrollment</div>
+                <div class="pb-desc">Windows 10 VM enrolled as LimaCharlie EDR sensor streaming kernel telemetry.</div>
+              </div>
+              <div class="pb-step">
+                <div class="pb-num">02 // SIMULATION</div>
+                <div class="pb-title">Adversary Attack</div>
+                <div class="pb-desc">Simulated credential-theft activity executed via LaZagne payload.</div>
+              </div>
+              <div class="pb-step">
+                <div class="pb-num">03 // DETECTION</div>
+                <div class="pb-title">D&amp;R Validation</div>
+                <div class="pb-desc">Custom Detection &amp; Response rule validates detection via historical event replay.</div>
+              </div>
+              <div class="pb-step">
+                <div class="pb-num">04 // SOAR</div>
+                <div class="pb-title">Tines Webhook</div>
+                <div class="pb-desc">Tines SOAR extracts host, user, path, command line, and sensor ID to Slack alert.</div>
+              </div>
+              <div class="pb-step">
+                <div class="pb-num">05 // ACTION</div>
+                <div class="pb-title">API Isolation</div>
+                <div class="pb-desc">Analyst 1-click prompt: YES isolates endpoint via LimaCharlie API; NO logs and notifies.</div>
+              </div>
+            </div>
           </div>
 
-          <!-- Card 3: Skills -->
-          <div class="hl-card">
-            <div>
-              <div class="hl-tag">// 03 — technical skills</div>
-              <div class="hl-title">Defensive Security Stack</div>
-              <p class="hl-desc">Wazuh SIEM, Splunk, alert triage, MITRE ATT&CK v19 operationalization, threat-informed defense, online fraud & ATO mitigation, LimaCharlie EDR, and Tines SOAR.</p>
-            </div>
-            <a href="/skills.html" class="hl-link">Browse Skills ↗</a>
-          </div>
+          <ul class="exp-list">
+            <li>Enrolled a Windows 10 VM as a <span>LimaCharlie EDR</span> sensor, simulated credential-theft activity with LaZagne, and wrote a custom Detection and Response (D&amp;R) rule validated with historical replay.</li>
+            <li>Built a <span>Tines SOAR playbook</span> that posts structured alert details (host, user, file path, command line, sensor ID) directly to a dedicated Slack security channel.</li>
+            <li>Engineered automated endpoint isolation containment: the YES path calls the LimaCharlie API to quarantine the host from the network, while the NO path generates audit notification records.</li>
+          </ul>
+        </div>
 
-          <!-- Card 4: Certifications & Education -->
-          <div class="hl-card">
-            <div>
-              <div class="hl-tag">// 04 — credentials</div>
-              <div class="hl-title">Certifications & Degree</div>
-              <p class="hl-desc">AttackIQ MITRE ATT&CK v19 (Credly, 13 CPEs), Deloitte Cyber Simulation, COFPS Fraud Prevention, Cisco (Credly), TryHackMe, and BCA Degree (CGPA 8.2/10).</p>
-            </div>
-            <a href="/certifications.html" class="hl-link">View Credentials ↗</a>
-          </div>
-
-          <!-- Card 5: About -->
-          <div class="hl-card">
-            <div>
-              <div class="hl-tag">// 05 — background</div>
-              <div class="hl-title">About Sambit</div>
-              <p class="hl-desc">In-depth background, terminal bio, professional summary, defensive security philosophy, and operational methodologies.</p>
-            </div>
-            <a href="/about.html" class="hl-link">Read Bio ↗</a>
-          </div>
-
-          <!-- Card 6: Contact -->
-          <div class="hl-card">
-            <div>
-              <div class="hl-tag">// 06 — connect</div>
-              <div class="hl-title">Direct Contact</div>
-              <p class="hl-desc">Direct email, LinkedIn, and GitHub links, along with direct download for the full SOC Analyst resume PDF.</p>
-            </div>
-            <a href="/contact.html" class="hl-link">Get In Touch ↗</a>
-          </div>
+        <div class="sec-jump-row">
+          <a href="#sec-skills" class="sec-jump-next">Next: 03 Technical Skills ↓</a>
+          <a href="#hero" class="sec-back-top">↑ Back to Top</a>
         </div>
       </div>
     </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         03: TECHNICAL SKILLS SECTION
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="portfolio-section" id="sec-skills">
+      <div class="page-container">
+        <div class="page-header">
+          <div class="sec-label">// 03 — technical skills</div>
+          <h2 class="sec-title">Defensive Capabilities &amp; Tooling Matrix</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="skills-grid">
+          <!-- 1. SIEM & Monitoring -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <div class="skill-name">SIEM &amp; Monitoring</div>
+              <div class="skill-desc">Wazuh (manager, indexer, dashboard), Splunk, log collection, log correlation, alert triage, custom detection rules and decoders, dashboards</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:88%"></div></div>
+          </div>
+
+          <!-- 2. Incident Response & Triage -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 4h16V5H4v2zm0 12h16V9H4v10zm3-7h2v2H7v-2zm4 0h6v2h-6v-2z"/></svg>
+              </div>
+              <div class="skill-name">Incident Response &amp; Triage</div>
+              <div class="skill-desc">Security event investigation, enterprise incident response workflow, SOAR with Tines, EDR with LimaCharlie, enterprise incident triage (Deloitte Cyber simulation), containment, runbooks</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:88%"></div></div>
+          </div>
+
+          <!-- 3. Vulnerability Assessment -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93h2c0 2.76 2.24 5 5 5 2.76 0 5-2.24 5-5s-2.24-5-5-5v2L8 8l4-4v2c4.42 0 8 3.58 8 8 0 4.08-3.05 7.44-7 7.93z"/></svg>
+              </div>
+              <div class="skill-name">Vulnerability Assessment</div>
+              <div class="skill-desc">Nmap scanning, network reconnaissance, CVE vulnerability identification, security exposure reporting</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:82%"></div></div>
+          </div>
+
+          <!-- 4. Network and Traffic Analysis -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+              </div>
+              <div class="skill-name">Network &amp; Traffic Analysis</div>
+              <div class="skill-desc">Wireshark packet capture, TCP/IP, DNS, HTTP, UFW firewall rules, suspicious network traffic detection</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:84%"></div></div>
+          </div>
+
+          <!-- 5. Operating Systems -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+              </div>
+              <div class="skill-name">Operating Systems &amp; Hardening</div>
+              <div class="skill-desc">Linux (Ubuntu, Kali), Windows 10, Windows 11, Windows Server system hardening and auditing</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:85%"></div></div>
+          </div>
+
+          <!-- 6. Scripting and Administration -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M4.5 4.5L13.5 12L4.5 19.5V16L9.5 12L4.5 8V4.5ZM13.5 17H20V20H13.5V17Z"/></svg>
+              </div>
+              <div class="skill-name">Scripting &amp; Administration</div>
+              <div class="skill-desc">Bash shell scripting, cron automation, user &amp; group permissions, security compliance scripts</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:78%"></div></div>
+          </div>
+
+          <!-- 7. Frameworks -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v5h-2V7zm0 7h2v2h-2v-2z"/></svg>
+              </div>
+              <div class="skill-name">Frameworks &amp; Methodologies</div>
+              <div class="skill-desc">MITRE ATT&amp;CK v19, Cyber Kill Chain, NIST SP 800-61, SANS incident response lifecycle</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:82%"></div></div>
+          </div>
+
+          <!-- 8. Cloud and Tools -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+              </div>
+              <div class="skill-name">Cloud &amp; Container Infrastructure</div>
+              <div class="skill-desc">AWS EC2, Docker containerization, Git &amp; GitHub workflows, VMware Workstation, VS Code</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:80%"></div></div>
+          </div>
+
+          <!-- 9. Reporting -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+              </div>
+              <div class="skill-name">Reporting &amp; Documentation</div>
+              <div class="skill-desc">Incident response runbooks, security procedure documentation, executive and technical reports</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:85%"></div></div>
+          </div>
+
+          <!-- 10. Windows Event Logs -->
+          <div class="skill-card">
+            <div class="skill-top">
+              <div class="skill-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 8h-2.81a5.985 5.985 0 0 0-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.98 6.57 7.37 7.23 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>
+              </div>
+              <div class="skill-name">Windows Event Logs &amp; Sysmon</div>
+              <div class="skill-desc">Event Viewer, Sysmon behavioral telemetry, security log analysis, and threat hunting</div>
+            </div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:82%"></div></div>
+          </div>
+        </div>
+
+        <div class="sec-jump-row">
+          <a href="#sec-certs" class="sec-jump-next">Next: 04 Credentials &amp; Education ↓</a>
+          <a href="#hero" class="sec-back-top">↑ Back to Top</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         04: CERTIFICATIONS & EDUCATION SECTION
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="portfolio-section" id="sec-certs">
+      <div class="page-container">
+        <div class="page-header">
+          <div class="sec-label">// 04 — certifications &amp; education</div>
+          <h2 class="sec-title">Certifications, Training &amp; Education</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <!-- Education & Training Grid -->
+        <div class="edu-grid">
+          <!-- Degree Card -->
+          <div style="border:1px solid rgba(var(--green-rgb), 0.2);background:rgba(12, 16, 22, 0.8);padding:1.8rem;position:relative;overflow:hidden;border-radius:4px">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent 70%)"></div>
+            <div class="sec-label" style="margin-bottom:.4rem">// academic degree</div>
+            <h3 style="font-size:1.05rem;font-weight:700;color:var(--fg);margin-bottom:.4rem">Bachelor of Computer Applications (BCA)</h3>
+            <div style="font-size:.78rem;color:var(--green);margin-bottom:.8rem">Gayatri Institute of Science and Technology, Berhampur University, Odisha</div>
+            <div style="display:inline-block;border:1px solid var(--border);background:var(--muted);padding:.25rem .7rem;font-size:.72rem;color:var(--fg)">CGPA: 8.0 / 10</div>
+          </div>
+
+          <!-- Training Card -->
+          <div style="border:1px solid rgba(var(--green-rgb), 0.2);background:rgba(12, 16, 22, 0.8);padding:1.8rem;position:relative;overflow:hidden;border-radius:4px">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent 70%)"></div>
+            <div class="sec-label" style="margin-bottom:.4rem">// professional training</div>
+            <h3 style="font-size:1.05rem;font-weight:700;color:var(--fg);margin-bottom:.4rem">Cybersecurity Program (SOC Focused)</h3>
+            <div style="font-size:.78rem;color:var(--green);margin-bottom:.8rem">Teks Academy, Hyderabad | July 2026 – Present</div>
+            <p style="font-size:.76rem;color:var(--fg-dim);line-height:1.7">
+              Intensive training covering SOC operations, networking, ethical hacking, SIEM, EDR, forensics, cloud security, Linux, UFW firewall, and Bash scripting.
+            </p>
+          </div>
+        </div>
+
+        <!-- Verified Industry Credentials -->
+        <div class="page-header" style="margin:2.5rem 0 1.5rem">
+          <div class="sec-label">// industry credentials</div>
+          <h3 style="font-size:1.2rem;font-weight:600;color:var(--fg)">Verified Badges &amp; Certifications</h3>
+        </div>
+
+        <div class="certs-grid">
+          <!-- AttackIQ Academy: Foundations of Operationalizing MITRE ATT&CK v19 -->
+          <div class="cert-card">
+            <div class="cert-badge-wrap">
+              <div data-iframe-width="150" data-iframe-height="270"
+                data-share-badge-id="1193a076-7182-4412-911a-900351f755b9" data-share-badge-host="https://www.credly.com">
+              </div>
+            </div>
+            <div class="cert-meta">
+              <div class="cert-issuer">AttackIQ Academy · Credly Verified</div>
+              <div class="cert-name">Foundations of Operationalizing MITRE ATT&amp;CK v19</div>
+              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
+                Operationalizing MITRE ATT&amp;CK inside a CTEM loop, technique-level behavioral mapping, detection gap analysis, and empirical adversary emulation coverage validation.
+              </div>
+              <div class="cert-date" style="margin-top:.6rem">Earned October 2026 · 13 CPE Credits</div>
+              <div style="margin-top:.6rem">
+                <a href="/assets/AttackIQ_Foundations_MITRE_ATTCK_v19.png" target="_blank" rel="noopener noreferrer"
+                  style="font-size:.68rem;color:var(--green);letter-spacing:.08em;text-transform:uppercase;text-decoration:none">
+                  View Certificate ↗
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deloitte: Cyber Job Simulation -->
+          <div class="cert-card">
+            <div class="cert-badge-wrap" style="min-height:220px;flex-direction:column;gap:1rem">
+              <a href="https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/E9pA6qsdbeyEkp3ti_9PBTqmSxAf6zZTseP_6ac39dd5f06977f0cf6e35b1_1791231353527_completion_certificate.pdf" target="_blank" rel="noopener noreferrer"
+                style="display:flex;flex-direction:column;align-items:center;gap:.8rem;text-decoration:none">
+                <img src="/assets/Deloitte_Cyber_Job_Simulation.png"
+                  alt="Deloitte Cyber Job Simulation Certificate"
+                  style="max-width:200px;width:100%;border:1px solid var(--border);background:#0a0a0a;border-radius:4px" />
+                <span style="font-size:.65rem;color:var(--green);letter-spacing:.1em;opacity:.9;text-transform:uppercase">Verify on Forage ↗</span>
+              </a>
+            </div>
+            <div class="cert-meta">
+              <div class="cert-issuer">Deloitte · Forage Verified</div>
+              <div class="cert-name">Deloitte Cyber Job Simulation</div>
+              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
+                Completed practical enterprise cybersecurity tasks: security event triage, defense-in-depth architecture review, and risk mitigation communication.
+              </div>
+              <div class="cert-date" style="margin-top:.6rem">Earned October 2026 · Verification Code: 6ac39dd5f06977f0cf6e35b1</div>
+              <div style="margin-top:.6rem">
+                <a href="/assets/Deloitte_Cyber_Job_Simulation.png" target="_blank" rel="noopener noreferrer"
+                  style="font-size:.68rem;color:var(--green);letter-spacing:.08em;text-transform:uppercase;text-decoration:none">
+                  View Full Preview ↗
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hack & Fix: Certified Online Fraud Prevention Specialist (COFPS) -->
+          <div class="cert-card">
+            <div class="cert-badge-wrap" style="min-height:220px;flex-direction:column;gap:1rem">
+              <a href="/assets/Hack_and_Fix_COFPS_Certificate.png" target="_blank" rel="noopener noreferrer"
+                style="display:flex;flex-direction:column;align-items:center;gap:.8rem;text-decoration:none">
+                <img src="/assets/Hack_and_Fix_COFPS_Certificate.png"
+                  alt="Certified Online Fraud Prevention Specialist (COFPS)"
+                  style="max-width:200px;width:100%;border:1px solid var(--border);background:#0a0a0a;border-radius:4px" />
+                <span style="font-size:.65rem;color:var(--green);letter-spacing:.1em;opacity:.9;text-transform:uppercase">View Certificate ↗</span>
+              </a>
+            </div>
+            <div class="cert-meta">
+              <div class="cert-issuer">Hack &amp; Fix Academy · Verified</div>
+              <div class="cert-name">Certified Online Fraud Prevention Specialist (COFPS)</div>
+              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
+                Completed evaluation criteria in online fraud mitigation, payment gateway threat analysis, credential stuffing, and account takeover (ATO) defense.
+              </div>
+              <div class="cert-date" style="margin-top:.6rem">Earned October 2026 · ID: 4687-4839-7811-2187</div>
+            </div>
+          </div>
+
+          <!-- Cisco: Introduction to Cybersecurity -->
+          <div class="cert-card">
+            <div class="cert-badge-wrap">
+              <div data-iframe-width="150" data-iframe-height="270"
+                data-share-badge-id="ebd10434-982c-4d32-a797-c309b0fb17c2" data-share-badge-host="https://www.credly.com">
+              </div>
+            </div>
+            <div class="cert-meta">
+              <div class="cert-issuer">Cisco · Credly Verified</div>
+              <div class="cert-name">Introduction to Cybersecurity</div>
+              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
+                Core defensive cybersecurity principles, network defense architecture, confidentiality/integrity/availability, and vulnerability management.
+              </div>
+              <div class="cert-date" style="margin-top:.6rem">Earned 2026 · Credly Verified</div>
+            </div>
+          </div>
+
+          <!-- TryHackMe: Pre Security & Cybersecurity 101 -->
+          <div class="cert-card">
+            <div class="cert-badge-wrap" style="min-height:220px;flex-direction:column;gap:1rem">
+              <a href="https://tryhackme.com/certificate/THM-KKI9XDUMZE" target="_blank" rel="noopener noreferrer"
+                style="display:flex;flex-direction:column;align-items:center;gap:.8rem;text-decoration:none">
+                <img src="/assets/TryHackMe_Pre_Security_Certificate.png"
+                  alt="TryHackMe Pre Security Certificate"
+                  style="max-width:220px;width:100%;border:1px solid rgba(var(--green-rgb), 0.25);background:#0a0a0a;border-radius:4px;box-shadow:0 4px 15px rgba(0,0,0,0.6)" />
+                <span style="font-size:.65rem;color:var(--green);letter-spacing:.1em;opacity:.9;text-transform:uppercase">Verify Certificate ↗</span>
+              </a>
+            </div>
+            <div class="cert-meta">
+              <div class="cert-issuer">TryHackMe · Verified</div>
+              <div class="cert-name">Pre Security Certificate</div>
+              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
+                Network fundamentals, web security basics, Linux OS, and Windows security concepts.
+              </div>
+              <div class="cert-date" style="margin-top:.6rem">Earned 2026 · Code: THM-KKI9XDUMZE</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-jump-row">
+          <a href="#sec-contact" class="sec-jump-next">Next: 05 Direct Contact ↓</a>
+          <a href="#hero" class="sec-back-top">↑ Back to Top</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         05: CONTACT & DISPATCHER SECTION
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="portfolio-section" id="sec-contact">
+      <div class="page-container">
+        <div class="page-header">
+          <div class="sec-label">// 05 — contact</div>
+          <h2 class="sec-title">Initiate Direct Transmission</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <!-- DIRECT EMAIL DISPATCHER SECTION -->
+        <div class="direct-contact-section" id="direct-email-section">
+          <div class="direct-contact-header">
+            <div class="sec-label">// 05.1 — direct dispatch</div>
+            <h3 class="direct-contact-title">
+              <span class="direct-title-icon">⚡</span>
+              Send a Direct Message
+            </h3>
+            <p class="direct-contact-sub">
+              Transmit an inquiry, job opportunity, or security collaboration proposal directly to my inbox (<strong>sambitsatapathy22@gmail.com</strong>).
+            </p>
+          </div>
+
+          <form id="directContactForm" action="https://shipmyform.com/to/sambitsatapathy22@gmail.com" method="POST" class="direct-contact-form" novalidate>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="contactName" class="form-label">
+                  <span class="label-prefix">// </span>Your Name / Organization <span class="label-req">*</span>
+                </label>
+                <input type="text" id="contactName" name="name" class="form-input" placeholder="e.g. Alex Morgan / Security Recruiter" required />
+              </div>
+
+              <div class="form-group">
+                <label for="contactEmail" class="form-label">
+                  <span class="label-prefix">// </span>Your Email Address <span class="label-req">*</span>
+                </label>
+                <input type="email" id="contactEmail" name="email" class="form-input" placeholder="e.g. alex@company.com" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contactSubject" class="form-label">
+                <span class="label-prefix">// </span>Subject / Purpose <span class="label-req">*</span>
+              </label>
+              <input type="text" id="contactSubject" name="subject" class="form-input" placeholder="e.g. SOC Analyst Opportunity / Security Discussion" required />
+            </div>
+
+            <div class="form-group">
+              <label for="contactMessage" class="form-label">
+                <span class="label-prefix">// </span>Message Payload <span class="label-req">*</span>
+              </label>
+              <textarea id="contactMessage" name="message" class="form-textarea" rows="5" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <!-- Anti-spam honeypot -->
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+
+            <!-- Form Status Notification Banner -->
+            <div id="formStatusMsg" class="form-status-msg" aria-live="polite"></div>
+
+            <div class="form-actions">
+              <button type="submit" id="submitContactBtn" class="btn-pri form-submit-btn">
+                <span class="btn-spinner" id="btnSpinner"></span>
+                <svg class="btn-send-icon" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                <span id="btnText">Transmit Direct Message</span>
+              </button>
+
+              <a href="mailto:sambitsatapathy22@gmail.com" id="fallbackMailtoBtn" class="btn-sec form-mailto-btn">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                Open in Mail Client
+              </a>
+            </div>
+          </form>
+        </div>
+
+        <!-- Contact Channels & Credentials Grid (Under Direct Message) -->
+        <div style="margin-top: 3.5rem;">
+          <div class="sec-label" style="margin-bottom: 1rem;">// 05.2 — direct channels &amp; credentials</div>
+          <div class="contact-grid">
+            <a href="https://github.com/Sambittt" target="_blank" rel="noopener noreferrer" class="contact-card">
+              <div class="contact-icon"><img src="https://cdn.simpleicons.org/github/888888" alt="GitHub" /></div>
+              <div>
+                <div class="contact-label">GitHub</div>
+                <div class="contact-val">github.com/Sambittt</div>
+              </div>
+            </a>
+
+            <a href="https://linkedin.com/in/sambit-satapathy" target="_blank" rel="noopener noreferrer" class="contact-card">
+              <div class="contact-icon">
+                <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </div>
+              <div>
+                <div class="contact-label">LinkedIn</div>
+                <div class="contact-val">sambit-satapathy</div>
+              </div>
+            </a>
+
+            <a href="mailto:sambitsatapathy22@gmail.com" class="contact-card">
+              <div class="contact-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              </div>
+              <div>
+                <div class="contact-label">Email</div>
+                <div class="contact-val">sambitsatapathy22@gmail.com</div>
+              </div>
+            </a>
+
+            <a href="tel:+917735207434" class="contact-card">
+              <div class="contact-icon">
+                <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              </div>
+              <div>
+                <div class="contact-label">Phone</div>
+                <div class="contact-val">+91 7735207434</div>
+              </div>
+            </a>
+
+            <div class="contact-card">
+              <div class="contact-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+              <div>
+                <div class="contact-label">Location</div>
+                <div class="contact-val">Hyderabad, Telangana, India</div>
+              </div>
+            </div>
+
+            <a href="/assets/Sambit_Kumar_Satapathy_Resume.pdf" download="Sambit_Kumar_Satapathy_Resume.pdf" class="contact-card" style="border-color:rgba(var(--green-rgb), 0.4)">
+              <div class="contact-icon" style="color:var(--green)">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              </div>
+              <div>
+                <div class="contact-label" style="color:var(--green)">SOC Resume</div>
+                <div class="contact-val">Download PDF Document</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="sec-jump-row">
+          <a href="#hero" class="sec-back-top">↑ Back to Top of Portfolio</a>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- SHARED FOOTER -->
@@ -333,9 +934,9 @@
       let matrixInterval = null;
 
       function renderMatrix() {
-        ctx.fillStyle = 'rgba(3,3,3,0.06)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
         ctx.fillRect(0, 0, cvs.width, cvs.height);
-        ctx.fillStyle = '#4ade80';
+        ctx.fillStyle = window.getSambitThemeColor ? window.getSambitThemeColor() : (getComputedStyle(document.documentElement).getPropertyValue('--green').trim() || '#4ade80');
         ctx.font = SZ + 'px JetBrains Mono';
         for (let i = 0; i < drops.length; i++) {
           const char = CHARS[Math.floor(Math.random() * CHARS.length)];
@@ -393,11 +994,235 @@
       setTimeout(type, deleting ? 45 : 80);
     }
     type();
+
+    // ── Live SOC Uptime Counter ──
+    function updateLiveUptime() {
+      const el = document.getElementById('uptime-val');
+      if (!el) return;
+      const start = new Date('2026-07-01T09:00:00Z').getTime();
+      const diffSec = Math.max(0, Math.floor((Date.now() - start) / 1000));
+      const days = Math.floor(diffSec / 86400);
+      const hours = Math.floor((diffSec % 86400) / 3600);
+      const mins = Math.floor((diffSec % 3600) / 60);
+      const secs = diffSec % 60;
+      el.textContent = `${days}d ${hours}h ${mins}m ${secs}s (100% operational)`;
+    }
+    setInterval(updateLiveUptime, 1000);
+    updateLiveUptime();
+
+    // ── Direct Dispatch Contact Form (AJAX submission to ShipMyForm) ──
+    const contactForm = document.getElementById('directContactForm');
+    if (contactForm) {
+      contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const statusMsg = document.getElementById('formStatusMsg');
+        const submitBtn = document.getElementById('submitContactBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const subject = document.getElementById('contactSubject').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+
+        if (!name || !email || !subject || !message) {
+          if (statusMsg) {
+            statusMsg.className = 'form-status-msg status-err';
+            statusMsg.textContent = '[!] Please fill out all fields before dispatching.';
+            statusMsg.style.display = 'block';
+          }
+          return;
+        }
+
+        if (submitBtn) submitBtn.disabled = true;
+        if (btnSpinner) btnSpinner.style.display = 'inline-block';
+        if (btnText) btnText.textContent = 'Transmitting Payload...';
+        if (statusMsg) statusMsg.style.display = 'none';
+
+        try {
+          const formData = new FormData(contactForm);
+          const res = await fetch(contactForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if (res.ok) {
+            if (statusMsg) {
+              statusMsg.className = 'form-status-msg status-ok';
+              statusMsg.textContent = '[✓] Transmission confirmed! Direct message delivered to Sambit\'s inbox.';
+              statusMsg.style.display = 'block';
+            }
+            contactForm.reset();
+          } else {
+            throw new Error('Server returned error status');
+          }
+        } catch (err) {
+          if (statusMsg) {
+            statusMsg.className = 'form-status-msg status-err';
+            statusMsg.innerHTML = '[!] Delivery timeout. Please email directly to <a href="mailto:sambitsatapathy22@gmail.com" style="color:#ef4444;text-decoration:underline">sambitsatapathy22@gmail.com</a>.';
+            statusMsg.style.display = 'block';
+          }
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+          if (btnSpinner) btnSpinner.style.display = 'none';
+          if (btnText) btnText.textContent = 'Transmit Direct Message';
+        }
+      });
+    }
+
+    // ── Skill Bars Animation on Scroll ──
+    const skillBars = document.querySelectorAll('.skill-bar-fill');
+    if ('IntersectionObserver' in window && skillBars.length > 0) {
+      const skillsSec = document.getElementById('sec-skills');
+      if (skillsSec) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              skillBars.forEach(bar => {
+                const w = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => { bar.style.transition = 'width 1.2s cubic-bezier(0.16, 1, 0.3, 1)'; bar.style.width = w; }, 100);
+              });
+              obs.unobserve(skillsSec);
+            }
+          });
+        }, { threshold: 0.2 });
+        obs.observe(skillsSec);
+      }
+    // ── Smooth Hero Fade-Out on Scroll ──
+    const heroSection = document.getElementById('hero');
+    if (heroSection) {
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        const h = heroSection.offsetHeight || window.innerHeight;
+        const progress = Math.min(1, Math.max(0, y / (h * 0.55)));
+        heroSection.style.opacity = (1 - progress * 0.9).toFixed(3);
+        heroSection.style.transform = `translateY(${(-progress * 35).toFixed(1)}px)`;
+      }, { passive: true });
+    }
+
+    // ── Scroll-Down Button Smooth Scroll ──
+    const heroScrollBtn = document.getElementById('hero-scroll-btn');
+    if (heroScrollBtn) {
+      heroScrollBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.getElementById('sec-about');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    // ── Smart Left-Side Floating Section Indicator & Active Section Tracker ──
+    (function initScrollSectionHud() {
+      const hud = document.getElementById('scroll-section-hud');
+      const sshCode = document.getElementById('ssh-code');
+      const sshName = document.getElementById('ssh-name');
+
+      const sections = [
+        { id: 'sec-about', code: '01', name: 'ABOUT SAMBIT' },
+        { id: 'sec-experience', code: '02', name: 'EXPERIENCE & LAB' },
+        { id: 'sec-projects', code: '03', name: 'SOAR PLAYBOOK' },
+        { id: 'sec-skills', code: '04', name: 'TECHNICAL SKILLS' },
+        { id: 'sec-certs', code: '05', name: 'CREDENTIALS & CERTS' },
+        { id: 'sec-contact', code: '06', name: 'DIRECT TRANSMISSION' }
+      ];
+
+      const navMap = {
+        'hero': document.getElementById('nav-link-hero'),
+        'sec-about': document.getElementById('nav-link-about'),
+        'sec-experience': document.getElementById('nav-link-experience'),
+        'sec-projects': document.getElementById('nav-link-experience'),
+        'sec-skills': document.getElementById('nav-link-skills'),
+        'sec-certs': document.getElementById('nav-link-certs'),
+        'sec-contact': document.getElementById('nav-link-contact'),
+      };
+
+      let currentSecId = 'sec-about';
+
+      function updateActiveSection(id) {
+        if (currentSecId === id) return;
+        currentSecId = id;
+        const meta = sections.find(s => s.id === id) || sections[0];
+
+        if (sshCode) sshCode.textContent = meta.code;
+        if (sshName) {
+          sshName.textContent = meta.name;
+          if (hud) {
+            hud.classList.remove('ssh-glance');
+            void hud.offsetWidth;
+            hud.classList.add('ssh-glance');
+          }
+        }
+
+        // Sync top navbar active link
+        Object.entries(navMap).forEach(([sec, link]) => {
+          if (link) {
+            link.classList.toggle('nav-active', sec === id);
+          }
+        });
+      }
+
+      // Visibility on scroll
+      let tick = false;
+      function onScroll() {
+        const y = window.scrollY;
+
+        // Show HUD when scrolled past top hero section
+        if (y > 220) {
+          if (hud) hud.classList.add('hud-visible');
+        } else {
+          if (hud) hud.classList.remove('hud-visible');
+          if (currentSecId !== 'hero') {
+            currentSecId = 'hero';
+            Object.entries(navMap).forEach(([sec, link]) => {
+              if (link) link.classList.toggle('nav-active', sec === 'hero');
+            });
+          }
+          tick = false;
+          return;
+        }
+
+        // Detect which section is currently in view
+        const scrollMiddle = y + window.innerHeight * 0.38;
+        let matched = null;
+        for (const meta of sections) {
+          const el = document.getElementById(meta.id);
+          if (el) {
+            const top = el.offsetTop;
+            const bottom = top + el.offsetHeight;
+            if (scrollMiddle >= top && scrollMiddle <= bottom) {
+              matched = meta.id;
+              break;
+            }
+          }
+        }
+        if (matched) {
+          updateActiveSection(matched);
+        }
+        tick = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!tick) {
+          requestAnimationFrame(onScroll);
+          tick = true;
+        }
+      }, { passive: true });
+
+      onScroll();
+    })();
   </script>
 
-  <!-- Portfolio AI Agent -->
+  <!-- Credly Embed Badge Script -->
+  <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+
+  <!-- Portfolio AI Agent & Halftone Engine & Contribution Skyline -->
   <script defer src="/config.js?v=2.3"></script>
   <script defer src="/chatbot.js?v=2.3"></script>
+  <script src="/js/contribution-skyline.js"></script>
+  <script src="/js/halftone-wordmark.js"></script>
   <script src="/js/main.js"></script>
 
 </body>

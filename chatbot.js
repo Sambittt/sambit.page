@@ -1,6 +1,6 @@
 // Portfolio AI Agent — Powered by Groq (High Intelligence SOC Defense Specialist)
 const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const API_KEY = typeof getAiKey === 'function' ? getAiKey() : ''; // Masked via config.js
+const getEffectiveAiKey = () => (typeof getAiKey === 'function' ? getAiKey() : '') || localStorage.getItem('GROQ_API_KEY') || '';
 const COOLDOWN_MS = 2000;
 let lastSentAt = 0;
 
@@ -36,7 +36,7 @@ FLAGSHIP INCIDENT RESPONSE PROJECT:
   * Validated end-to-end IR SLAs and documented the complete incident response workflow.
 
 EDUCATION & PROFESSIONAL TRAINING:
-- **Degree**: Bachelor of Computer Applications (BCA), Gayatri Institute of Science and Technology (Berhampur University, Odisha), CGPA: **8.2 / 10**.
+- **Degree**: Bachelor of Computer Applications (BCA), Gayatri Institute of Science and Technology (Berhampur University, Odisha), CGPA: **8.0 / 10**.
 - **Professional Training**: Cybersecurity Program (SOC Track) at **Teks Academy, Hyderabad** (July 2026 – Present).
   * Curriculum: SOC operations, SIEM, EDR, network analysis, Linux administration, UFW firewall, and Bash scripting.
 - **Location**: Hyderabad, Telangana, India.
@@ -349,6 +349,15 @@ function initChatbot() {
   const AI_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.8-27b'];
 
   async function callGroq(messages) {
+    const key = getEffectiveAiKey();
+    if (!key) {
+      return `### ⚠️ Groq API Key Not Configured
+- To activate the real-time AI Assistant, please configure your Groq API key.
+- You can activate it immediately in the browser console by running:
+  \`localStorage.setItem('GROQ_API_KEY', 'your_gsk_key_here')\`
+- Or configure it in \`config.js\`.`;
+    }
+
     let lastError = null;
 
     for (const model of AI_MODELS) {
@@ -357,7 +366,7 @@ function initChatbot() {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_KEY}`
+            'Authorization': `Bearer ${key}`
           },
           body: JSON.stringify({
             messages,

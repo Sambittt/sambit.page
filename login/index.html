@@ -9,11 +9,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="/js/theme.js"></script>
   <style>
     :root{
       --bg:#030303;--card:#090909;--muted:#0f0f0f;--border:#1c1c1c;
       --fg:#f0f0f0;--fg-dim:#888;--fg-muted:#444;
-      --green:#4ade80;--green-glow:rgba(74,222,128,.12);
+      --green:#4ade80;--green-rgb:74,222,128;
+      --green-glow:rgba(var(--green-rgb),.14);
+      --green-soft:rgba(var(--green-rgb),.06);
+      --border-hover:rgba(var(--green-rgb),.45);
       --red:#f87171;--red-glow:rgba(248,113,113,.1);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -95,7 +99,7 @@
       color:var(--fg-muted);margin-bottom:.4rem;display:block;
     }
     .input-wrap{display:flex;align-items:center;border:1px solid var(--border);background:var(--muted);transition:border-color .2s}
-    .input-wrap:focus-within{border-color:rgba(74,222,128,.4)}
+    .input-wrap:focus-within{border-color:var(--border-hover, var(--green));box-shadow:0 0 10px var(--green-soft)}
     .input-prompt{padding:0 .7rem;color:var(--green);font-size:.8rem;flex-shrink:0;opacity:.7}
     .field input{
       flex:1;background:transparent;border:none;outline:none;
@@ -173,11 +177,58 @@
       .btn-submit{min-height:46px;font-size:.82rem}
       .btn-social{min-height:46px;font-size:.76rem}
     }
+    /* ── Floating theme selector on login ── */
+    .login-theme-bar{position:fixed;top:18px;right:18px;z-index:100}
+    .login-theme-pill{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:6px 12px;background:rgba(10,10,10,0.85);
+      border:1px solid var(--border);border-radius:20px;
+      backdrop-filter:blur(10px);cursor:pointer;
+      font-size:.65rem;letter-spacing:.08em;color:var(--fg-dim);
+      transition:border-color .2s,background .2s,box-shadow .2s;
+    }
+    .login-theme-pill:hover{border-color:var(--border-hover);color:var(--fg)}
+    .lt-swatch{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+    .lt-label{color:var(--fg-muted);font-size:.6rem}
+    .lt-name{color:var(--green);font-weight:700}
+    .lt-chevron{width:14px;height:14px;fill:currentColor;transition:transform .2s}
+    .login-theme-menu{
+      position:absolute;top:calc(100% + 6px);right:0;width:130px;
+      background:rgba(9,9,9,0.96);border:1px solid var(--border);
+      backdrop-filter:blur(14px);border-radius:6px;padding:4px;
+      display:none;flex-direction:column;gap:2px;box-shadow:0 12px 30px rgba(0,0,0,0.8);
+    }
+    .login-theme-menu.open{display:flex}
+    .lt-btn{
+      background:transparent;border:none;color:var(--fg-dim);
+      padding:6px 10px;text-align:left;font-family:inherit;font-size:.68rem;
+      letter-spacing:.1em;border-radius:4px;cursor:pointer;transition:all .15s;
+      display:flex;align-items:center;gap:8px;
+    }
+    .lt-btn:hover{background:var(--green-soft);color:var(--green)}
+    .lt-btn-dot{width:6px;height:6px;border-radius:50%}
   </style>
 </head>
 <body>
 
 <canvas id="matrix-bg"></canvas>
+
+<div class="login-theme-bar">
+  <div class="login-theme-pill" id="login-theme-pill" onclick="toggleLoginThemes()" aria-label="Toggle Color Theme">
+    <span class="lt-swatch" id="login-theme-swatch"></span>
+    <span class="lt-label">THEME</span>
+    <span class="lt-name" id="login-theme-badge">CYBER</span>
+    <svg class="lt-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+  </div>
+  <div class="login-theme-menu" id="login-theme-menu">
+    <button type="button" class="lt-btn" onclick="applySambitTheme('cyber', true)"><span class="lt-btn-dot" style="background:#4ade80"></span>CYBER</button>
+    <button type="button" class="lt-btn" onclick="applySambitTheme('night', true)"><span class="lt-btn-dot" style="background:#f59e0b"></span>NIGHT</button>
+    <button type="button" class="lt-btn" onclick="applySambitTheme('ember', true)"><span class="lt-btn-dot" style="background:#ff5a1f"></span>EMBER</button>
+    <button type="button" class="lt-btn" onclick="applySambitTheme('cobalt', true)"><span class="lt-btn-dot" style="background:#38bdf8"></span>COBALT</button>
+    <button type="button" class="lt-btn" onclick="applySambitTheme('matrix', true)"><span class="lt-btn-dot" style="background:#22c55e"></span>MATRIX</button>
+    <button type="button" class="lt-btn" onclick="applySambitTheme('violet', true)"><span class="lt-btn-dot" style="background:#a855f7"></span>VIOLET</button>
+  </div>
+</div>
 
 <div class="login-wrap">
   <div class="login-card" id="login-card">
@@ -407,7 +458,7 @@
   };
 </script>
 
-<!-- Matrix rain background -->
+<!-- Matrix rain background & theme interactions -->
 <script>
   const cvs = document.getElementById('matrix-bg');
   const ctx  = cvs.getContext('2d');
@@ -419,10 +470,15 @@
   function initDrops(){ drops = Array(Math.floor(cvs.width/SZ)).fill(0); }
   initDrops();
   window.addEventListener('resize', initDrops);
+
+  function getRainColor() {
+    return window.getSambitThemeColor ? window.getSambitThemeColor() : (getComputedStyle(document.documentElement).getPropertyValue('--green').trim() || '#4ade80');
+  }
+
   setInterval(() => {
-    ctx.fillStyle = 'rgba(3,3,3,0.05)';
+    ctx.fillStyle = 'rgba(0,0,0,0.06)';
     ctx.fillRect(0,0,cvs.width,cvs.height);
-    ctx.fillStyle = '#4ade80';
+    ctx.fillStyle = getRainColor();
     ctx.font = SZ + 'px JetBrains Mono';
     drops.forEach((y,i) => {
       ctx.fillText(CHARS[Math.floor(Math.random()*CHARS.length)], i*SZ, y*SZ);
@@ -430,6 +486,19 @@
       else drops[i]++;
     });
   }, 55);
+
+  // Login theme dropdown controller
+  window.toggleLoginThemes = function() {
+    const menu = document.getElementById('login-theme-menu');
+    if (menu) menu.classList.toggle('open');
+  };
+  document.addEventListener('click', (e) => {
+    const bar = document.querySelector('.login-theme-bar');
+    const menu = document.getElementById('login-theme-menu');
+    if (bar && menu && !bar.contains(e.target)) {
+      menu.classList.remove('open');
+    }
+  });
 </script>
 
 </body>

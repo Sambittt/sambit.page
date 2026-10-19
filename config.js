@@ -1,5 +1,13 @@
 // API Configuration
-const _p = ['gsk_sSquWUUL', 'GSoe' + 'pa6XqVuD', 'WGdyb3FYNo', 'BfKpAfWNmMkvBtmNrIDvTF'];
-window.getAiKey = () => _p[0] + _p[1] + _p[2] + _p[3];
-window.getImgbbKey = () => '22a8efa372e63782fcab56d04534aca6'; // Paste your free key here from https://api.imgbb.com/
+// Security Best Practice: Never commit private production API keys to source control.
+// Keys can be configured in your browser session via localStorage:
+// - localStorage.setItem('GROQ_API_KEY', 'your_groq_api_key')
+// - localStorage.setItem('IMGBB_API_KEY', 'your_imgbb_api_key')
 
+window.getAiKey = () => {
+  return localStorage.getItem('GROQ_API_KEY') || window.GROQ_API_KEY || '';
+};
+
+window.getImgbbKey = () => {
+  return localStorage.getItem('IMGBB_API_KEY') || window.IMGBB_API_KEY || '';
+};
