@@ -348,9 +348,9 @@
       if (isDesktop) {
         // ── 1. PHOTO ON THE LEFT:
         cardX = Math.round(this.w * 0.035);
-        cardY = Math.max(14, Math.round(this.h * 0.022));
-        cardW = Math.min(Math.round(this.w * 0.38), 520);
-        cardH = Math.min(Math.round(this.h * 0.92), 720);
+        cardW = Math.min(Math.round(this.w * 0.28), 390);
+        cardH = Math.min(Math.round(this.h * 0.80), 550);
+        cardY = Math.round((this.h - cardH) / 2);
         this.cardBounds = { x: cardX, y: cardY, w: cardW, h: cardH };
 
         if (this.avatarImg) {
@@ -361,10 +361,10 @@
           // Hair in cutout starts at y = 61 out of 1024 (~6% from image top)
           // Head center X in image is around 448 out of 1018 (~44% from image left)
           // Clean, aesthetic margin from card top:
-          const topMargin = Math.max(22, Math.round(cardH * 0.04));
+          const topMargin = Math.max(18, Math.round(cardH * 0.04));
 
           // Scale portrait so hair starts near top and body fills down to card bottom:
-          drawH = Math.round((cardH - topMargin + 12) / 0.94);
+          drawH = Math.round((cardH - topMargin + 10) / 0.94);
           drawW = Math.round(drawH * aspect);
 
           // Position hair top at cardY + topMargin (no excessive void at the top):
@@ -382,7 +382,7 @@
         const rightAreaW = this.w - rightAreaLeft - Math.round(this.w * 0.035);
 
         // Wordmark sizing for crisp, prominent top placement:
-        const availWordH = Math.min(this.h * 0.26, 175);
+        const availWordH = Math.min(this.h * 0.20, 135);
 
         m.font = this.fontWeight + ' 100px ' + this.fontFamily;
         const testMetrics = m.measureText(word);
@@ -391,10 +391,10 @@
         const testDescent = testMetrics.actualBoundingBoxDescent || 18;
         const testH = testAscent + testDescent;
 
-        const targetWordW = Math.min(rightAreaW * 0.94 - 80, 1100);
+        const targetWordW = Math.min(rightAreaW * 0.94 - 60, 1050);
         const scaleW = (targetWordW / testW) * 100;
         const scaleH = (availWordH / testH) * 100;
-        const fit = Math.max(48, Math.floor(Math.min(scaleW, scaleH)));
+        const fit = Math.max(46, Math.floor(Math.min(scaleW, scaleH)));
 
         m.font = this.fontWeight + ' ' + fit + 'px ' + this.fontFamily;
         const finalMetrics = m.measureText(word);
@@ -406,7 +406,7 @@
           : fit * 0.75;
 
         textX = rightAreaLeft;
-        wordTop = Math.max(22, Math.round(cardY + 8));
+        wordTop = Math.max(16, Math.round(cardY + 2));
         textY = Math.round(wordTop + ascent);
         const wordBottom = Math.round(wordTop + ascent + descent);
         const wordH = Math.round(ascent + descent);

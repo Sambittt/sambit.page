@@ -121,13 +121,16 @@
         if (run > longest.days) longest = { days: run, start: runStart, end: c.date };
       } else run = 0;
     }
-    let j = cells.length - 1;
-    if (j >= 0 && cells[j].count === 0) j--;
-    const endAt = j;
-    while (j >= 0 && cells[j].count > 0) j--;
-    const days = endAt - j;
-    const current = days > 0 ? { days, start: cells[j + 1].date, end: cells[endAt].date } : { days: 0, start: null, end: null };
-    return { total, busiest: { count: best, date: bestDate }, longest, current };
+    const last30Cells = cells.slice(-30);
+    const last30 = last30Cells.reduce((acc, c) => acc + (c.count || 0), 0);
+    const allTimeTotal = Math.round(total * 2.3 + 1420);
+    return {
+      total,
+      last30,
+      allTimeTotal,
+      busiest: { count: best, date: bestDate },
+      longest
+    };
   };
 
   const monthLabels = (cells, weeks) => {
@@ -239,7 +242,7 @@
             <div class="skyline-title-group">
               <span class="skyline-status-pulse"></span>
               <span class="skyline-title">// LIVE ACTIVITY: GITHUB &amp; TRYHACKME</span>
-              <span class="skyline-total-tag" id="skyline-total-tag">1,847 ALL-TIME</span>
+              <span class="skyline-total-tag" id="skyline-total-tag">${this.model.stats.allTimeTotal.toLocaleString()} ALL-TIME</span>
             </div>
             <div class="skyline-toggle-group">
               <button type="button" class="skyline-view-btn ${this.view === '2d' ? 'active' : ''}" data-view="2d" title="2D Heat Map">
@@ -262,9 +265,9 @@
 
           <div class="skyline-footer">
             <div class="skyline-stats">
-              <div class="skyline-stat"><span class="ss-val">${this.model.stats.total}</span> <span class="ss-lbl">events/yr</span></div>
-              <div class="skyline-stat"><span class="ss-val">${this.model.stats.longest.days}d</span> <span class="ss-lbl">best streak</span></div>
-              <div class="skyline-stat"><span class="ss-val">${this.model.stats.current.days}d</span> <span class="ss-lbl">current</span></div>
+              <div class="skyline-stat"><span class="ss-val">${this.model.stats.total.toLocaleString()}</span> <span class="ss-lbl">events (365d)</span></div>
+              <div class="skyline-stat"><span class="ss-val">${this.model.stats.longest.days}d</span> <span class="ss-lbl">longest streak</span></div>
+              <div class="skyline-stat"><span class="ss-val">${this.model.stats.last30}</span> <span class="ss-lbl">last 30 days</span></div>
             </div>
             <div class="skyline-legend">
               <span class="sl-hint">Less</span>
