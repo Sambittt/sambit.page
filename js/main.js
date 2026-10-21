@@ -266,5 +266,24 @@ document.addEventListener('DOMContentLoaded', () => {
   initUptime();
   initScrollReveal();
   initCursor();
-  initFirebaseAuth();
+
+  // Lazy-load Firebase Auth on idle or user interaction to eliminate render-blocking overhead
+  let authInitiated = false;
+  const triggerAuth = () => {
+    if (authInitiated) return;
+    authInitiated = true;
+    initFirebaseAuth();
+  };
+
+  const loginBtn = document.getElementById('nav-login-btn');
+  if (loginBtn) {
+    loginBtn.addEventListener('mouseenter', triggerAuth, { once: true, passive: true });
+    loginBtn.addEventListener('focus', triggerAuth, { once: true, passive: true });
+  }
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(triggerAuth, { timeout: 3000 });
+  } else {
+    setTimeout(triggerAuth, 2000);
+  }
 });

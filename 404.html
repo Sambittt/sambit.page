@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>404: Telemetry Not Found | Sambit Kumar Satapathy | sambit.page</title>
+  <meta name="description" content="Error 404: Security telemetry not found. The requested endpoint does not exist on sambit.page." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="/js/theme.js"></script>
+  <style>
+    .error-wrapper {
+      min-height: calc(100vh - 140px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 1.5rem 3rem;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .error-terminal {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+    .error-terminal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      background: var(--muted);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.72rem;
+      color: var(--fg-dim);
+    }
+    .error-terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .error-terminal-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .error-terminal-body {
+      padding: 1.5rem;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: var(--fg);
+    }
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+    .t-alert { color: #f87171; }
+    .t-warn { color: #facc15; }
+    .t-cyan { color: #38bdf8; }
+  </style>
+</head>
+<body>
+
+  <!-- SHARED NAVBAR -->
+  <nav>
+    <a href="/" class="nav-brand">sambit.page</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/experience.html">Experience</a>
+      <a href="/skills.html">Skills</a>
+      <a href="/certifications.html">Certs</a>
+      <a href="/contact.html">Contact</a>
+    </div>
+
+    <!-- Sign In button -->
+    <a href="/login/" class="nav-login" id="nav-login-btn">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      Sign In
+    </a>
+  </nav>
+
+  <!-- 404 MAIN CONTAINER -->
+  <main class="page-main">
+    <div class="error-wrapper">
+      <div class="error-terminal">
+        <div class="error-terminal-bar">
+          <div class="error-terminal-dots">
+            <span style="background:#ef4444"></span>
+            <span style="background:#eab308"></span>
+            <span style="background:#4ade80"></span>
+          </div>
+          <div>sambit@soc-ops:~ (error: 404)</div>
+          <div style="color:var(--green)">● ONLINE</div>
+        </div>
+        <div class="error-terminal-body">
+          <div><span class="t-dim">$</span> <span class="t-cyan">curl -I https://sambit.page/requested-endpoint</span></div>
+          <div class="t-alert">HTTP/2 404 NOT FOUND</div>
+          <div class="t-dim">x-incident-id: ERR_ROUTE_NOT_LOCATED</div>
+          <br />
+          <div><span class="t-dim">$</span> <span class="t-cyan">soc-triage --diagnose</span></div>
+          <div>[!] <span class="t-warn">Alert:</span> The requested endpoint does not exist or has been quarantined.</div>
+          <div>[*] <span class="t-dim">Status:</span> No security telemetry or document found matching this URL.</div>
+          <div>[*] <span class="t-green">Resolution:</span> Re-route transmission back to Sambit's central portfolio operations.</div>
+        </div>
+      </div>
+
+      <div class="error-actions">
+        <a href="/" class="btn-pri">Return to Base (Home) →</a>
+        <a href="/experience.html" class="btn-sec">Explore Experience &amp; Labs</a>
+        <a href="/contact.html" class="btn-sec">Contact Sambit</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- SHARED FOOTER -->
+  <footer>
+    <p>© 2026 <span>sambit.page</span> — <strong>Sambit Kumar Satapathy</strong> · SOC Analyst · Hyderabad, India</p>
+  </footer>
+
+  <!-- Custom Green Cursor -->
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

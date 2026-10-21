@@ -19,7 +19,7 @@ DEFENSIVE SECURITY & BLUE TEAM IDENTITY:
 - **Red Teaming / Offensive stance**: If asked about hacking or offensive security, state: "My focus is 100% dedicated to defensive cybersecurity (Blue Teaming), SOC operations, SIEM detection engineering with Wazuh, EDR monitoring, and incident response automation."
 
 WORK EXPERIENCE (MOST IMPORTANT RECENT ROLE):
-- **SOC Intern — Wazuh Cloud Project (AWS)** at **Infozit** (Team of 4 | July 2026 – Present):
+- **SOC Intern — Wazuh Cloud Project (AWS)** at **InfoZ IT Solutions** (Team of 4 | July 2026 – Present):
   * Deployed and configured a pre-production **Wazuh SIEM** platform (manager, indexer, and dashboard) on **AWS EC2**.
   * Onboarded multi-OS endpoints (**Windows 11**, **Windows Server**, **Ubuntu Server**) with Wazuh agents for centralized log collection.
   * Configured a custom web server generating and forwarding HTTP traffic logs to the SIEM.
@@ -33,7 +33,7 @@ FLAGSHIP INCIDENT RESPONSE PROJECT:
   * Created and validated custom Detection & Response (D&R) rules using historical telemetry replay.
   * Forwarded detections to a **Tines webhook** and created an automated SOAR pipeline delivering alert payloads to **Slack**.
   * Automated endpoint network containment through the **LimaCharlie API**, with separate YES and NO analyst decision paths.
-  * Validated end-to-end IR SLAs and documented the complete incident response workflow.
+  * Tested both response paths and documented the complete incident response workflow.
 
 EDUCATION & PROFESSIONAL TRAINING:
 - **Degree**: Bachelor of Computer Applications (BCA), Gayatri Institute of Science and Technology (Berhampur University, Odisha), CGPA: **8.0 / 10**.
@@ -42,7 +42,7 @@ EDUCATION & PROFESSIONAL TRAINING:
 - **Location**: Hyderabad, Telangana, India.
 
 CERTIFICATIONS & INDUSTRY CREDENTIALS:
-- **AttackIQ Academy — Foundations of Operationalizing MITRE ATT&CK v19**: Credly Verified (Badge ID: **1193a076-7182-4412-911a-900351f755b9** | October 2026, **13 CPE Credits**). Specialized in CTEM loops, ATT&CK Navigator heatmaps, and empirical behavioral detection validation.
+- **AttackIQ Academy — Foundations of Operationalizing MITRE ATT&CK**: Credly Verified (Badge ID: **1193a076-7182-4412-911a-900351f755b9** | October 2026, **13 CPE Credits**). Specialized in CTEM loops, ATT&CK Navigator heatmaps, and empirical behavioral detection validation.
 - **Deloitte — Cyber Job Simulation**: Verified via Forage (October 2026, Verification Code: **6ac39dd5f06977f0cf6e35b1**). Practical tasks in enterprise incident triage, defense-in-depth security controls, and client risk advisory communication.
 - **Hack & Fix Academy — Certified Online Fraud Prevention Specialist (COFPS)**: Credential ID: **4687-4839-7811-2187** (October 2026). Specialized in online fraud detection, credential stuffing defense, and account takeover (ATO) mitigation.
 - **TryHackMe Pre-Security & Cybersecurity 101**: Certificate ID: **THM-KKI9XDUMZE** (Networking basics, Linux fundamentals, web security).
@@ -94,7 +94,7 @@ const CHIP_PROMPTS = {
   '🎯 Interview Sambit (SOC)': 'Ask me a high-yield Tier 1/2 SOC Analyst interview scenario question or test Sambit on incident investigation.',
   '📄 30-Sec Recruiter Brief': 'Give me a rapid 30-second bulleted recruiter briefing on Sambit Kumar Satapathy with key highlights and links.',
   '🧪 Blue Team Challenge': 'Give me a real-world Blue Team SOC incident scenario question with 4 multiple choice options to test my triage skills.',
-  '💼 Wazuh SIEM Project': 'Explain your Wazuh Cloud Project at Infozit in structured bullet points.',
+  '💼 Wazuh SIEM Project': 'Explain your Wazuh Cloud Project at InfoZ IT Solutions in structured bullet points.',
   '🚀 EDR & SOAR Playbook': 'Explain your LimaCharlie EDR and Tines SOAR incident response automation project in structured bullet points.',
   '🛠️ Tour 6 Live Tools': 'Give me a breakdown of the 6 web tools built on sambit.page with direct links and bulleted summaries.'
 };
@@ -585,9 +585,19 @@ function initChatbot() {
   });
 }
 
-// Bootstrap
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initChatbot);
-} else {
-  initChatbot();
+// Bootstrap — Deferred to idle callback to preserve Core Web Vitals (LCP & TBT)
+function bootstrapChatbot() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatbot);
+  } else {
+    initChatbot();
+  }
+}
+
+if (typeof window !== 'undefined') {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(bootstrapChatbot, { timeout: 2500 });
+  } else {
+    window.addEventListener('load', bootstrapChatbot);
+  }
 }
