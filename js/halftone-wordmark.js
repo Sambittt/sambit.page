@@ -136,6 +136,8 @@
         warm: this.root.dataset.warm || options.warm || preset.warm,
       };
       this.cardBorder = preset.cardBorder;
+      this.cardBg = preset.cardBg;
+      this.isDesktop = true;
 
       this.wordmark = this.root.dataset.wordmark || options.wordmark || 'sambit';
       this.dotGap = Math.max(2.5, parseFloat(this.root.dataset.dotGap || options.dotGap || 3.8));
@@ -236,6 +238,7 @@
       this.colors.ink = p.ink;
       this.colors.warm = p.warm;
       this.cardBorder = p.cardBorder;
+      this.cardBg = p.cardBg;
       this.inkRgb = hwfHex(p.ink) || [240, 237, 230];
       this.warmRgb = hwfHex(p.warm) || [74, 222, 128];
 
@@ -338,6 +341,7 @@
       const gap = this.dotGap;
       const tmp = [];
       const isDesktop = this.w >= 992;
+      this.isDesktop = isDesktop;
 
       let cardX = 0, cardY = 0, cardW = 0, cardH = 0;
       let drawW = 0, drawH = 0, drawX = 0, drawY = 0;
@@ -432,29 +436,30 @@
 
       } else {
         // ── MOBILE LAYOUT (Clean Vertical Stack Inside Self-Contained Canvas)
-        const padX = Math.round(this.w * 0.04);
-        cardW = Math.min(190, Math.round(this.w * 0.52));
-        cardH = Math.min(180, Math.round(cardW * 0.95));
+        cardW = Math.min(210, Math.round(this.w * 0.62));
+        cardH = Math.min(205, Math.round(cardW * 1.0));
         cardX = Math.round((this.w - cardW) / 2);
-        cardY = 4;
+        cardY = 8;
         this.cardBounds = { x: cardX, y: cardY, w: cardW, h: cardH };
 
         if (this.avatarImg) {
           const imgW = this.avatarImg.naturalWidth || 1018;
           const imgH = this.avatarImg.naturalHeight || 1024;
           const aspect = imgW / imgH;
-          const dh = Math.round(cardH * 1.04);
+          const dh = Math.round(cardH * 1.15);
           const dw = Math.round(dh * aspect);
           const dx = Math.round(cardX + (cardW - dw) / 2);
-          const dy = Math.round(cardY + 8 - (61 / 1024) * dh);
+          const topMargin = Math.round(cardH * 0.08);
+          const dy = Math.round(cardY + topMargin - (61 / 1024) * dh);
           m.drawImage(this.avatarImg, dx, dy, dw, dh);
         }
 
-        wordTop = cardY + cardH + 6;
+        wordTop = cardY + cardH + 12;
         m.font = this.fontWeight + ' 100px ' + this.fontFamily;
         const testMetrics = m.measureText(word);
-        const scaleW = ((this.w - padX * 2) * 0.85 / (testMetrics.width || 1)) * 100;
-        const fit = Math.min(Math.round(scaleW), 38);
+        const targetWordW = Math.min(this.w * 0.82, 260);
+        const scaleW = (targetWordW / (testMetrics.width || 1)) * 100;
+        const fit = Math.max(38, Math.min(Math.round(scaleW), 48));
 
         m.font = this.fontWeight + ' ' + fit + 'px ' + this.fontFamily;
         const finalMetrics = m.measureText(word);
@@ -488,7 +493,7 @@
         const { x: cx, y: cy, w: cw, h: ch } = this.cardBounds;
         if (x < cx + gap * 0.5 || x > cx + cw - gap * 0.5) return false;
         if (y < cy + gap * 0.5 || y > cy + ch - gap * 0.5) return false;
-        const r = 16;
+        const r = isDesktop ? 16 : 22;
         if (x < cx + r && y < cy + r) {
           const dx = x - (cx + r), dy = y - (cy + r);
           if (dx * dx + dy * dy > r * r) return false;
@@ -546,8 +551,9 @@
                 }
               }
               const cov = sum / (9 * 255);
-              if (cov >= 0.12) {
-                const rDot = hwfRadius(cov, gap);
+              const minCov = isDesktop ? 0.12 : 0.08;
+              if (cov >= minCov) {
+                const rDot = hwfRadius(cov, gap) * (isDesktop ? 1 : 1.12);
                 dotGrid[gy * cols + gx] = 2;
                 candidates.push({ gx, gy, hx, hy, rDot, tone: 2, isWordmark: true });
               }
@@ -621,10 +627,10 @@
       ctx.fillStyle = this.colors.background;
       ctx.fillRect(0, 0, this.w, this.h);
 
-      // Draw backdrop card on left (desktop)
+      // Draw backdrop card on left (desktop) or top (mobile)
       if (this.cardBounds) {
         const { x, y, w, h } = this.cardBounds;
-        const r = 16;
+        const r = this.isDesktop ? 16 : 22;
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -638,15 +644,18 @@
         ctx.arcTo(x, y, x + r, y, r);
         ctx.closePath();
 
+        const bgTop = this.cardBg || 'rgba(28, 36, 32, 0.75)';
         const grad = ctx.createLinearGradient(x, y, x, y + h);
-        grad.addColorStop(0, 'rgba(42, 48, 58, 0.72)');
-        grad.addColorStop(0.55, 'rgba(28, 32, 40, 0.82)');
-        grad.addColorStop(1, 'rgba(16, 18, 24, 0.92)');
+        grad.addColorStop(0, bgTop);
+        grad.addColorStop(0.55, 'rgba(18, 16, 26, 0.85)');
+        grad.addColorStop(1, 'rgba(10, 8, 16, 0.94)');
         ctx.fillStyle = grad;
         ctx.fill();
 
-        ctx.strokeStyle = this.cardBorder || 'rgba(74, 222, 128, 0.25)';
-        ctx.lineWidth = 1;
+        ctx.shadowColor = this.colors.warm || 'rgba(74, 222, 128, 0.4)';
+        ctx.shadowBlur = 14;
+        ctx.strokeStyle = this.cardBorder || 'rgba(74, 222, 128, 0.3)';
+        ctx.lineWidth = 1.2;
         ctx.stroke();
         ctx.restore();
       }
