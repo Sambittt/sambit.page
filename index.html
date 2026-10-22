@@ -7,7 +7,6 @@
   <!-- ═══ PRIMARY SEO & ENTITY RECOGNITION ═══ -->
   <title>Sambit Kumar Satapathy | SOC Analyst (Intern) Portfolio</title>
   <meta name="description" content="Sambit Kumar Satapathy is a SOC Analyst (Intern) in Hyderabad with hands-on Wazuh SIEM on AWS, LimaCharlie EDR, and Tines SOAR incident response expertise." />
-  <meta name="keywords" content="Sambit Kumar Satapathy, Sambit Satapathy, Sambit Satpathy, Sambit, Sambit cybersecurity, Sambit SOC, Sambit SOC analyst, Sambit defence, Sambit defense, Sambit blue team, Sambit Wazuh, Sambit SIEM, InfoZ IT Solutions, LimaCharlie, Tines SOAR, incident response, cybersecurity portfolio" />
   <meta name="author" content="Sambit Kumar Satapathy" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="theme-color" content="#030303" />
@@ -383,8 +382,8 @@
             </div>
 
             <div class="action-btn-group" style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
-              <a href="#sec-experience" class="btn-pri">Explore Experience &amp; Labs ↓</a>
-              <a href="#sec-contact" class="btn-sec">Initiate Contact →</a>
+              <a href="/about.html" class="btn-pri">Read Full Bio &amp; FAQ →</a>
+              <a href="#sec-experience" class="btn-sec">Explore Experience &amp; Labs ↓</a>
               <a href="/assets/Sambit_Kumar_Satapathy_Resume.pdf" download="Sambit_Kumar_Satapathy_Resume.pdf" class="hl-link" style="display:inline-flex;align-items:center;gap:.4rem">
                 📄 Get Resume PDF
               </a>
@@ -421,17 +420,7 @@
           </div>
         </div>
 
-        <!-- Professional Summary & Defensive Philosophy Card -->
-        <div style="margin-top:2.5rem;border:1px solid rgba(var(--green-rgb), 0.2);background:rgba(10, 13, 18, 0.8);padding:1.8rem;position:relative;overflow:hidden;border-radius:4px">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent 70%)"></div>
-          <div class="sec-label" style="margin-bottom:.5rem">// defensive security philosophy</div>
-          <h3 style="font-size:1.1rem;font-weight:600;color:var(--fg);margin-bottom:.8rem">Threat-Informed Defense &amp; Continuous Validation</h3>
-          <p style="font-size:.85rem;color:var(--fg-dim);line-height:1.9">
-            Defensive security is not passive listening; it is an active, empirical engineering discipline. My methodology focuses on operationalizing the MITRE ATT&amp;CK framework within continuous threat exposure management loops: constructing detection rules, validating adversary emulation coverage, and ensuring incident responders possess actionable telemetry to isolate compromises before lateral movement can occur.
-          </p>
-        </div>
-
-        <div class="sec-jump-row">
+        <div class="sec-jump-row" style="margin-top:2.5rem">
           <a href="#sec-experience" class="sec-jump-next">Next: 02 Experience &amp; Labs ↓</a>
           <a href="#hero" class="sec-back-top">↑ Back to Top</a>
         </div>
@@ -458,14 +447,9 @@
             </div>
             <div class="exp-badge">Team of 4 · July 2026 – Present</div>
           </div>
-          <ul class="exp-list">
-            <li>Deployed and configured a pre-production <span>Wazuh SIEM</span> (manager, indexer, dashboard) on an <span>AWS EC2</span> instance to monitor a multi-OS cloud environment.</li>
-            <li>Onboarded endpoints by installing and configuring <span>Wazuh agents</span> across Windows 11, Windows Server, and Ubuntu Server virtual machines for structured log telemetry ingestion.</li>
-            <li>Configured custom web servers to generate, parse, and forward HTTP traffic logs to the SIEM for real-time monitoring and anomaly detection.</li>
-            <li>Authored and tested <span>custom detection rules</span> to identify simulated brute-force and web-based attacks.</li>
-            <li>Built the initial Wazuh stack using <span>Docker</span> and configured <span>Role-Based Access Control (RBAC)</span> for secure team access.</li>
-            <li>Managed detection rules and configuration through <span>Git pull-request workflows</span> and maintained operational runbooks.</li>
-          </ul>
+          <p style="font-size:0.88rem;color:var(--fg-dim);line-height:1.8;margin:0.9rem 0">
+            Deployed a pre-production <span>Wazuh SIEM</span> platform on <span>AWS EC2</span> to monitor multi-OS cloud endpoints (Windows 11, Windows Server, Ubuntu Server), configured automated HTTP log telemetry ingestion, and authored custom detection rules to identify simulated brute-force and web attacks.
+          </p>
           <div class="hero-tech-pills" style="margin-top:1.2rem">
             <span class="tech-pill"><span class="pill-dot"></span>Wazuh SIEM</span>
             <span class="tech-pill"><span class="pill-dot"></span>AWS EC2</span>
@@ -486,47 +470,20 @@
             </div>
             <div class="exp-badge" style="border-color:rgba(250, 204, 21, 0.3);color:#facc15">Featured Security Project</div>
           </div>
-
-          <!-- 5-Step Automated Response Architecture -->
-          <div class="playbook-steps-wrap">
-            <div class="playbook-steps-header">
-              <span class="hss-pulse" style="background:#facc15;box-shadow:0 0 8px #facc15"></span>
-              Automated Incident Response Workflow
-            </div>
-            <div class="playbook-steps">
-              <div class="pb-step">
-                <div class="pb-num">01 // SENSOR</div>
-                <div class="pb-title">EDR Enrollment</div>
-                <div class="pb-desc">Windows 10 VM enrolled as LimaCharlie EDR sensor streaming kernel telemetry.</div>
-              </div>
-              <div class="pb-step">
-                <div class="pb-num">02 // SIMULATION</div>
-                <div class="pb-title">Adversary Attack</div>
-                <div class="pb-desc">Simulated credential-theft activity executed via LaZagne payload.</div>
-              </div>
-              <div class="pb-step">
-                <div class="pb-num">03 // DETECTION</div>
-                <div class="pb-title">D&amp;R Validation</div>
-                <div class="pb-desc">Custom Detection &amp; Response rule validates detection via historical event replay.</div>
-              </div>
-              <div class="pb-step">
-                <div class="pb-num">04 // SOAR</div>
-                <div class="pb-title">Tines Webhook</div>
-                <div class="pb-desc">Tines SOAR extracts host, user, path, command line, and sensor ID to Slack alert.</div>
-              </div>
-              <div class="pb-step">
-                <div class="pb-num">05 // ACTION</div>
-                <div class="pb-title">API Isolation</div>
-                <div class="pb-desc">Analyst 1-click prompt: YES isolates endpoint via LimaCharlie API; NO logs and notifies.</div>
-              </div>
-            </div>
+          <p style="font-size:0.88rem;color:var(--fg-dim);line-height:1.8;margin:0.9rem 0">
+            Enrolled a Windows 10 VM as a <span>LimaCharlie EDR</span> sensor, simulated credential-theft activity with LaZagne, validated detections via historical replay, and engineered a <span>Tines SOAR</span> playbook sending structured Slack alerts with 1-click automated API containment.
+          </p>
+          <div class="hero-tech-pills" style="margin-top:1.2rem">
+            <span class="tech-pill"><span class="pill-dot"></span>LimaCharlie EDR</span>
+            <span class="tech-pill"><span class="pill-dot"></span>Tines SOAR</span>
+            <span class="tech-pill"><span class="pill-dot"></span>Slack Webhook</span>
+            <span class="tech-pill"><span class="pill-dot"></span>D&amp;R Rule Replay</span>
+            <span class="tech-pill"><span class="pill-dot"></span>Endpoint Isolation API</span>
           </div>
+        </div>
 
-          <ul class="exp-list">
-            <li>Enrolled a Windows 10 VM as a <span>LimaCharlie EDR</span> sensor, simulated credential-theft activity with LaZagne, and wrote a custom Detection and Response (D&amp;R) rule validated with historical replay.</li>
-            <li>Built a <span>Tines SOAR playbook</span> that posts structured alert details (host, user, file path, command line, sensor ID) directly to a dedicated Slack security channel.</li>
-            <li>Engineered automated endpoint isolation containment: the YES path calls the LimaCharlie API to quarantine the host from the network, while the NO path generates audit notification records.</li>
-          </ul>
+        <div style="margin-top:2.2rem;text-align:center">
+          <a href="/experience.html" class="btn-pri">View Full Case Studies, Architecture &amp; Playbooks →</a>
         </div>
 
         <div class="sec-jump-row">
@@ -595,78 +552,10 @@
             </div>
             <div class="skill-bar"><div class="skill-bar-fill" style="width:84%"></div></div>
           </div>
+        </div>
 
-          <!-- 5. Operating Systems -->
-          <div class="skill-card">
-            <div class="skill-top">
-              <div class="skill-icon">
-                <svg viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
-              </div>
-              <div class="skill-name">Operating Systems &amp; Hardening</div>
-              <div class="skill-desc">Linux (Ubuntu, Kali), Windows 10, Windows 11, Windows Server system hardening and auditing</div>
-            </div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:85%"></div></div>
-          </div>
-
-          <!-- 6. Scripting and Administration -->
-          <div class="skill-card">
-            <div class="skill-top">
-              <div class="skill-icon">
-                <svg viewBox="0 0 24 24"><path d="M4.5 4.5L13.5 12L4.5 19.5V16L9.5 12L4.5 8V4.5ZM13.5 17H20V20H13.5V17Z"/></svg>
-              </div>
-              <div class="skill-name">Scripting &amp; Administration</div>
-              <div class="skill-desc">Bash shell scripting, cron automation, user &amp; group permissions, security compliance scripts</div>
-            </div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:78%"></div></div>
-          </div>
-
-          <!-- 7. Frameworks -->
-          <div class="skill-card">
-            <div class="skill-top">
-              <div class="skill-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v5h-2V7zm0 7h2v2h-2v-2z"/></svg>
-              </div>
-              <div class="skill-name">Frameworks &amp; Methodologies</div>
-              <div class="skill-desc">MITRE ATT&amp;CK, Cyber Kill Chain, NIST SP 800-61, SANS incident response lifecycle</div>
-            </div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:82%"></div></div>
-          </div>
-
-          <!-- 8. Cloud and Tools -->
-          <div class="skill-card">
-            <div class="skill-top">
-              <div class="skill-icon">
-                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
-              </div>
-              <div class="skill-name">Cloud &amp; Container Infrastructure</div>
-              <div class="skill-desc">AWS EC2, Docker containerization, Git &amp; GitHub workflows, VMware Workstation, VS Code</div>
-            </div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:80%"></div></div>
-          </div>
-
-          <!-- 9. Reporting -->
-          <div class="skill-card">
-            <div class="skill-top">
-              <div class="skill-icon">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-              </div>
-              <div class="skill-name">Reporting &amp; Documentation</div>
-              <div class="skill-desc">Incident response runbooks, security procedure documentation, executive and technical reports</div>
-            </div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:85%"></div></div>
-          </div>
-
-          <!-- 10. Windows Event Logs -->
-          <div class="skill-card">
-            <div class="skill-top">
-              <div class="skill-icon">
-                <svg viewBox="0 0 24 24"><path d="M20 8h-2.81a5.985 5.985 0 0 0-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.98 6.57 7.37 7.23 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>
-              </div>
-              <div class="skill-name">Windows Event Logs &amp; Sysmon</div>
-              <div class="skill-desc">Event Viewer, Sysmon behavioral telemetry, security log analysis, and threat hunting</div>
-            </div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:82%"></div></div>
-          </div>
+        <div style="margin-top:2.2rem;text-align:center">
+          <a href="/skills.html" class="btn-pri">View Complete Skills Matrix (14 Capabilities) →</a>
         </div>
 
         <div class="sec-jump-row">
@@ -767,67 +656,10 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Hack & Fix: Certified Online Fraud Prevention Specialist (COFPS) -->
-          <div class="cert-card">
-            <div class="cert-badge-wrap" style="min-height:220px;flex-direction:column;gap:1rem">
-              <a href="/assets/Hack_and_Fix_COFPS_Certificate.png" target="_blank" rel="noopener noreferrer"
-                style="display:flex;flex-direction:column;align-items:center;gap:.8rem;text-decoration:none">
-                <img src="/assets/Hack_and_Fix_COFPS_Certificate.png"
-                  alt="Certified Online Fraud Prevention Specialist (COFPS)"
-                  width="1588" height="1123" loading="lazy"
-                  style="max-width:200px;width:100%;height:auto;border:1px solid var(--border);background:#0a0a0a;border-radius:4px" />
-                <span style="font-size:.65rem;color:var(--green);letter-spacing:.1em;opacity:.9;text-transform:uppercase">View Certificate ↗</span>
-              </a>
-            </div>
-            <div class="cert-meta">
-              <div class="cert-issuer">Hack &amp; Fix Academy · Verified</div>
-              <div class="cert-name">Certified Online Fraud Prevention Specialist (COFPS)</div>
-              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
-                Completed evaluation criteria in online fraud mitigation, payment gateway threat analysis, credential stuffing, and account takeover (ATO) defense.
-              </div>
-              <div class="cert-date" style="margin-top:.6rem">Earned October 2026 · ID: 4687-4839-7811-2187</div>
-            </div>
-          </div>
-
-          <!-- Cisco: Introduction to Cybersecurity -->
-          <div class="cert-card">
-            <div class="cert-badge-wrap">
-              <div data-iframe-width="150" data-iframe-height="270"
-                data-share-badge-id="ebd10434-982c-4d32-a797-c309b0fb17c2" data-share-badge-host="https://www.credly.com">
-              </div>
-            </div>
-            <div class="cert-meta">
-              <div class="cert-issuer">Cisco · Credly Verified</div>
-              <div class="cert-name">Introduction to Cybersecurity</div>
-              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
-                Core defensive cybersecurity principles, network defense architecture, confidentiality/integrity/availability, and vulnerability management.
-              </div>
-              <div class="cert-date" style="margin-top:.6rem">Earned 2026 · Credly Verified</div>
-            </div>
-          </div>
-
-          <!-- TryHackMe: Pre Security & Cybersecurity 101 -->
-          <div class="cert-card">
-            <div class="cert-badge-wrap" style="min-height:220px;flex-direction:column;gap:1rem">
-              <a href="https://tryhackme.com/certificate/THM-KKI9XDUMZE" target="_blank" rel="noopener noreferrer"
-                style="display:flex;flex-direction:column;align-items:center;gap:.8rem;text-decoration:none">
-                <img src="/assets/TryHackMe_Pre_Security_Certificate.png"
-                  alt="TryHackMe Pre Security Certificate"
-                  width="1024" height="724" loading="lazy"
-                  style="max-width:220px;width:100%;height:auto;border:1px solid rgba(var(--green-rgb), 0.25);background:#0a0a0a;border-radius:4px;box-shadow:0 4px 15px rgba(0,0,0,0.6)" />
-                <span style="font-size:.65rem;color:var(--green);letter-spacing:.1em;opacity:.9;text-transform:uppercase">Verify Certificate ↗</span>
-              </a>
-            </div>
-            <div class="cert-meta">
-              <div class="cert-issuer">TryHackMe · Verified</div>
-              <div class="cert-name">Pre Security Certificate</div>
-              <div class="cert-date" style="color:var(--fg-dim);font-size:.72rem;line-height:1.6;margin-top:.5rem">
-                Network fundamentals, web security basics, Linux OS, and Windows security concepts.
-              </div>
-              <div class="cert-date" style="margin-top:.6rem">Earned 2026 · Code: THM-KKI9XDUMZE</div>
-            </div>
-          </div>
+        <div style="margin-top:2.2rem;text-align:center">
+          <a href="/certifications.html" class="btn-pri">View All Verified Badges &amp; Credentials (5 Certifications) →</a>
         </div>
 
         <div class="sec-jump-row">
@@ -945,16 +777,6 @@
               </div>
             </a>
 
-            <a href="tel:+917735207434" class="contact-card">
-              <div class="contact-icon">
-                <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-              </div>
-              <div>
-                <div class="contact-label">Phone</div>
-                <div class="contact-val">+91 7735207434</div>
-              </div>
-            </a>
-
             <div class="contact-card">
               <div class="contact-icon">
                 <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -975,6 +797,10 @@
               </div>
             </a>
           </div>
+        </div>
+
+        <div style="margin-top:2.2rem;text-align:center">
+          <a href="/contact.html" class="btn-sec">Open Dedicated Contact Page &amp; Details →</a>
         </div>
 
         <div class="sec-jump-row">

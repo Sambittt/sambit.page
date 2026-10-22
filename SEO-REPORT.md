@@ -102,7 +102,7 @@ All schemas are nested in an interconnected `@graph` structure to help Google bu
 - **`experience.html`, `skills.html`, `certifications.html`**:
   - `CollectionPage` + `BreadcrumbList` + `Person` with technique keywords and educational entity links.
 - **`contact.html`**:
-  - `ContactPage` + `BreadcrumbList` + `Person` with official email and telephone.
+  - `ContactPage` + `BreadcrumbList` + `Person` with official email and message dispatcher (phone number removed for privacy).
 - **Public Tools (`ascii-converter`, `font-animator`, `resume-builder`)**:
   - `SoftwareApplication` + `BreadcrumbList` declaring free browser utility applications.
 

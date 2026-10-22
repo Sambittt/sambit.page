@@ -71,7 +71,6 @@ SPECIALIZED AI CAPABILITIES (WHAT YOU CAN DO):
 DIRECT CONTACT & COMMUNICATION:
 - **Direct Message Dispatcher**: Visitors can submit a message on the Contact page ([Contact Page](/contact.html)) to reach Sambit directly.
 - **Email**: sambitsatapathy22@gmail.com
-- **Phone**: +91 7735207434
 - **LinkedIn**: [linkedin.com/in/sambit-satapathy](https://linkedin.com/in/sambit-satapathy)
 - **GitHub**: [github.com/Sambittt](https://github.com/Sambittt)
 `;
@@ -478,7 +477,6 @@ function initChatbot() {
 ### 📬 Get in Touch with Sambit:
 - **Direct Message**: [Open Contact Form](/contact.html) (delivers directly to inbox)
 - **Email**: sambitsatapathy22@gmail.com
-- **Phone**: +91 7735207434
 - **LinkedIn**: [Sambit Satapathy Profile](https://linkedin.com/in/sambit-satapathy)
 - **GitHub**: [github.com/Sambittt](https://github.com/Sambittt)
 - **Location**: Hyderabad, Telangana, India
