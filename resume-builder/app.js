@@ -31,7 +31,7 @@ function renderList(k){
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const ct=()=>[S.email,S.phone,S.location].filter(Boolean).join(' · ');
 const lk=()=>[S.website&&`<a href="https://${S.website.replace(/https?:\/\//,'')}">${S.website.replace(/https?:\/\//,'')}</a>`,S.linkedin&&`<a href="https://linkedin.com/in/${S.linkedin}">linkedin/${S.linkedin}</a>`,S.github&&`<a href="https://github.com/${S.github}">github/${S.github}</a>`].filter(Boolean).join(' · ');
-const photo=(cls,size)=>S.photo?`<img src="${S.photo}" class="${cls}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;display:block" alt="photo"/>`:'';
+const photo=(cls,size)=>S.photo?`<img src="${S.photo}" class="${cls}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;display:block" alt="photo"/>`:'';
 const bullets=b=>b?'<ul>'+b.split('\n').filter(x=>x.trim()).map(x=>`<li>${esc(x.replace(/^[•\-]\s*/,''))}</li>`).join('')+'</ul>':'';
 const dates=(s,e,cur)=>`${s||''}${(s||e||cur)?'–':''}${cur?'Present':e||''}`;
 

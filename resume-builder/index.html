@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Resume Builder — Free Online PDF Resume Maker | sambit.page by Sambit Kumar Satapathy</title>
-  <meta name="description" content="Free online resume builder by Sambit Kumar Satapathy. Choose from 7 professional templates (Classic, Modern, Minimal, Creative, Executive, Compact, Sharp). Fill in your details, live-preview and download as PDF or PNG instantly. No signup required to use. Created at sambit.page."/>
+  <title>Resume Builder — Free PDF Resume Maker | sambit.page</title>
+  <meta name="description" content="Free online resume builder by Sambit Kumar Satapathy. Choose from 7 professional templates with live preview. Export clean PDF or PNG instantly. No signup."/>
   <meta name="author" content="Sambit Kumar Satapathy"/>
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large"/>
   <meta name="theme-color" content="#030303"/>
@@ -52,7 +52,7 @@
   <div class="nav-l">
     <a href="/" class="nav-back" title="Back to sambit.page">← sambit.page</a>
     <span class="nav-sep">/</span>
-    <span class="nav-title">Resume Builder</span>
+    <h1 class="nav-title" style="margin:0;font-size:inherit;font-weight:inherit;display:inline">Resume Builder</h1>
   </div>
   <div class="nav-r">
     <span class="nav-user" id="nav-user"></span>
@@ -91,7 +91,7 @@
         <span class="bar-lbl" style="margin-left:.8rem">Photo</span>
         <button type="button" class="photo-btn" onclick="document.getElementById('photo-input').click()">+ Upload</button>
         <input type="file" id="photo-input" accept="image/*" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" onchange="loadPhoto(this)"/>
-        <img id="photo-thumb" style="display:none;width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid #444;flex-shrink:0" alt=""/>
+        <img id="photo-thumb" width="26" height="26" style="display:none;width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid #444;flex-shrink:0" alt="Profile Thumbnail"/>
         <button class="photo-rm" id="photo-rm" onclick="removePhoto()" style="display:none">✕</button>
       </div>
     </div>

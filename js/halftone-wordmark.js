@@ -433,28 +433,28 @@
       } else {
         // ── MOBILE LAYOUT (Clean Vertical Stack Inside Self-Contained Canvas)
         const padX = Math.round(this.w * 0.04);
-        cardW = Math.min(210, Math.round(this.w * 0.58));
-        cardH = Math.min(205, Math.round(cardW * 1.02));
+        cardW = Math.min(190, Math.round(this.w * 0.52));
+        cardH = Math.min(180, Math.round(cardW * 0.95));
         cardX = Math.round((this.w - cardW) / 2);
-        cardY = 8;
+        cardY = 4;
         this.cardBounds = { x: cardX, y: cardY, w: cardW, h: cardH };
 
         if (this.avatarImg) {
           const imgW = this.avatarImg.naturalWidth || 1018;
           const imgH = this.avatarImg.naturalHeight || 1024;
           const aspect = imgW / imgH;
-          const dh = Math.round(cardH * 1.05);
+          const dh = Math.round(cardH * 1.04);
           const dw = Math.round(dh * aspect);
           const dx = Math.round(cardX + (cardW - dw) / 2);
-          const dy = Math.round(cardY + 10 - (61 / 1024) * dh);
+          const dy = Math.round(cardY + 8 - (61 / 1024) * dh);
           m.drawImage(this.avatarImg, dx, dy, dw, dh);
         }
 
-        wordTop = cardY + cardH + 10;
+        wordTop = cardY + cardH + 6;
         m.font = this.fontWeight + ' 100px ' + this.fontFamily;
         const testMetrics = m.measureText(word);
-        const scaleW = ((this.w - padX * 2) * 0.88 / (testMetrics.width || 1)) * 100;
-        const fit = Math.min(Math.round(scaleW), 42);
+        const scaleW = ((this.w - padX * 2) * 0.85 / (testMetrics.width || 1)) * 100;
+        const fit = Math.min(Math.round(scaleW), 38);
 
         m.font = this.fontWeight + ' ' + fit + 'px ' + this.fontFamily;
         const finalMetrics = m.measureText(word);

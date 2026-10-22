@@ -8,6 +8,3 @@ Disallow: /cloud/
 
 # Sitemaps
 Sitemap: https://sambit.page/sitemap.xml
-
-# Host
-Host: sambit.page
