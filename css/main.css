@@ -1119,6 +1119,11 @@ nav.scrolled {
   display: block;
 }
 
+/* Mobile Profile hidden on desktop */
+.hero-mobile-profile {
+  display: none;
+}
+
 /* ── EXPANDABLE THEME TOGGLE BUTTON & DROPDOWN ── */
 .hero-theme-wrapper {
   position: absolute;
@@ -1896,28 +1901,104 @@ nav.scrolled {
     z-index: 50 !important;
   }
 
-  /* 2. Portrait + Wordmark Canvas: order 2 */
+  /* Hide Desktop Halftone Canvas on Phone */
   #hero.hero-fullscreen-section .hwf-root {
-    order: 2 !important;
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    max-width: 380px !important;
-    height: 280px !important;
-    min-height: 280px !important;
-    max-height: 280px !important;
-    margin: 0 auto 0.5rem !important;
-    display: block !important;
-    background: transparent !important;
-    border: none !important;
+    display: none !important;
   }
 
-  #hero.hero-fullscreen-section .hwf-root canvas {
-    position: absolute !important;
-    inset: 0 !important;
+  /* 2. Normal Profile Image + Name: order 2 (Clean Native Mobile Hero) */
+  .hero-mobile-profile {
+    display: flex !important;
+    order: 2 !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin: 0.2rem auto 0.9rem !important;
+    width: 100% !important;
+    max-width: 380px !important;
+    z-index: 25 !important;
+  }
+
+  .hmp-avatar-frame {
+    position: relative !important;
+    width: 124px !important;
+    height: 124px !important;
+    margin: 0 auto 0.85rem !important;
+    border-radius: 50% !important;
+    padding: 3px !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(145deg, var(--green) 0%, rgba(var(--green-rgb), 0.3) 55%, rgba(255, 255, 255, 0.12) 100%) !important;
+    box-shadow: 0 0 28px rgba(var(--green-rgb), 0.35), 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+  }
+
+  .hmp-avatar-inner {
     width: 100% !important;
     height: 100% !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    background: #0d1117 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .hmp-avatar-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 15% !important;
     display: block !important;
+    border-radius: 50% !important;
+  }
+
+  .hmp-pulse-dot {
+    position: absolute !important;
+    bottom: 5px !important;
+    right: 5px !important;
+    width: 15px !important;
+    height: 15px !important;
+    border-radius: 50% !important;
+    background: var(--green) !important;
+    border: 2.5px solid #030303 !important;
+    box-shadow: 0 0 10px var(--green) !important;
+  }
+
+  .hmp-pulse-dot::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: -3px !important;
+    border-radius: 50% !important;
+    border: 1px solid var(--green) !important;
+    animation: hmpPulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite !important;
+  }
+
+  @keyframes hmpPulse {
+    0% { transform: scale(0.95); opacity: 0.9; }
+    70% { transform: scale(1.6); opacity: 0; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  .hmp-text-block {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 0 10px !important;
+  }
+
+  .hmp-name {
+    font-family: var(--font-mono) !important;
+    font-size: 1.55rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    line-height: 1.25 !important;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 24px rgba(var(--green-rgb), 0.22) !important;
   }
 
   .hero-theme-toggle-btn {
@@ -2221,10 +2302,14 @@ nav.scrolled {
     padding: 0.8rem 0.85rem 2.6rem !important;
   }
 
-  #hero.hero-fullscreen-section .hwf-root {
-    height: 270px !important;
-    min-height: 270px !important;
-    max-height: 270px !important;
+  .hmp-avatar-frame {
+    width: 110px !important;
+    height: 110px !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .hmp-name {
+    font-size: 1.35rem !important;
   }
 
   .htw-role-text {

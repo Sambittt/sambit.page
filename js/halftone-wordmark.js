@@ -325,6 +325,18 @@
     }
 
     layout() {
+      if (window.innerWidth < 992) {
+        // Mobile uses clean native profile & typography; bypass canvas engine
+        this.w = 0;
+        this.h = 0;
+        this.canvas.width = 1;
+        this.canvas.height = 1;
+        this.dots = new Float32Array(0);
+        this.count = 0;
+        this.awake = false;
+        return;
+      }
+
       const rect = this.root.getBoundingClientRect();
       this.w = Math.max(1, Math.round(rect.width));
       this.h = Math.max(1, Math.round(rect.height));
@@ -620,6 +632,7 @@
     }
 
     draw(now) {
+      if (window.innerWidth < 992 || this.w < 992) return;
       const ctx = this.ctx;
       const dpr = this.dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -771,6 +784,7 @@
     }
 
     wake() {
+      if (window.innerWidth < 992) return;
       this.awake = true;
       if (!this.raf && this.visible) this.raf = requestAnimationFrame(this.loop);
     }
