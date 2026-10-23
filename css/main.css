@@ -3604,7 +3604,7 @@ nav.scrolled {
 /* ── FOOTER ── */
 footer {
   text-align: center;
-  padding: 2.5rem 1.5rem;
+  padding: 1.25rem 1.5rem;
   border-top: 1px solid var(--border);
   font-size: 0.72rem;
   color: var(--fg-muted);
@@ -4159,8 +4159,8 @@ footer strong {
   }
 
   footer {
-    padding: 2rem 1rem;
-    padding-bottom: max(2rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));
+    padding: 1.25rem 1rem;
+    padding-bottom: max(1.25rem, calc(0.8rem + env(safe-area-inset-bottom, 0px)));
     font-size: 0.68rem;
     line-height: 1.6;
   }
@@ -4217,9 +4217,24 @@ html {
 .portfolio-section {
   scroll-margin-top: 70px;
   position: relative;
-  padding: clamp(3.5rem, 6vw, 5.5rem) 0;
+  padding: clamp(3rem, 5vw, 4.5rem) 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   background: radial-gradient(circle at 50% 0%, rgba(var(--green-rgb), 0.025) 0%, transparent 60%);
+}
+
+.portfolio-section .page-container {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+#sec-contact.portfolio-section {
+  padding-bottom: 1.5rem;
+  border-bottom: none;
+}
+
+#sec-contact .sec-jump-row {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
 }
 
 .portfolio-section:nth-child(even) {
