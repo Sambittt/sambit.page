@@ -700,7 +700,10 @@
 
         <!-- DIRECT EMAIL DISPATCHER -->
         <div class="direct-contact-section" id="direct-email-section">
-          <form id="directContactForm" action="https://shipmyform.com/to/sambitsatapathy22@gmail.com" method="POST" class="direct-contact-form" novalidate>
+          <form id="directContactForm" action="https://api.web3forms.com/submit" method="POST" class="direct-contact-form" novalidate>
+            <input type="hidden" name="access_key" value="7b4385ac-42fd-4fd1-9dd9-3e0fe19034a6" />
+            <input type="hidden" name="from_name" value="sambit.page Portfolio Inquiry" />
+            <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
             <div class="form-grid">
               <div class="form-group">
                 <label for="contactName" class="form-label">
@@ -730,9 +733,6 @@
               </label>
               <textarea id="contactMessage" name="message" class="form-textarea" rows="5" placeholder="Write your message here..." required></textarea>
             </div>
-
-            <!-- Anti-spam honeypot -->
-            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
 
             <!-- Form Status Notification Banner -->
             <div id="formStatusMsg" class="form-status-msg" aria-live="polite"></div>
@@ -1020,35 +1020,28 @@
         if (btnText) btnText.textContent = 'Transmitting Payload...';
         if (statusMsg) statusMsg.style.display = 'none';
 
-        // Detect local environment (file:// or localhost)
-        const isLocal = window.location.protocol === 'file:' ||
-                        window.location.hostname === 'localhost' ||
-                        window.location.hostname === '127.0.0.1';
-
-        if (isLocal) {
-          if (statusMsg) {
-            statusMsg.className = 'form-status-msg status-ok';
-            statusMsg.innerHTML = '[i] Local preview detected. Direct API submission is active on <a href="https://sambit.page" target="_blank" style="color:var(--green);font-weight:600">sambit.page</a>. Launching your prefilled email draft...';
-            statusMsg.style.display = 'block';
-          }
-          window.location.href = mailtoUrl;
-          if (submitBtn) submitBtn.disabled = false;
-          if (btnSpinner) btnSpinner.style.display = 'none';
-          if (btnText) btnText.textContent = 'Transmit Direct Message';
-          return;
-        }
-
         try {
-          const formData = new FormData(contactForm);
-          const res = await fetch(contactForm.action, {
+          const payload = {
+            access_key: '7b4385ac-42fd-4fd1-9dd9-3e0fe19034a6',
+            name: name,
+            email: email,
+            subject: subject ? `[sambit.page] ${subject}` : 'New Security Inquiry from sambit.page',
+            message: message,
+            from_name: `${name} (via sambit.page)`
+          };
+
+          const res = await fetch('https://api.web3forms.com/submit', {
             method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
           });
 
           const data = await res.json().catch(() => null);
 
-          if (res.ok && (!data || data.ok === true || data.success === true)) {
+          if (res.ok && data && data.success) {
             if (statusMsg) {
               statusMsg.className = 'form-status-msg status-ok';
               statusMsg.textContent = '[OK] Transmission confirmed! Direct message delivered to Sambit\'s inbox.';
@@ -1057,26 +1050,16 @@
             contactForm.reset();
             syncMailto();
           } else {
-            const errDesc = (data && (data.message || data.error)) || `Server returned HTTP ${res.status}`;
-            if (errDesc.toLowerCase().includes('activate') || errDesc.toLowerCase().includes('activation')) {
-              if (statusMsg) {
-                statusMsg.className = 'form-status-msg status-err';
-                statusMsg.innerHTML = `[!] One-time endpoint activation pending. Check your inbox (<strong>sambitsatapathy22@gmail.com</strong>) and click the activation link. Meanwhile, <a href="${mailtoUrl}" style="color:var(--green);font-weight:600;text-decoration:underline">click here to send directly via mail client</a>.`;
-                statusMsg.style.display = 'block';
-              }
-              window.location.href = mailtoUrl;
-            } else {
-              throw new Error(errDesc);
-            }
+            const errDesc = (data && (data.message || data.error)) || 'Transmission failed';
+            throw new Error(errDesc);
           }
         } catch (err) {
           console.warn('Direct transmission notice:', err);
           if (statusMsg) {
             statusMsg.className = 'form-status-msg status-err';
-            statusMsg.innerHTML = `[!] Network dispatch issue. <a href="${mailtoUrl}" style="color:var(--green);font-weight:600;text-decoration:underline">Click here to send immediately via your email client</a>.`;
+            statusMsg.innerHTML = `[!] Network dispatch issue: ${err.message || 'Unable to connect'}. <a href="${mailtoUrl}" style="color:var(--green);font-weight:600;text-decoration:underline">Click here to send immediately via your email client</a>.`;
             statusMsg.style.display = 'block';
           }
-          window.location.href = mailtoUrl;
         } finally {
           if (submitBtn) submitBtn.disabled = false;
           if (btnSpinner) btnSpinner.style.display = 'none';
