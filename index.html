@@ -952,25 +952,64 @@
     setInterval(updateLiveUptime, 1000);
     updateLiveUptime();
 
-    // ── Direct Dispatch Contact Form (AJAX submission to ShipMyForm) ──
+    // ── Direct Dispatch Contact Form with Smart Mailto Fallback & Real-Time Sync ──
     const contactForm = document.getElementById('directContactForm');
     if (contactForm) {
+      const fallbackBtn = document.getElementById('fallbackMailtoBtn');
+      const nameInput = document.getElementById('contactName');
+      const emailInput = document.getElementById('contactEmail');
+      const subjectInput = document.getElementById('contactSubject');
+      const msgInput = document.getElementById('contactMessage');
+      const statusMsg = document.getElementById('formStatusMsg');
+      const submitBtn = document.getElementById('submitContactBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      function generateMailtoUrl() {
+        const name = nameInput ? nameInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const subject = subjectInput ? subjectInput.value.trim() : '';
+        const message = msgInput ? msgInput.value.trim() : '';
+
+        const subjStr = subject ? `[sambit.page] ${subject}` : '[sambit.page] Direct Security & SOC Inquiry';
+        const bodyStr = `Sender Name: ${name || 'N/A'}\nSender Email: ${email || 'N/A'}\n\nMessage Payload:\n${message || '(No message content)'}`;
+        return `mailto:sambitsatapathy22@gmail.com?subject=${encodeURIComponent(subjStr)}&body=${encodeURIComponent(bodyStr)}`;
+      }
+
+      function syncMailto() {
+        if (fallbackBtn) {
+          fallbackBtn.href = generateMailtoUrl();
+        }
+      }
+
+      [nameInput, emailInput, subjectInput, msgInput].forEach(inp => {
+        if (inp) inp.addEventListener('input', syncMailto);
+      });
+      syncMailto();
+
       contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const statusMsg = document.getElementById('formStatusMsg');
-        const submitBtn = document.getElementById('submitContactBtn');
-        const btnText = document.getElementById('btnText');
-        const btnSpinner = document.getElementById('btnSpinner');
 
-        const name = document.getElementById('contactName').value.trim();
-        const email = document.getElementById('contactEmail').value.trim();
-        const subject = document.getElementById('contactSubject').value.trim();
-        const message = document.getElementById('contactMessage').value.trim();
+        const name = nameInput ? nameInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const subject = subjectInput ? subjectInput.value.trim() : '';
+        const message = msgInput ? msgInput.value.trim() : '';
+        const mailtoUrl = generateMailtoUrl();
 
         if (!name || !email || !subject || !message) {
           if (statusMsg) {
             statusMsg.className = 'form-status-msg status-err';
-            statusMsg.textContent = '[!] Please fill out all fields before dispatching.';
+            statusMsg.textContent = '[!] Please fill out all required fields before dispatching.';
+            statusMsg.style.display = 'block';
+          }
+          return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          if (statusMsg) {
+            statusMsg.className = 'form-status-msg status-err';
+            statusMsg.textContent = '[!] Please provide a valid email address.';
             statusMsg.style.display = 'block';
           }
           return;
@@ -981,6 +1020,24 @@
         if (btnText) btnText.textContent = 'Transmitting Payload...';
         if (statusMsg) statusMsg.style.display = 'none';
 
+        // Detect local environment (file:// or localhost)
+        const isLocal = window.location.protocol === 'file:' ||
+                        window.location.hostname === 'localhost' ||
+                        window.location.hostname === '127.0.0.1';
+
+        if (isLocal) {
+          if (statusMsg) {
+            statusMsg.className = 'form-status-msg status-ok';
+            statusMsg.innerHTML = '[i] Local preview detected. Direct API submission is active on <a href="https://sambit.page" target="_blank" style="color:var(--green);font-weight:600">sambit.page</a>. Launching your prefilled email draft...';
+            statusMsg.style.display = 'block';
+          }
+          window.location.href = mailtoUrl;
+          if (submitBtn) submitBtn.disabled = false;
+          if (btnSpinner) btnSpinner.style.display = 'none';
+          if (btnText) btnText.textContent = 'Transmit Direct Message';
+          return;
+        }
+
         try {
           const formData = new FormData(contactForm);
           const res = await fetch(contactForm.action, {
@@ -989,22 +1046,37 @@
             headers: { 'Accept': 'application/json' }
           });
 
-          if (res.ok) {
+          const data = await res.json().catch(() => null);
+
+          if (res.ok && (!data || data.ok === true || data.success === true)) {
             if (statusMsg) {
               statusMsg.className = 'form-status-msg status-ok';
               statusMsg.textContent = '[OK] Transmission confirmed! Direct message delivered to Sambit\'s inbox.';
               statusMsg.style.display = 'block';
             }
             contactForm.reset();
+            syncMailto();
           } else {
-            throw new Error('Server returned error status');
+            const errDesc = (data && (data.message || data.error)) || `Server returned HTTP ${res.status}`;
+            if (errDesc.toLowerCase().includes('activate') || errDesc.toLowerCase().includes('activation')) {
+              if (statusMsg) {
+                statusMsg.className = 'form-status-msg status-err';
+                statusMsg.innerHTML = `[!] One-time endpoint activation pending. Check your inbox (<strong>sambitsatapathy22@gmail.com</strong>) and click the activation link. Meanwhile, <a href="${mailtoUrl}" style="color:var(--green);font-weight:600;text-decoration:underline">click here to send directly via mail client</a>.`;
+                statusMsg.style.display = 'block';
+              }
+              window.location.href = mailtoUrl;
+            } else {
+              throw new Error(errDesc);
+            }
           }
         } catch (err) {
+          console.warn('Direct transmission notice:', err);
           if (statusMsg) {
             statusMsg.className = 'form-status-msg status-err';
-            statusMsg.innerHTML = '[!] Delivery timeout. Please email directly to <a href="mailto:sambitsatapathy22@gmail.com" style="color:#ef4444;text-decoration:underline">sambitsatapathy22@gmail.com</a>.';
+            statusMsg.innerHTML = `[!] Network dispatch issue. <a href="${mailtoUrl}" style="color:var(--green);font-weight:600;text-decoration:underline">Click here to send immediately via your email client</a>.`;
             statusMsg.style.display = 'block';
           }
+          window.location.href = mailtoUrl;
         } finally {
           if (submitBtn) submitBtn.disabled = false;
           if (btnSpinner) btnSpinner.style.display = 'none';

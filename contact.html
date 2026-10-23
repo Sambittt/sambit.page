@@ -411,9 +411,9 @@
 
             const data = await response.json();
             if (response.ok && (data.ok === true || data.success === true || response.status === 200)) {
-              showStatus('✓ Message transmitted successfully! Your email has been delivered to sambitsatapathy22@gmail.com. I will reply to you promptly.', 'success');
+              showStatus('[OK] Message transmitted successfully! Your email has been delivered to sambitsatapathy22@gmail.com. I will reply to you promptly.', 'success');
               form.reset();
-              if (btnText) btnText.textContent = '✓ Message Sent!';
+              if (btnText) btnText.textContent = 'Message Sent!';
               setTimeout(() => {
                 if (btnText) btnText.textContent = 'Transmit Direct Message';
                 submitBtn.disabled = false;
