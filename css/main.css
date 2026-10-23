@@ -2208,21 +2208,33 @@ nav.scrolled {
     bottom: auto !important;
     margin: 0.6rem auto 1.2rem !important;
     width: 100% !important;
-    max-width: 440px !important;
+    max-width: 350px !important;
     box-sizing: border-box !important;
     z-index: 25 !important;
+    transition: max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .hero-skyline-wrapper.view-3d {
+    max-width: 440px !important;
   }
 
   .skyline-card {
     width: 100% !important;
     box-sizing: border-box !important;
-    padding: 0.65rem 0.85rem 0.55rem !important;
+    padding: 0.55rem 0.75rem 0.45rem !important;
     border-radius: 12px !important;
     background: rgba(10, 14, 20, 0.90) !important;
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+    transition: padding 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease !important;
+  }
+
+  .hero-skyline-wrapper.view-3d .skyline-card {
+    padding: 0.65rem 0.85rem 0.60rem !important;
+    border-color: rgba(var(--green-rgb), 0.4) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 28px rgba(var(--green-rgb), 0.2) !important;
   }
 
   .skyline-header {
@@ -2266,10 +2278,6 @@ nav.scrolled {
     overflow: hidden !important;
   }
 
-  .hero-skyline-wrapper.view-3d .skyline-card {
-    border-color: rgba(var(--green-rgb), 0.35) !important;
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.85), 0 0 24px rgba(var(--green-rgb), 0.16) !important;
-  }
 
   .skyline-footer {
     font-size: 0.62rem !important;
@@ -2356,9 +2364,6 @@ nav.scrolled {
     padding: 0.18rem 0.42rem !important;
   }
 
-  .skyline-stage {
-    height: 108px !important;
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════

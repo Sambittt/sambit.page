@@ -411,7 +411,7 @@
         const b3 = extent(camera(1), 1);
         const natural = ((b3.maxy - b3.miny) / (b3.maxx - b3.minx)) * (W - 24) + 24;
         const isDesktop = window.innerWidth >= 992;
-        H3 = isDesktop ? Math.max(160, Math.min(Math.round(natural + 28), 185)) : Math.max(136, Math.min(Math.round(natural + 22), 155));
+        H3 = isDesktop ? Math.max(160, Math.min(Math.round(natural + 28), 185)) : Math.max(155, Math.min(Math.round(natural + 30), 175));
         Hmax = Math.ceil(Math.max(H2, H3, 195));
         canvas.width = Math.round(W * dpr);
         canvas.height = Math.round(Hmax * dpr);
