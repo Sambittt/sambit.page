@@ -222,7 +222,7 @@
 
       this.preset = options.preset || 'cyber';
       this.view = options.view || '2d'; // default '2d' heat map, expandable to '3d'
-      this.duration = 1100;
+      this.duration = 600;
       this.heightScale = 1;
 
       const end = dayMs(new Date());
@@ -283,6 +283,7 @@
       this.tooltip = this.root.querySelector('#skyline-tooltip');
       if (this.root) {
         this.root.classList.toggle('view-3d', this.view === '3d');
+        this.root.classList.toggle('view-2d', this.view === '2d');
       }
 
       // Bind view toggle buttons
@@ -306,6 +307,7 @@
       this.view = v;
       if (this.root) {
         this.root.classList.toggle('view-3d', v === '3d');
+        this.root.classList.toggle('view-2d', v === '2d');
       }
       this.root.querySelectorAll('.skyline-view-btn').forEach((b) => {
         b.classList.toggle('active', b.dataset.view === v);
@@ -400,16 +402,17 @@
       };
 
       const relayout = () => {
-        const w = Math.round(stage.clientWidth);
+        const w = Math.round(stage.parentElement ? stage.parentElement.clientWidth : stage.clientWidth);
         if (!w || !n) return;
         W = w;
         dpr = Math.min(2, window.devicePixelRatio || 1);
         const b2 = extent(camera(0), 0);
-        H2 = Math.min(108, 18 + ((b2.maxy - b2.miny) / (b2.maxx - b2.minx)) * (W - 12));
+        H2 = Math.max(68, Math.min(84, Math.round(14 + ((b2.maxy - b2.miny) / (b2.maxx - b2.minx)) * (W - 12))));
         const b3 = extent(camera(1), 1);
         const natural = ((b3.maxy - b3.miny) / (b3.maxx - b3.minx)) * (W - 24) + 24;
-        H3 = Math.max(110, Math.min(natural, 155));
-        Hmax = Math.ceil(Math.max(H2, H3));
+        const isDesktop = window.innerWidth >= 992;
+        H3 = isDesktop ? Math.max(160, Math.min(Math.round(natural + 28), 185)) : Math.max(136, Math.min(Math.round(natural + 22), 155));
+        Hmax = Math.ceil(Math.max(H2, H3, 195));
         canvas.width = Math.round(W * dpr);
         canvas.height = Math.round(Hmax * dpr);
         canvas.style.width = W + 'px';
@@ -422,8 +425,8 @@
       let hovered = -1;
 
       const draw = () => {
-        const curW = Math.round(stage.clientWidth);
-        if (curW && curW !== W) {
+        const curW = Math.round(stage.parentElement ? stage.parentElement.clientWidth : stage.clientWidth);
+        if (curW && Math.abs(curW - W) > 2) {
           relayout();
           return;
         }
@@ -431,9 +434,10 @@
         const e = easeInOutCubic(t);
         const cam = camera(e, yaw, elev);
         const Hc = lerp(H2, H3, e);
-        if (Math.abs(Hc - lastH) > 0.3) {
-          stage.style.height = Hc.toFixed(1) + 'px';
-          lastH = Hc;
+        if (Math.abs(Hc - lastH) > 0.2 || t === this.target) {
+          const finalH = t === 1 ? H3 : t === 0 ? H2 : Hc;
+          stage.style.height = finalH.toFixed(1) + 'px';
+          lastH = finalH;
         }
         for (let i = 0; i < n; i++) zs[i] = riseAt(t, wk[i], weeks, dy[i]) * hgt[i];
         const b = extent(cam, e);
@@ -634,7 +638,12 @@
       });
 
       if (window.ResizeObserver) {
-        new ResizeObserver(relayout).observe(stage);
+        new ResizeObserver(() => {
+          const w = Math.round(stage.parentElement ? stage.parentElement.clientWidth : stage.clientWidth);
+          if (w && Math.abs(w - W) > 2) {
+            relayout();
+          }
+        }).observe(this.root);
       }
       relayout();
     }
